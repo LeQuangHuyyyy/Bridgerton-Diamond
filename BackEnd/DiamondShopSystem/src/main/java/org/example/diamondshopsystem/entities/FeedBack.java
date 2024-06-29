@@ -1,6 +1,7 @@
 package org.example.diamondshopsystem.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,11 +30,13 @@ public class FeedBack {
     @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("userId")
     @JoinColumn(name = "customer_id")
+    @JsonBackReference
     private User user;
 
 
     @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("orderId")
     @JoinColumn(name = "order_id")
+    @JsonBackReference
     private Order order;
 }

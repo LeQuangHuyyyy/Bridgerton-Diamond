@@ -1,6 +1,7 @@
 package org.example.diamondshopsystem.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -28,8 +29,9 @@ public class Invoice {
     @Column(name = "paid_amount")
     private double paidAmount;
 
-    @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "order_id")
+    @JsonBackReference
     private Order order;
 
 }

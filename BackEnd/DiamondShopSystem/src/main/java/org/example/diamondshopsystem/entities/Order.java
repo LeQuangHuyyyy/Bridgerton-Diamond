@@ -1,6 +1,7 @@
 package org.example.diamondshopsystem.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,18 +42,22 @@ public class Order {
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "discountCode")
+    @JsonBackReference
     private DiscountCodes discountCode;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "customerId")
+    @JsonBackReference
     private User customer;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "saleId")
+    @JsonBackReference
     private User sale;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "deliveryId")
+    @JsonBackReference
     private User delivery;
 
 
@@ -60,30 +65,34 @@ public class Order {
             mappedBy = "order", fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
     )
+    @JsonBackReference
     private List<FeedBack> feedBacks;
 
     @OneToMany(
             mappedBy = "order", fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
     )
+    @JsonBackReference
     private List<OrderDetails> orderDetails;
 
     @OneToMany(
             mappedBy = "order", fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
     )
+    @JsonBackReference
     private List<Warranties> warranties;
 
     @OneToMany(
             mappedBy = "order", fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
     )
-
+    @JsonBackReference
     private List<Invoice> invoices;
 
     @OneToMany(
             mappedBy = "order", fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
     )
+    @JsonBackReference
     private List<Payments> payments;
 }

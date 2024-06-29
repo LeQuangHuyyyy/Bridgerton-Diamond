@@ -2,9 +2,12 @@ package org.example.diamondshopsystem.services;
 
 
 import org.example.diamondshopsystem.dto.PromotionDTO;
+import org.example.diamondshopsystem.dto.UserDTO;
 import org.example.diamondshopsystem.entities.Promotions;
+import org.example.diamondshopsystem.entities.User;
 import org.example.diamondshopsystem.repositories.PromotionRepository;
 import org.example.diamondshopsystem.repositories.UserRepository;
+import org.example.diamondshopsystem.services.Map.UserMapper;
 import org.example.diamondshopsystem.services.imp.PromotionServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,7 +51,7 @@ public class PromotionService implements PromotionServiceImp {
     }
 
     @Override
-    public List<PromotionDTO> getPromotionsByName(String name)    {
+    public List<PromotionDTO> getPromotionsByName(String name) {
 
         List<Promotions> promotionsList = promotionRepository.findAllByPromotionName(name);
         List<PromotionDTO> promotionDTOList = new ArrayList<>();
@@ -64,10 +67,12 @@ public class PromotionService implements PromotionServiceImp {
 
     @Override
     public PromotionDTO createPromotion(PromotionDTO promotionDTO) {
+//        User manager = userRepository.findById(promotionDTO.getManagerId()).get();
         Promotions promotions = new Promotions();
         promotions.setPromotionName(promotionDTO.getPromotionName());
         promotions.setPromotionStartDate(promotionDTO.getPromotionStartDate());
         promotions.setPromotionEndDate(promotionDTO.getPromotionEndDate());
+//        promotions.setManager(manager);
         Promotions savedPromotion = promotionRepository.save(promotions);
         return mapPromotionToDTO(savedPromotion);
     }
@@ -121,7 +126,9 @@ public class PromotionService implements PromotionServiceImp {
         promotionDTO.setPromotionName(promotion.getPromotionName());
         promotionDTO.setPromotionStartDate(promotion.getPromotionStartDate());
         promotionDTO.setPromotionEndDate(promotion.getPromotionEndDate());
-//        promotionDTO.setManagerId(promotion.getManager().getUserid());
+        if (promotion.getManager() != null) {
+            promotionDTO.setManagerId(promotion.getManager().getUserid());
+        }
         return promotionDTO;
     }
 

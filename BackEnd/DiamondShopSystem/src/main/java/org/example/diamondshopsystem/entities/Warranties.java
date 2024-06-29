@@ -1,5 +1,6 @@
 package org.example.diamondshopsystem.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,9 +34,13 @@ public class Warranties {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
+    @JsonBackReference
+    
     private Order order;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
+    @JsonBackReference
+
     private Products product;
 }

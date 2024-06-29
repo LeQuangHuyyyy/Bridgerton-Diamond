@@ -1,6 +1,7 @@
 package org.example.diamondshopsystem.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,12 +31,14 @@ public class OrderDetails {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @MapsId("orderId")
     @JoinColumn(name = "order_id")
+    @JsonBackReference
     private Order order;
 
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @MapsId("productId")
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     private Products product;
 
     @Column(name = "size")

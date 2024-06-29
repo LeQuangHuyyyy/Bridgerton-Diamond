@@ -50,7 +50,7 @@ public class PromotionController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<PromotionDTO> createPromotion(@RequestBody PromotionDTO promotionDTO) {
+    public ResponseEntity<PromotionDTO> createPromotion(@RequestBody PromotionDTO promotionDTO ) {
         PromotionDTO promotionDTO1 = promotionServiceImp.createPromotion(promotionDTO);
 
         if (promotionDTO1 != null) {

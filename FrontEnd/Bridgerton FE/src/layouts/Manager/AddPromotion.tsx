@@ -5,20 +5,11 @@ interface AddPromotionProp {
     onClose: () => void;
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
     formData: {
-        promotionId: '',
-        promotionStartDate: '',
-        promotionEndDate: '',
-        promotionName: '',
-        manager: {
-            id: '',
-            name: '',
-            address: '',
-            email: '',
-            password: '',
-            phoneNumber: '',
-            role: '',
-            status: true
-        };
+        promotionId: string;
+        promotionStartDate: string;
+        promotionEndDate: string;
+        promotionName: string;
+        managerId: string;
     };
     handleChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void;
 };
