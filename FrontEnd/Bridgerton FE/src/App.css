@@ -1,0 +1,345 @@
+:root {
+    --mainOpacity: rgba(0, 0, 0, 0.55);
+}
+
+.header {
+    background-size: cover;
+    opacity: var(--mainOpacity);
+    width: 100%;
+    height: 570px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dark-overlay {
+    background-color: rgba(0, 0, 0, 0.35);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    overflow: hidden;
+    transition: transform 0.2s;
+    background-color: #fff;
+    width: 280px;
+    height: 425px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.product-image {
+    width: 100%;
+    height: 250px;
+    max-height: 250px;
+}
+
+h2 {
+    font-size: 15px;
+    margin: 15px 0 10px;
+    padding: 0 20px 0;
+    font-weight: bold;
+}
+
+.custom-container {
+    padding: 20px;
+}
+
+.custom-heading {
+    font-family: 'Petit Formal Script', cursive;
+    font-size: 2em;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.custom-heading1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2em;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.custom-paragraph {
+    font-family: 'Lora', serif;
+    font-size: 1.1em;
+    color: #34495e;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Petit+Formal+Script&family=Lora:wght@400;700&display=swap');
+
+
+* {
+    font-family: 'Playfair Display', serif;
+}
+
+.price {
+    color: black;
+    font-size: 17px;
+    margin: 10px 0;
+    position: absolute;
+    bottom: 40px;
+    left: 100px;
+}
+
+.btn-add-to-cart {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+    border-top: 1px solid #ddd;
+    margin-top: auto;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+}
+
+.btn-add-to-cart:hover {
+    background-color: #333;
+}
+
+.card-content {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.paginate {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin-top: 25px;
+    margin-bottom: 30px;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-item {
+    margin: 0 5px;
+}
+
+.page-link {
+    padding: 8px 16px;
+    text-decoration: none;
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #fff;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.page-link:hover {
+    background-color: black;
+    color: white;
+}
+
+.page-item.active .page-link {
+    background-color: black;
+    color: #fff;
+    border-color: black;
+}
+
+
+.main-color {
+    background-color: #001529;
+    margin-top: 100px;
+}
+
+.product--image {
+    height: 10em !important;
+}
+
+.col-image-left {
+    height: 25em !important;
+    width: 100%;
+}
+
+.col-image-right {
+    height: 25em !important;
+    width: 100%;
+}
+
+.lost-image {
+    height: 25em !important;
+    width: 25em;
+}
+
+.homepage-carousel-title {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.book-div {
+    width: 480px;
+    height: 384px;
+}
+
+.inactiveLink {
+    pointer-events: none;
+    cursor: default;
+}
+
+/*=========Table Diamond Price===========*/
+.diamond-price-container {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 800px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.diamond-price-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.diamond-price-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+.diamond-price-table th,
+.diamond-price-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+.diamond-price-table th {
+    background-color: black;
+    color: white;
+}
+
+.diamond-price-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.diamond-price-table tr:hover {
+    background-color: #ddd;
+}
+
+/*====================== Nav Bar ======================*/
+.logo-container {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #001529;
+    display: flex;
+    height: 90px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    z-index: 3;
+    color: white;
+
+}
+
+.custom-header {
+    position: fixed;
+    top: 90px;
+    z-index: 2;
+    width: 100%;
+    background: #001529;
+    padding: 0 50px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, top 0.3s ease;
+
+}
+
+.custom-header.hidden {
+    transform: translateY(-100%);
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.nav-link {
+    color: white;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 0 15px;
+    transition: color 0.3s ease;
+    font-family: 'Petit Formal Script', cursive;
+
+}
+
+.cart-icon {
+    margin-top: 20px;
+    color: white;
+    font-size: 30px;
+    transition: color 0.3s ease;
+}
+
+.user-icon {
+    margin-right: 20px;
+    background: white;
+    color: black;
+    border: none;
+    transition: background 0.3s ease;
+    text-decoration: none;
+}
+
+.login-link {
+    color: white; /* Màu vàng nhạt */
+    font-size: 20px;
+    text-decoration: none;
+    padding: 0 15px;
+    transition: color 0.3s ease;
+}
+
+.login-link:hover {
+    color: azure;
+}
+
+/*sideNav*/
+.nav-link {
+    color: black;
+    text-decoration: none;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+}
+
+/*.nav-link.active {*/
+/*    background-color: rgba(0, 0, 0, 0.2);*/
+/*}*/
