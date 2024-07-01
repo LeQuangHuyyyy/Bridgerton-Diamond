@@ -10,11 +10,7 @@ export const CartPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalAmountOfProducts, setTotalAmountOfProducts] = useState(0);
-    const [productsPerPage] = useState(8);
-    const [totalPages, setTotalPages] = useState(0);
     const [searchUrl, setSearchUrl] = useState('');
-
     const token = localStorage.getItem("token");
     const headers = {
         'Authorization': `Bearer ${token}`
@@ -29,7 +25,7 @@ export const CartPage = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXlscXNlMTcxMjkzQGZwdC5lZHUudm4ifQ.FzAs3FrNbICbW9dUGZivmqNtMvUs7dh-fCgJy0EvluQ'
                 },
                 body: addProductRequests,
             });
@@ -40,9 +36,6 @@ export const CartPage = () => {
 
             const responseJson = await response.json();
             const responseData = responseJson.data.content;
-            console.log(responseData);
-            setTotalAmountOfProducts(responseJson.totalElements)
-            setTotalPages(responseJson.totalPages);
 
             const loadedProducts: CartModel[] = [];
 
@@ -66,7 +59,6 @@ export const CartPage = () => {
         })
         window.scrollTo(0, 0);
     }, [currentPage, searchUrl]);
-
     if (isLoading) {
         return (
             <SpinnerLoading/>
@@ -85,26 +77,24 @@ export const CartPage = () => {
         return products.reduce((total, product) => total + product.totalPrice, 0);
     };
 
-    const removeProduct = async (productId: number) => {
-        const formData = {
-            removeProductRequest: productId
-        }
-        const response = await fetch(`http://localhost:8888/cart/remove`, {
-            method: 'DELETE',
-            body: JSON.stringify(formData),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-        });
-        console.log(response)
+    const removeProduct = async (productId: number, size: string) => {
+        try {
 
-        if (!response.ok) {
+            let products = JSON.parse(localStorage.getItem('cart') || '[]');
+
+
+            products = products.filter((product: { productId: string, size: string }) => product.productId !== productId.toString() || product.size !== size);
+
+            localStorage.setItem('cart', JSON.stringify(products));
+            setProducts(products);
+            console.log(`Product with ID ${productId} removed from local storage`);
+
+        } catch (error) {
+            console.error('Failed to delete product from local storage', error);
             throw new Error('Failed to delete product');
         }
-
-        setProducts(prevProducts => prevProducts.filter(product => product.productId !== productId));
     };
+
 
     return (
         <div className="container mt-5">

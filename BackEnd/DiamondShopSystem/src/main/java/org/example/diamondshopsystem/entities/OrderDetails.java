@@ -18,13 +18,12 @@ import org.example.diamondshopsystem.entities.key.KeyOrderDetail;
 
 public class OrderDetails {
 
-
-
     @Column(name = "quantity")
     private int quantity;
 
     @Column(name = "price")
     private double price;
+    
     @EmbeddedId
     private KeyOrderDetail id;
 

@@ -30,7 +30,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/cart")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "*")
 public class CartController {
 
     @Autowired
@@ -137,6 +137,9 @@ public class CartController {
 
     // address -> jwtDecode(token) as ....
 
+    //order request (id user , amount, List addProduct request,  thay đôổi order thêm taxt, ) -> peding -> comfirm ->
+
+
     // pedding
     @PostMapping("/checkout")
     public ResponseEntity<?> checkout(@RequestBody CheckoutRequest checkoutRequest, @RequestHeader("Authorization") String authHeader, HttpServletResponse response) {
@@ -169,6 +172,11 @@ public class CartController {
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or missing token.");
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createOrder(@RequestBody OrderRequest orderRequest) {
+        return ResponseEntity.ok(shoppingCartService.creteOrder(orderRequest));
     }
 
     @GetMapping("/total")

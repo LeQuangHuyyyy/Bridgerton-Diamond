@@ -17,10 +17,7 @@ export const DiamondPricePage = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             const url: string = 'http://localhost:8888/manage/diamond-price/get-all';
-
-
             const response = await fetch(url, {headers: headers});
-
             if (!response.ok) {
                 throw new Error('Something went wrong!');
             }
@@ -76,7 +73,7 @@ export const DiamondPricePage = () => {
                 </thead>
                 <tbody>
                 {diamonds.map(diamond => (
-                    <DiamondElement diamond={diamond}/>
+                    <DiamondElement key={diamond.diamondId} diamond={diamond}/>
                 ))}
                 </tbody>
             </table>

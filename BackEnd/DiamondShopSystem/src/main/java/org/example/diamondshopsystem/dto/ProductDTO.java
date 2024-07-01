@@ -30,12 +30,17 @@ public class ProductDTO {
     private String description;
 
     private String image1;
+
     private String image2;
+
     private String image3;
+
     private String image4;
 
     private int categoryId;
+
     private Set<DiamondDTO> diamonds;
+
     private int shellId;
 
 }

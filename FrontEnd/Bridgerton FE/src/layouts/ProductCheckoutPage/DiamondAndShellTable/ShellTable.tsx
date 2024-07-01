@@ -36,6 +36,7 @@ const ShellTable: React.FC<{ product: ProductModel | undefined }> = (props) => {
                     shellWeight: responseJson.shellWeight
                 };
             setShells(loadedShells);
+            console.log(loadedShells);
             setIsLoading(false);
         };
         fetchDiamond().catch((error: any) => {

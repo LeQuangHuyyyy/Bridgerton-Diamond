@@ -1,9 +1,6 @@
 package org.example.diamondshopsystem.controllers;
 
-import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.dto.ProductDTO;
-import org.example.diamondshopsystem.dto.PromotionDTO;
-import org.example.diamondshopsystem.entities.Diamond;
 import org.example.diamondshopsystem.payload.ResponseData;
 import org.example.diamondshopsystem.services.FileService;
 import org.example.diamondshopsystem.services.ProductService;
@@ -20,9 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/product")
@@ -35,26 +29,26 @@ public class ProductController {
     @Autowired
     FileService fileService;
 
-    @PostMapping("/savefile")
-    public ResponseEntity<ResponseData> uploadFile(@RequestParam MultipartFile file) {
+    @PostMapping("/saveFile")
+    public ResponseEntity<ResponseData> uploadFile(@RequestParam MultipartFile[] files) {
         ResponseData responseData = new ResponseData();
-        boolean isSuccess = fileService.saveFile(file);
-        responseData.setData(isSuccess);
+        for (MultipartFile file : files) {
+            boolean isSuccess = fileService.saveFile(file);
+            if (!isSuccess) {
+                responseData.setData(false);
+                return new ResponseEntity<>(responseData, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        responseData.setData(true);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
     @GetMapping("/load/{filename}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
-
         Resource fileResource = fileService.loadFile(filename);
-
         try {
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileResource.getFilename() + "\"")
-                    .body(fileResource);
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileResource.getFilename() + "\"").body(fileResource);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.notFound().build();
         }
     }
@@ -65,11 +59,8 @@ public class ProductController {
 
         if (fileResource != null && fileResource.exists() && fileResource.isReadable()) {
             try {
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(fileResource.getFile().toPath()))
-                        .body(fileResource);
-            } catch (IOException e) {
-                e.printStackTrace();
+                return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(fileResource.getFile().toPath())).body(fileResource);
+            } catch (IOException ignored) {
             }
         }
 
@@ -87,21 +78,19 @@ public class ProductController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
             Page<ProductDTO> allProduct = productService.getAllProduct(pageable);
             return ResponseEntity.ok(allProduct);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO product) {
-        ProductDTO savedProduct = productService.addProduct(product);
+    public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) {
+        ProductDTO savedProduct = productService.addProduct(productDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
     }
 

@@ -76,6 +76,7 @@ export const ProductCheckoutPage = () => {
                     diamondId: responseData[key].diamondId,
                     shellId: responseData[key].shellId
                 });
+                console.log(responseData);
             }
 
             setSuggest(loadedProducts);
@@ -115,6 +116,7 @@ export const ProductCheckoutPage = () => {
             }
 
             setSize(loadedSize);
+            console.log(responseJson);
             setIsLoading(false);
         };
         fetchSize().catch((error: any) => {
@@ -129,25 +131,27 @@ export const ProductCheckoutPage = () => {
             setSizeError('Please select a size.');
             return;
         }
-
-        const cart = localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")!) : [];
-        const product = {
-            productId: productId,
-            quantity: quantity,
-            sizeId: selectedSize?.sizeId
-        };
-
-        const existingProductIndex = cart.findIndex((item: any) => item.productId === productId && item.sizeId === selectedSize?.sizeId);
-
-        if (existingProductIndex !== -1) {
-            cart[existingProductIndex].quantity += 1;
-        } else {
+        if (localStorage.getItem("cart") === null) {
+            localStorage.setItem("cart", JSON.stringify([]));
+            let cart = JSON.parse(localStorage.getItem("cart")!);
+            let product = {
+                productId: productId,
+                quantity: quantity,
+                sizeId: selectedSize?.sizeId
+            };
             cart.push(product);
+            localStorage.setItem("cart", JSON.stringify(cart));
+        } else {
+            let cart = JSON.parse(localStorage.getItem("cart")!);
+            let product = {
+                productId: productId,
+                quantity: quantity,
+                sizeId: selectedSize?.sizeId
+            };
+            cart.push(product);
+            localStorage.setItem("cart", JSON.stringify(cart));
         }
-
-        localStorage.setItem("cart", JSON.stringify(cart));
     };
-
 
     if (isLoading) {
         return <SpinnerLoading/>;

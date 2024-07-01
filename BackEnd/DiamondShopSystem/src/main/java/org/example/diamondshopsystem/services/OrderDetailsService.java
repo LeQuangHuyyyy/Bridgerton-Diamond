@@ -23,6 +23,7 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
+
     private OrderDetailDTO mapToDTO(OrderDetails orderDetails) {
         OrderDetailDTO dto = new OrderDetailDTO();
         dto.setOrderId(orderDetails.getOrder().getOrderId());

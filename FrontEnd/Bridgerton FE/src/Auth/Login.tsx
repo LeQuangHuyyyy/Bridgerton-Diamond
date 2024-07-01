@@ -36,6 +36,7 @@ export const Login = () => {
                         phone: string;
                         role: string;
                         address: string;
+
                     };
 
                     if (enCrypt.role === 'CUSTOMER') {

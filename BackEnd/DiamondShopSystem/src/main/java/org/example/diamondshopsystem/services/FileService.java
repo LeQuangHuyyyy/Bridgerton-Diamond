@@ -8,11 +8,14 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 @Service
 public class FileService implements FileServiceImp {
@@ -37,31 +40,30 @@ public class FileService implements FileServiceImp {
 
     @Override
     public boolean saveFile(MultipartFile file) {
-        try{
-            init();
-             Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()),StandardCopyOption.REPLACE_EXISTING);
-
-        return true;
-
-        }catch (Exception e){
-            System.out.println("ERROR save file "+e.getMessage());
+        try {
+            File convertFile = new File("C:/Users/Admin/Desktop/SWP391_G3/image/" + file.getOriginalFilename());
+            boolean newFile = convertFile.createNewFile();
+            FileOutputStream fout = new FileOutputStream(convertFile);
+            fout.write(file.getBytes());
+            fout.close();
+            return true;
+        } catch (IOException e) {
             return false;
         }
-
     }
 
     @Override
     public Resource loadFile(String filename) {
-        try{
+        try {
             init();
             Path file = root.resolve(filename);
             Resource resource = new UrlResource(file.toUri());
-            if(resource.exists() || resource.isReadable()){
+            if (resource.exists() || resource.isReadable()) {
                 return resource;
             }
 
-        }catch (Exception e){
-            System.out.println("ERROR load file "+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("ERROR load file " + e.getMessage());
             return null;
         }
         return null;

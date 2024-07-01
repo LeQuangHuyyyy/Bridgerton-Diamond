@@ -41,7 +41,7 @@ public class ProductService implements ProductServiceImp {
     @Override
     public ProductDTO getProductDTOById(int id) {
         Optional<Products> ProductOptional = productRepository.findById(id);
-        if(ProductOptional.isPresent()) {
+        if (ProductOptional.isPresent()) {
             Products products = ProductOptional.get();
             return productMapper.mapProductToDTO(products);
         }
@@ -54,7 +54,6 @@ public class ProductService implements ProductServiceImp {
                 .orElseThrow(() -> new NoSuchElementException("Can not find product with id: " + id));
         return products;
     }
-
 
 
     @Override
@@ -110,6 +109,7 @@ public class ProductService implements ProductServiceImp {
         Page<Products> productList = productRepository.findByCollection(collection, pageable);
         return productList.map(productMapper::mapProductToDTO);
     }
+
     @Override
     public List<ProductDTO> getFeaturedProduct() {
         List<Products> topProducts = productRepository.findTop8ByOrderByPriceDesc();
@@ -135,8 +135,8 @@ public class ProductService implements ProductServiceImp {
         double shellPrice = 0.0;
 
 
-            diamondPrice= diamondsRepository.findFirstAvailableDiamondByProductId(product.getProductId()).getPrice();
-            System.out.println("follow Hưng-"+diamondPrice);
+        diamondPrice = diamondsRepository.findFirstAvailableDiamondByProductId(product.getProductId()).getPrice();
+        System.out.println("follow Hưng-" + diamondPrice);
 
         if (product.getShellId() != 0) {
             Shell shell = shellRepository.findById(product.getShellId())
@@ -154,15 +154,15 @@ public class ProductService implements ProductServiceImp {
     }
 
     @Override
-    public Page<ProductDTO> getProductByCategory(String categoryName,Pageable pageable) {
-       Page<Products> productsPage = productRepository.getProductsByCategory(categoryName,pageable);
-       return productsPage.map(productMapper::mapProductToDTO);
+    public Page<ProductDTO> getProductByCategory(String categoryName, Pageable pageable) {
+        Page<Products> productsPage = productRepository.getProductsByCategory(categoryName, pageable);
+        return productsPage.map(productMapper::mapProductToDTO);
     }
 
     @Override
     public Page<ProductDTO> getProductStoredByPrice(String order, Pageable pageable) {
         Page<Products> productsPage;
-        if(order.equals("asc")) {
+        if (order.equals("asc")) {
             productsPage = productRepository.findAllByOrderByPriceAsc(pageable);
         } else {
             productsPage = productRepository.findAllByOrderByPriceDesc(pageable);
@@ -184,7 +184,7 @@ public class ProductService implements ProductServiceImp {
         //Lay phann tu dau tien cua set
         if (diamondSet != null && !diamondSet.isEmpty()) {
             Diamond diamond1 = diamondSet.iterator().next();
-            if(diamond1.getDiamondId() == diamond.getDiamondId()) {
+            if (diamond1.getDiamondId() == diamond.getDiamondId()) {
                 double totalPrice = calculateTotalPrice(product.getProductId());
                 product.setPrice(totalPrice);
                 productRepository.save(product);
@@ -193,7 +193,7 @@ public class ProductService implements ProductServiceImp {
     }
 
     @Override
-    public  void updateProductPrice(Shell shell) {
+    public void updateProductPrice(Shell shell) {
         List<Products> productList = productRepository.findAllByShellID(shell.getShellId());
         for (Products product : productList) {
             double totalPrice = calculateTotalPrice(product.getProductId());
@@ -278,10 +278,10 @@ public class ProductService implements ProductServiceImp {
     public void updateProductDiamondSet() {
         List<Products> products = productRepository.findAll();
         Set<Diamond> diamonds;
-        for (Products product: products) {
+        for (Products product : products) {
             diamonds = new HashSet<>(diamondsRepository.findDiamondsByProductId(product.getProductId()));
             product.setDiamonds(diamonds);
-            System.out.println(product.getProductId()+": "+diamonds.size());
+            System.out.println(product.getProductId() + ": " + diamonds.size());
             productRepository.save(product);
         }
 

@@ -14,13 +14,12 @@ import {DiamondPricePage} from "./layouts/DiamondPrice/DiamondPricePage";
 import Checkout from "./layouts/CartPage/components/Checkout";
 import {SaleStaffPage} from "./layouts/SaleStaff/SaleStaffPage";
 import {SearchProductsPage} from "./layouts/SearchProductsPage/SearchProductsPage";
-import {Table} from "./layouts/Admin/Table";
-
-import {SideNav} from './layouts/Manager/sideNav'
-import {Dashboard} from './layouts/Manager/Dashboard'
-import {Promotion} from './layouts/Manager/Promotion'
-
+import {Table} from "./layouts/dashboard/Table";
 import {jwtDecode} from "jwt-decode";
+import {Promotion} from "./layouts/Manager/Promotion";
+import {Product} from "./layouts/Manager/Product";
+
+import {SideBar} from "./layouts/Manager/component/NavBar";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -43,8 +42,6 @@ export const App = () => {
                     {token === undefined && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
-                            <Redirect to='/home' exact/>
-
                             <Route path='/' exact>
                                 <HomePage/>
                             </Route>
@@ -116,6 +113,7 @@ export const App = () => {
                             <Footer/>
                         </div>
                     )}
+
                     {token === 'ADMIN' && (
                         <>
                             <Redirect from='/' to='/admin' exact/>
@@ -126,13 +124,13 @@ export const App = () => {
                     )}
                     {token === 'MANAGER' && (
                         <>
-                            <Redirect from='/' to='/promotion' exact/>
-                            <SideNav/>
-                            <Route path='/dashboard'>
-                                <Dashboard/>
-                            </Route>
+                            <SideBar/>
+                            <Redirect from='/' to='/manager' exact/>
                             <Route path='/promotion'>
                                 <Promotion/>
+                            </Route>
+                            <Route path='/product'>
+                                <Product/>
                             </Route>
                         </>
                     )}
@@ -151,3 +149,4 @@ export const App = () => {
         </div>
     );
 };
+            

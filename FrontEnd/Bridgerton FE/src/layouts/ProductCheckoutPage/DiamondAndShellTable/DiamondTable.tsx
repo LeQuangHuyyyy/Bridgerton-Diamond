@@ -39,6 +39,7 @@ const DiamondTable: React.FC<{ product: ProductModel | undefined }> = (props) =>
                     status: responseJson.status
                 };
             setDiamonds(loadedDiamonds);
+            console.log(loadedDiamonds);
             setIsLoading(false);
         };
         fetchDiamond().catch((error: any) => {

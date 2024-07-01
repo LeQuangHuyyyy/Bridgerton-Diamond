@@ -7,7 +7,10 @@ import org.example.diamondshopsystem.dto.SizeDTO;
 @Getter
 @Setter
 public class AddProductRequest {
+
     private Integer productId;
+
     private int quantity;
+
     private Integer sizeId;
 }

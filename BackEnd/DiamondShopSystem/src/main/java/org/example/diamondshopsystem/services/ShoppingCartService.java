@@ -3,6 +3,7 @@ package org.example.diamondshopsystem.services;
 import org.example.diamondshopsystem.dto.*;
 import org.example.diamondshopsystem.entities.*;
 import org.example.diamondshopsystem.payload.requests.AddProductRequest;
+import org.example.diamondshopsystem.payload.requests.OrderRequest;
 import org.example.diamondshopsystem.repositories.*;
 import org.example.diamondshopsystem.services.Map.OrderMapper;
 import org.example.diamondshopsystem.services.Map.UserMapper;
@@ -43,6 +44,9 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
 
     @Autowired
     OrderMapper orderMapper;
+
+    @Autowired
+    DiscountCodeRepository discountCodeRepository;
 
     private final Map<Products, Integer> cart = new HashMap<>();
 
@@ -194,6 +198,7 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
         order.setStatus(OrderStatus.PENDING);
         order = orderRepository.save(order);
 
+
         // Create OrderDetails from products in the cart
         for (Map.Entry<Products, Integer> entry : cart.entrySet()) {
             Products product = entry.getKey();
@@ -222,6 +227,7 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
             }
             // Create OrderDetailDTO
             OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
+
             orderDetailDTO.setOrderId(order.getOrderId());
             orderDetailDTO.setProductId(managedProduct.getProductId());
             orderDetailDTO.setQuantity(quantity);
@@ -238,5 +244,44 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
         return order;
     }
 
+    @Override
+    public Order creteOrder(OrderRequest orderRequest) {
+        Order order = new Order();
+        User user = userRepository.findById(orderRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("thằng đéo nào đây ???"));
+        DiscountCodes discountCodes = discountCodeRepository.findByCode(orderRequest.getDiscountCode());
 
+        order.setOrderDate(new Date());
+        order.setOrderTotalAmount(orderRequest.getAmount());
+        order.setOrderDeliveryAddress(orderRequest.getAddressOrder());
+        order.setStatus(OrderStatus.PENDING);
+        order.setDiscountCode(discountCodes);
+        order.setCustomer(user);
+
+        order = orderRepository.save(order);
+
+        for (AddProductRequest o : orderRequest.getAddProductRequestList()) {
+            Products products = productRepository.findById(o.getProductId()).orElseThrow(() -> new IllegalArgumentException("Product does not exist in the inventory."));
+            Size size = sizeRepository.findById(o.getSizeId()).orElseThrow(() -> new IllegalArgumentException("cc, làm cc gì có cái size như này ????"));
+
+
+            int stockQuantity = products.getStockQuantity();
+            if (stockQuantity < o.getQuantity()) {
+                throw new NotEnoughProductsInStockException("Not enough products in stock.");
+            } else {
+                products.setStockQuantity(stockQuantity - o.getQuantity());
+                productRepository.save(products);
+            }
+
+            OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
+            orderDetailDTO.setOrderId(order.getOrderId());
+            orderDetailDTO.setProductId(products.getProductId());
+            orderDetailDTO.setQuantity(o.getQuantity());
+            orderDetailDTO.setSize(size.getValueSize());
+
+            OrderDetails orderDetails = orderMapper.mapOrderDetailDTOToOrderDetail(orderDetailDTO, order, products);
+            orderDetailRepository.save(orderDetails);
+        }
+
+        return order;
+    }
 }
