@@ -41,18 +41,7 @@ public class ProductMapper {
         productDTO.setShellId(products.getShell().getShellId());
 
         // Map Diamonds
-        Set<DiamondDTO> diamondDTOs = products.getDiamonds().stream()
-                .map(diamond -> new DiamondDTO(
-                        diamond.getDiamondId(),
-                        diamond.getCarat(),
-                        diamond.getPrice(),
-                        diamond.getCut(),
-                        diamond.getColor(),
-                        diamond.getClarity(),
-                        diamond.getCertification(),
-                        diamond.getProduct().getProductId(),
-                        diamond.isStatus()
-                )).collect(Collectors.toSet());
+        Set<DiamondDTO> diamondDTOs = products.getDiamonds().stream().map(diamond -> new DiamondDTO(diamond.getDiamondId(), diamond.getCarat(), diamond.getPrice(), diamond.getCut(), diamond.getColor(), diamond.getClarity(), diamond.getCertification(), diamond.getProduct().getProductId(), diamond.isStatus())).collect(Collectors.toSet());
         productDTO.setDiamonds(diamondDTOs);
 
         return productDTO;
@@ -82,10 +71,8 @@ public class ProductMapper {
         }
 
         // Map Diamonds
-        Set<Diamond> diamonds = productDTO.getDiamonds().stream()
-                .map(diamondDTO -> entityManager.find(Diamond.class, diamondDTO.getDiamondId())) // Assuming DiamondDTO has getId method
-                .filter(diamond -> diamond != null)
-                .collect(Collectors.toSet());
+        Set<Diamond> diamonds = productDTO.getDiamonds().stream().map(diamondDTO -> entityManager.find(Diamond.class, diamondDTO.getDiamondId())) // Assuming DiamondDTO has getId method
+                .filter(diamond -> diamond != null).collect(Collectors.toSet());
         product.setDiamonds(diamonds);
 
         return product;
@@ -114,10 +101,7 @@ public class ProductMapper {
         }
 
         // Map Diamonds
-        Set<Diamond> diamonds = productDTO.getDiamonds().stream()
-                .map(diamondDTO -> entityManager.find(Diamond.class, diamondDTO.getDiamondId()))
-                .filter(diamond -> diamond != null)
-                .collect(Collectors.toSet());
+        Set<Diamond> diamonds = productDTO.getDiamonds().stream().map(diamondDTO -> entityManager.find(Diamond.class, diamondDTO.getDiamondId())).filter(diamond -> diamond != null).collect(Collectors.toSet());
         product.setDiamonds(diamonds);
     }
 }

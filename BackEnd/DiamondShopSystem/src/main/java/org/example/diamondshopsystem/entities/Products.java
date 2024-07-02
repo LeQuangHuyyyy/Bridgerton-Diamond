@@ -69,6 +69,7 @@ public class Products {
     )
     @JsonBackReference
     private Set<Diamond> diamonds = new HashSet<>();
+
     @OneToMany(
             mappedBy = "product", fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}

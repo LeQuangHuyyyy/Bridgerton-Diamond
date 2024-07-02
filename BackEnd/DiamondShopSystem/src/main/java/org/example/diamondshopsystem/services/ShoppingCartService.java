@@ -140,14 +140,15 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
         List<CartDTO> carts = new ArrayList<>();
         for (AddProductRequest request : addProductRequest) {
             CartDTO cartDTO = new CartDTO();
-            Products products = productRepository.findById(request.getProductId()).get();
+            Products products = productRepository.findById(request.getProductId()).orElseThrow(() -> new IllegalArgumentException("Product not found"));
 
             cartDTO.setProductId(products.getProductId());
             cartDTO.setProductName(products.getProductName());
             cartDTO.setImage1(products.getImage1());
 
             cartDTO.setQuantity(request.getQuantity());
-            cartDTO.setSize(sizeRepository.findById(request.getSizeId()).get().getValueSize());
+            cartDTO.setSize(sizeRepository.findById(request.getSizeId()).orElseThrow().getValueSize());
+            cartDTO.setSizeId(request.getSizeId());
 
             cartDTO.setTotalPrice(BigDecimal.valueOf(products.getPrice()).multiply(BigDecimal.valueOf(request.getQuantity())));
             carts.add(cartDTO);

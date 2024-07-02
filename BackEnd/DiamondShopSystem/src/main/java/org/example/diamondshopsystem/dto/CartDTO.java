@@ -20,4 +20,5 @@ public class CartDTO {
     private BigDecimal totalPrice;
     private int quantity;
     private double size;
+    private int sizeId;
 }
