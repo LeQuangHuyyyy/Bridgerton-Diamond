@@ -14,6 +14,7 @@
             height: 100vh;
             margin: 0;
         }
+
         .container {
             background-color: #fff;
             padding: 40px;
@@ -24,17 +25,20 @@
             width: 100%;
             border: 1px solid #ccc;
         }
+
         .container h1 {
             margin-bottom: 20px;
             font-size: 24px;
             color: #333;
         }
+
         .container p {
             margin-bottom: 10px;
             font-size: 18px;
             color: #555;
         }
-        .container a {
+
+        .verify {
             display: inline-block;
             margin-top: 30px;
             padding: 12px 30px;
@@ -45,24 +49,35 @@
             font-size: 18px;
             transition: background-color 0.3s ease;
         }
-        .container a:hover {
+
+        .verify:hover {
             background-color: #333;
         }
+
         .footer {
             margin-top: 30px;
             font-size: 16px;
             color: #777;
         }
+
+        .visit {
+            background-color: white;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1><strong>DIAMOND SHOP</strong></h1>
+    <h1><strong>BRIDGERTON DIAMOND</strong></h1>
     <p>Your Verification Code: <strong>${verificationCode}</strong></p>
-    <a href="login.html">Click here to login</a>
+    <a class="verify" href="http://localhost:3000/verify-register">Click here to verify account</a>
     <div class="footer">
         <p>Thank you for verifying your code.</p>
         <p>If you have any questions, please contact our support.</p>
+        <a class="visit" href="http://localhost:3000/">visit shop</a>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cursor"
+             viewBox="0 0 16 16">
+            <path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52z"/>
+        </svg>
     </div>
 </div>
 </body>
