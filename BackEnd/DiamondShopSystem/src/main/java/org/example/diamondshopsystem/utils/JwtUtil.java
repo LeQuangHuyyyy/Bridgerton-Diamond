@@ -17,8 +17,8 @@ import javax.crypto.SecretKey;
 @Component
 public class JwtUtil {
 
-   @Value("${jwt.privateKey}")
-   private String privateKey;
+    @Value("${jwt.privateKey}")
+    private String privateKey;
 
 
     public String generateToken(UserDTO userDTO) {
@@ -30,35 +30,40 @@ public class JwtUtil {
                 .claim("role", userDTO.getRole().toString())
                 .claim("phone", userDTO.getPhoneNumber())
                 .claim("address", userDTO.getAddress())
+                .claim("email", userDTO.getEmail())
                 .signWith(key)
                 .compact();
 
         return jws;
     }
+
     public boolean verifyToken(String token) {
-        try{
+        try {
             SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(privateKey));
             Jwts.parser()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
+
     public String getUsernameFromToken(String token) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(privateKey));
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
         Claims claims = claimsJws.getBody();
         return claims.getSubject();
     }
+
     public Role getRoleFromToken(String token) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(privateKey));
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
         Claims claims = claimsJws.getBody();
         return claims.get("role", Role.class);
     }
+
     public int getIdFromToken(String token) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(privateKey));
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);

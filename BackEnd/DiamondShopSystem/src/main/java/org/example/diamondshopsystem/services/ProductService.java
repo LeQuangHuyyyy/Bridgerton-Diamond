@@ -50,8 +50,7 @@ public class ProductService implements ProductServiceImp {
 
     @Override
     public Products getProductById(int id) {
-        Products products = productRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Can not find product with id: " + id));
+        Products products = productRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Can not find product with id: " + id));
         return products;
     }
 
@@ -139,8 +138,7 @@ public class ProductService implements ProductServiceImp {
         System.out.println("follow Hưng-" + diamondPrice);
 
         if (product.getShellId() != 0) {
-            Shell shell = shellRepository.findById(product.getShellId())
-                    .orElseThrow(() -> new NoSuchElementException("Cannot find shell with shell id: " + product.getShellId()));
+            Shell shell = shellRepository.findById(product.getShellId()).orElseThrow(() -> new NoSuchElementException("Cannot find shell with shell id: " + product.getShellId()));
             shellPrice = shell.getShellPrice();
         }
 
@@ -149,8 +147,7 @@ public class ProductService implements ProductServiceImp {
 
     @Override
     public Page<ProductDTO> getAllProduct(Pageable pageable) {
-        return productRepository.findAll(pageable)
-                .map(productMapper::mapProductToDTO);
+        return productRepository.findAll(pageable).map(productMapper::mapProductToDTO);
     }
 
     @Override
@@ -173,21 +170,22 @@ public class ProductService implements ProductServiceImp {
 
     @Override
     public void updateProductPrice(Diamond diamond) {
-        if (diamond == null || diamond.getDiamondId() == 0) {
+        if (diamond == null || diamond.getDiamondId() == 0 || diamond.getProduct() == null) {
+            return;
+        } else {
+            Products product = diamond.getProduct();
 
-        }
+//            Set<Diamond> diamondSet = productRepository.findSetDiamondByProductId(product.getProductId());
+            Set<Diamond> diamondSet = diamondsRepository.findByProductId(product.getProductId());
 
-        Products product = diamond.getProduct();
-
-        Set<Diamond> diamondSet = productRepository.findSetDiamondByProductId(product.getProductId());
-
-        //Lay phann tu dau tien cua set
-        if (diamondSet != null && !diamondSet.isEmpty()) {
-            Diamond diamond1 = diamondSet.iterator().next();
-            if (diamond1.getDiamondId() == diamond.getDiamondId()) {
-                double totalPrice = calculateTotalPrice(product.getProductId());
-                product.setPrice(totalPrice);
-                productRepository.save(product);
+            //Lay phann tu dau tien cua set
+            if (diamondSet != null && !diamondSet.isEmpty()) {
+                Diamond diamond1 = diamondSet.iterator().next();
+                if (diamond1.getDiamondId() == diamond.getDiamondId()) {
+                    double totalPrice = calculateTotalPrice(product.getProductId());
+                    product.setPrice(totalPrice);
+                    productRepository.save(product);
+                }
             }
         }
     }
@@ -204,52 +202,41 @@ public class ProductService implements ProductServiceImp {
 
     @Override
     public Page<ProductDTO> getAllProductByCategory(int categoryId, Pageable pageable) {
-        return productRepository.findAllByCategoryCategoryId(categoryId, pageable)
-                .map(productMapper::mapProductToDTO);
+        return productRepository.findAllByCategoryCategoryId(categoryId, pageable).map(productMapper::mapProductToDTO);
     }
 
     @Override
     public Page<ProductDTO> getProductsSortedByName(String direction, Pageable pageable) {
-        Page<Products> productsPage = direction.equalsIgnoreCase("desc") ?
-                productRepository.findAllByOrderByProductNameDesc(pageable) :
-                productRepository.findAllByOrderByProductNameAsc(pageable);
+        Page<Products> productsPage = direction.equalsIgnoreCase("desc") ? productRepository.findAllByOrderByProductNameDesc(pageable) : productRepository.findAllByOrderByProductNameAsc(pageable);
         return productsPage.map(productMapper::mapProductToDTO);
     }
 
     @Override
     public Page<ProductDTO> getProductsSortedByStockQuantity(String direction, Pageable pageable) {
-        Page<Products> productsPage = direction.equalsIgnoreCase("desc") ?
-                productRepository.findAllByOrderByStockQuantityDesc(pageable) :
-                productRepository.findAllByOrderByStockQuantityAsc(pageable);
+        Page<Products> productsPage = direction.equalsIgnoreCase("desc") ? productRepository.findAllByOrderByStockQuantityDesc(pageable) : productRepository.findAllByOrderByStockQuantityAsc(pageable);
         return productsPage.map(productMapper::mapProductToDTO);
     }
 
     @Override
     public Page<ProductDTO> getProductsByNameKeyword(String keyword, Pageable pageable) {
-        return productRepository.findByProductNameContainingIgnoreCase(keyword, pageable)
-                .map(productMapper::mapProductToDTO);
+        return productRepository.findByProductNameContainingIgnoreCase(keyword, pageable).map(productMapper::mapProductToDTO);
     }
 
     @Override
     public Page<ProductDTO> getProductsByPriceRange(double minPrice, double maxPrice, String direction, Pageable pageable) {
-        Page<Products> productsPage = direction.equalsIgnoreCase("desc") ?
-                productRepository.findByPriceBetweenOrderByPriceDesc(minPrice, maxPrice, pageable) :
-                productRepository.findByPriceBetweenOrderByPriceAsc(minPrice, maxPrice, pageable);
+        Page<Products> productsPage = direction.equalsIgnoreCase("desc") ? productRepository.findByPriceBetweenOrderByPriceDesc(minPrice, maxPrice, pageable) : productRepository.findByPriceBetweenOrderByPriceAsc(minPrice, maxPrice, pageable);
         return productsPage.map(productMapper::mapProductToDTO);
     }
 
     @Override
     public Page<ProductDTO> getProductsByCategorySortedByPrice(String categoryName, String direction, Pageable pageable) {
-        Page<Products> productsPage = direction.equalsIgnoreCase("desc") ?
-                productRepository.findByCategoryOrderByPriceDesc(categoryName, pageable) :
-                productRepository.findByCategoryOrderByPriceAsc(categoryName, pageable);
+        Page<Products> productsPage = direction.equalsIgnoreCase("desc") ? productRepository.findByCategoryOrderByPriceDesc(categoryName, pageable) : productRepository.findByCategoryOrderByPriceAsc(categoryName, pageable);
         return productsPage.map(productMapper::mapProductToDTO);
     }
 
     @Override
     public Page<ProductDTO> getProductsByMultipleCriteria(String categoryName, String collection, Double minPrice, Double maxPrice, Pageable pageable) {
-        return productRepository.findProductsByMultipleCriteria(categoryName, collection, minPrice, maxPrice, pageable)
-                .map(productMapper::mapProductToDTO);
+        return productRepository.findProductsByMultipleCriteria(categoryName, collection, minPrice, maxPrice, pageable).map(productMapper::mapProductToDTO);
     }
 
     // Use to update quantity of product after insert database

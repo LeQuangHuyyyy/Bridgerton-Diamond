@@ -45,9 +45,9 @@ public class DiamondAndShellController {
     @PostMapping("/diamond/create")
     public ResponseEntity<?> createDiamond(@RequestBody DiamondDTO diamondDTO) {
         try {
-            DiamondDTO diamondDTO1 = diamondServiceImp.createDiamond(diamondDTO);
-            productServiceImp.updateProductQuantity(diamondDTO1.getProductId());
-            return new ResponseEntity<>(diamondDTO1, HttpStatus.OK);
+            diamondServiceImp.createDiamond(diamondDTO);
+//            productServiceImp.updateProductQuantity(diamondDTO1.getProductId());
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>("Can not found product with this product id", HttpStatus.NOT_FOUND);
         } catch (NullPointerException e) {
@@ -87,8 +87,8 @@ public class DiamondAndShellController {
     public ResponseEntity<ResponseData> deleteDiamond(@PathVariable int id) {
         ResponseData respData = new ResponseData();
         try {
-            DiamondDTO diamondDTO = diamondServiceImp.deleteDiamond(id);
-            productServiceImp.updateProductQuantity(diamondDTO.getProductId());
+            diamondServiceImp.deleteDiamond(id);
+//            productServiceImp.updateProductQuantity(diamondDTO.getProductId());
             respData.setStatus(204);
             respData.setSuccess(true);
             respData.setDescription("Diamond deleted successfully");

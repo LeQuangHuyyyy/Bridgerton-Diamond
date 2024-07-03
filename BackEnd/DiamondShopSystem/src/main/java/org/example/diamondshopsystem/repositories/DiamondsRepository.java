@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface DiamondsRepository extends JpaRepository<Diamond, Integer> {
@@ -19,4 +20,7 @@ public interface DiamondsRepository extends JpaRepository<Diamond, Integer> {
 
     @Query("SELECT d FROM Diamond d WHERE d.status = true AND d.product.productId = :productId ORDER BY d.diamondId DESC")
     List<Diamond> findDiamondsByProductId(@Param("productId") Integer productId);
+
+    @Query("SELECT d FROM Diamond d WHERE d.product.productId = :productId")
+    Set<Diamond> findByProductId(@Param("productId") int productId);
 }

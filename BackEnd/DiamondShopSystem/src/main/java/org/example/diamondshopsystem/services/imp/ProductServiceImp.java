@@ -11,29 +11,49 @@ import java.util.List;
 
 public interface ProductServiceImp {
     ProductDTO getProductDTOById(int id);
+
     Products getProductById(int id);
+
     ProductDTO addProduct(ProductDTO product);
+
     ProductDTO updateProduct(ProductDTO product);
+
     void deleteProduct(int id);
-    Page<ProductDTO> getProductByCollection(String collection,Pageable pageable);
+
+    Page<ProductDTO> getProductByCollection(String collection, Pageable pageable);
+
     List<ProductDTO> getFeaturedProduct();
+
     double calculateTotalPrice(int id);
+
     Page<ProductDTO> getAllProduct(Pageable pageable);
-    Page<ProductDTO> getProductByCategory(String categoryName,Pageable pageable);
-    Page<ProductDTO> getProductStoredByPrice(String order,Pageable pageable);
+
+    Page<ProductDTO> getProductByCategory(String categoryName, Pageable pageable);
+
+    Page<ProductDTO> getProductStoredByPrice(String order, Pageable pageable);
+
     void updateProductPrice(Diamond diamond);
+
     void updateProductPrice(Shell shell);
-    Page<ProductDTO> getAllProductByCategory(int categoryId,Pageable pageable);
+
+    Page<ProductDTO> getAllProductByCategory(int categoryId, Pageable pageable);
 
     //short
     Page<ProductDTO> getProductsSortedByName(String direction, Pageable pageable);
+
     Page<ProductDTO> getProductsSortedByStockQuantity(String direction, Pageable pageable);
+
     Page<ProductDTO> getProductsByNameKeyword(String keyword, Pageable pageable);
+
     Page<ProductDTO> getProductsByPriceRange(double minPrice, double maxPrice, String direction, Pageable pageable);
+
     Page<ProductDTO> getProductsByCategorySortedByPrice(String categoryName, String direction, Pageable pageable);
+
     Page<ProductDTO> getProductsByMultipleCriteria(String categoryName, String collection, Double minPrice, Double maxPrice, Pageable pageable);
 
     void resetAllStockQuantity();
+
     void updateProductQuantity(int id);
+
     void updateProductDiamondSet();
 }

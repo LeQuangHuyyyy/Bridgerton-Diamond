@@ -23,6 +23,7 @@ public class ShellService implements ShellServiceImp {
     @Override
     public ShellDTO createShell(ShellDTO shellDTO) {
         Shell shell = new Shell();
+
         shell.setShellName(shellDTO.getShellName());
         shell.setShellMaterial(shellDTO.getShellMaterial());
         shell.setShellPrice(shellDTO.getShellPrice());
@@ -34,8 +35,7 @@ public class ShellService implements ShellServiceImp {
 
     @Override
     public ShellDTO updateShell(ShellDTO shellDTO) {
-        Shell shellToUpdate = shellRepository.findById(shellDTO.getShellId())
-                .orElseThrow( () -> new NoSuchElementException("Shell not found"));
+        Shell shellToUpdate = shellRepository.findById(shellDTO.getShellId()).orElseThrow(() -> new NoSuchElementException("Shell not found"));
 
         shellToUpdate.setShellName(shellDTO.getShellName());
         shellToUpdate.setShellMaterial(shellDTO.getShellMaterial());
@@ -52,8 +52,7 @@ public class ShellService implements ShellServiceImp {
 
     @Override
     public ShellDTO deleteShell(int id) {
-        Shell shellToDelete = shellRepository.findById(id)
-                .orElseThrow( () -> new NoSuchElementException("Shell not found"));
+        Shell shellToDelete = shellRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Shell not found"));
 
         shellToDelete.setShellPrice(0);
         productServiceImp.updateProductPrice(shellToDelete);
@@ -73,7 +72,7 @@ public class ShellService implements ShellServiceImp {
 
     @Override
     public ShellDTO getShellById(int id) {
-        Shell shell = shellRepository.findById(id).orElseThrow( () -> new NoSuchElementException("Shell not found"));
+        Shell shell = shellRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Shell not found"));
         return mapShellToDTO(shell);
     }
 

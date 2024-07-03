@@ -37,69 +37,58 @@ public class DiamondService implements DiamondServiceImp {
 
     @Transactional
     @Override
-    public DiamondDTO createDiamond(DiamondDTO diamondDTO) {
+    public void createDiamond(DiamondDTO diamondDTO) {
         Diamond diamond = new Diamond();
+
         diamond.setCut(diamondDTO.getCut());
         diamond.setColor(diamondDTO.getColor());
         diamond.setClarity(diamondDTO.getClarity());
         diamond.setCarat(diamondDTO.getCarat());
 
-        diamond.setPrice(diamondPriceRepository.findByCaratAndCutAndColorAndClarity(
-                diamondDTO.getCarat(),
-                diamondDTO.getCut(),
-                diamondDTO.getColor(),
-                diamondDTO.getClarity()).getPrice()
-        );
+        diamond.setPrice(diamondPriceRepository.findByCaratAndCutAndColorAndClarity(diamondDTO.getCarat(), diamondDTO.getCut(), diamondDTO.getColor(), diamondDTO.getClarity()).getPrice());
         diamond.setCertification(diamondDTO.getCertification());
 
-        Products products = productRepository.findById(diamondDTO.getProductId())
-                .orElseThrow(() -> new NoSuchElementException("Can not found product id with:" + diamondDTO.getProductId()));
-
-        products = entityManager.merge(products);
-        diamond.setProduct(products);
+//        Products products = productRepository.findById(diamondDTO.getProductId())
+//                .orElseThrow(() -> new NoSuchElementException("Can not found product id with:" + diamondDTO.getProductId()));
+//
+//        products = entityManager.merge(products);
+//        diamond.setProduct(products);
         diamond.setStatus(true);
 
-        Diamond savedDiamond = diamondsRepository.save(diamond);
-        return mapDiamondToDiamondDTO(savedDiamond);
+        diamondsRepository.save(diamond);
     }
 
     @Override
     public DiamondDTO updateDiamond(DiamondDTO diamondDTO) {
-        Diamond diamond = diamondsRepository.findById(diamondDTO.getDiamondId())
-                .orElseThrow(() -> new NoSuchElementException("Cannot found diamond with id: " + diamondDTO.getDiamondId()));
+        Diamond diamond = diamondsRepository.findById(diamondDTO.getDiamondId()).orElseThrow(() -> new NoSuchElementException("Cannot found diamond with id: " + diamondDTO.getDiamondId()));
         diamond.setCut(diamondDTO.getCut());
         diamond.setColor(diamondDTO.getColor());
         diamond.setClarity(diamondDTO.getClarity());
         diamond.setCarat(diamondDTO.getCarat());
         diamond.setCertification(diamondDTO.getCertification());
 
-        diamond.setPrice(diamondPriceRepository.findByCaratAndCutAndColorAndClarity(
-                diamondDTO.getCarat(),
-                diamondDTO.getCut(),
-                diamondDTO.getColor(),
-                diamondDTO.getClarity()).getPrice()
-        );
+        diamond.setPrice(diamondPriceRepository.findByCaratAndCutAndColorAndClarity(diamondDTO.getCarat(), diamondDTO.getCut(), diamondDTO.getColor(), diamondDTO.getClarity()).getPrice());
 
-        Products products = productRepository.findById(diamondDTO.getProductId())
-                .orElseThrow(() -> new NoSuchElementException("Cannot found product with id: " + diamondDTO.getProductId()));
-        diamond.setProduct(products);
-        diamond.setStatus(diamondDTO.isStatus());
+//        Products products = productRepository.findById(diamondDTO.getProductId())
+//                .orElseThrow(() -> new NoSuchElementException("Cannot found product with id: " + diamondDTO.getProductId()));
+//        diamond.setProduct(products);
+
         Diamond savedDiamond = diamondsRepository.save(diamond);
         return mapDiamondToDiamondDTO(savedDiamond);
     }
 
 
-
     @Override
-    public DiamondDTO deleteDiamond(int id) {
-        Diamond diamond = diamondsRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Cannot found diamond with id: " + id));
-
-        diamond.setPrice(0);
-        productService.updateProductPrice(diamond);
-        diamond.setStatus(false);
-        diamondsRepository.save(diamond);   // xóa thì doi status thoi
-        return mapDiamondToDiamondDTO(diamond);
+    public void deleteDiamond(int id) throws Exception {
+        Diamond diamond = diamondsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Cannot found diamond with id: " + id));
+        if (diamond.getProduct() == null) {
+            diamond.setStatus(false);
+            diamond.setPrice(0);
+            diamondsRepository.save(diamond);   // xóa thì doi status thoi
+        } else {
+            productService.updateProductPrice(diamond);
+            throw new Exception("Cannot delete this diamond");
+        }
     }
 
     @Override
@@ -107,15 +96,14 @@ public class DiamondService implements DiamondServiceImp {
         List<Diamond> diamonds = diamondsRepository.findAll();
         List<DiamondDTO> diamondDTOs = new ArrayList<>();
         for (Diamond diamond : diamonds) {
-            diamondDTOs.add(mapDiamondToDiamondDTO(diamond));
+            diamondDTOs.add(mapDiamondToDTO(diamond));
         }
         return diamondDTOs;
     }
 
     @Override
     public DiamondDTO getDiamondById(int id) {
-        Diamond diamond = diamondsRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Cannot found diamond with id: " + id));
+        Diamond diamond = diamondsRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Cannot found diamond with id: " + id));
         return mapDiamondToDiamondDTO(diamond);
     }
 
@@ -168,7 +156,23 @@ public class DiamondService implements DiamondServiceImp {
         diamondDTO.setCarat(diamond.getCarat());
         diamondDTO.setPrice(diamond.getPrice());
         diamondDTO.setCertification(diamond.getCertification());
-        diamondDTO.setProductId(diamond.getProduct().getProductId());
+        if (diamond.getProduct() != null) {
+            diamondDTO.setProductId(diamond.getProduct().getProductId());
+        }
+        diamondDTO.setStatus(diamond.isStatus());
+        return diamondDTO;
+    }
+
+    DiamondDTO mapDiamondToDTO(Diamond diamond) {
+        DiamondDTO diamondDTO = new DiamondDTO();
+        diamondDTO.setDiamondId(diamond.getDiamondId());
+        diamondDTO.setCut(diamond.getCut());
+        diamondDTO.setClarity(diamond.getClarity());
+        diamondDTO.setColor(diamond.getColor());
+        diamondDTO.setCarat(diamond.getCarat());
+        diamondDTO.setPrice(diamond.getPrice());
+        diamondDTO.setCertification(diamond.getCertification());
+
         diamondDTO.setStatus(diamond.isStatus());
         return diamondDTO;
     }

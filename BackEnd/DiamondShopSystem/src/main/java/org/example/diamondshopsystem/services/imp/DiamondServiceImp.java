@@ -7,12 +7,19 @@ import org.example.diamondshopsystem.entities.DiamondPrice;
 import java.util.List;
 
 public interface DiamondServiceImp {
-    DiamondDTO createDiamond(DiamondDTO diamondDTO);
+    void createDiamond(DiamondDTO diamondDTO);
+
     DiamondDTO updateDiamond(DiamondDTO diamondDTO);
-    DiamondDTO deleteDiamond(int id);
+
+    void deleteDiamond(int id) throws Exception;
+
     List<DiamondDTO> getAllDiamonds();
+
     DiamondDTO getDiamondById(int id);
+
     List<DiamondDTO> getDiamondsBy4C(DiamondDTO diamondDTO);
+
     void updateDiamondPrice(DiamondPriceDTO diamondPriceDTO);
+
     DiamondDTO getDiamondByProductId(int productId);
 }
