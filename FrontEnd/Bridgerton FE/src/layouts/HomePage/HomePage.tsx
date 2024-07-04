@@ -3,6 +3,8 @@ import {ExploreTopProducts} from "./component/ExploreTopProducts";
 import {CarouselProduct} from "./component/CarouselProduct";
 import {Heros} from "./component/Heros";
 import  {DiamondInformation} from "./component/DiamondInfomation";
+import ExperienceSection from "./component/ExperienceSection";
+
 
 export const HomePage = () => {
     return (
@@ -12,6 +14,7 @@ export const HomePage = () => {
                 <CarouselProduct/>
                 <Heros/>
                 <DiamondInformation/>
+                <ExperienceSection/>
             </>
         </div>
     );

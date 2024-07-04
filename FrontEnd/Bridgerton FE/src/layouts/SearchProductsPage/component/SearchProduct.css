@@ -1,0 +1,10 @@
+.product-name{
+    font-size: 15px;
+    color: black;
+    text-align: center;
+    margin-top: 1em;
+    text-decoration: none;
+}
+.card:hover{
+    border: #0B2447 1px solid;
+}

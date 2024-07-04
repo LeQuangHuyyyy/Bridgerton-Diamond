@@ -1,0 +1,36 @@
+.order-success-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #001529;
+}
+
+.order-success-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-family: 'Petit Formal Script', cursive;
+    font-weight: bold;
+}
+
+.order-success-message {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+
+}
+
+.order-success-link {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background-color: #001529;
+    color: #fff;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.order-success-link:hover {
+    background-color: #001529;
+    opacity: 0.8;
+    color: white;
+}

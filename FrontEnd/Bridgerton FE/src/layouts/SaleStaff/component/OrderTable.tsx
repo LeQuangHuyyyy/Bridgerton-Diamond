@@ -12,7 +12,6 @@ const OrderTable: React.FC = () => {
     const handleCloseOrderDetail = () => {
         setShowOrderDetail(false);
     };
-
     const orders = [
         {
             orderId: 1,
@@ -37,6 +36,7 @@ const OrderTable: React.FC = () => {
             payments: 'Payments for order 1',
         }
     ];
+
 
     return (
         <div style={{ marginTop: '100px' }} className="container">

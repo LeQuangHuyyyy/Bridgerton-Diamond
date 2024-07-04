@@ -1,9 +1,8 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import ProductModel from "../../models/ProductModel";
 import {SearchProduct} from "./component/SearchProduct";
 import {Paging} from "../Utils/Paging";
 import {SpinnerLoading} from "../Utils/SpinnerLoading";
-import {ExploreTopProducts} from "../HomePage/component/ExploreTopProducts";
 
 export const SearchProductsPage = () => {
     const [products, setProducts] = useState<ProductModel[]>([]);
@@ -11,7 +10,7 @@ export const SearchProductsPage = () => {
     const [httpError, setHttpError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalAmountOfProducts, setTotalAmountOfProducts] = useState(0);
-    const [productsPerPage] = useState(8);
+    const [productsPerPage] = useState(12);
     const [totalPages, setTotalPages] = useState(0);
     const [search, setSearch] = useState('');
     const [searchUrl, setSearchUrl] = useState('');
@@ -102,7 +101,7 @@ export const SearchProductsPage = () => {
             value.toLowerCase() === 'engagement rings' ||
             value.toLowerCase() === 'wedding bands' ||
             value.toLowerCase() === 'men diamond ring' ||
-            value.toLowerCase() === 'necklaces' ||
+            value.toLowerCase() === 'necklace' ||
             value.toLowerCase() === 'earrings' ||
             value.toLowerCase() === 'bracelets'
         ) {
@@ -122,28 +121,55 @@ export const SearchProductsPage = () => {
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
     return (
         <div>
-            <ExploreTopProducts/>
+            <div>
+                <div className="row g-0 mt-5">
+                    <div className="col-sm-6 col-md-6">
+                        <div>
+                            <img className="col-image-left-search"
+                                 src={'https://www.cartier.com/on/demandware.static/-/Library-Sites-CartierSharedLibrary-BGTJ/default/dw009b40c2/plp/High%20Jewellery/all-creations/le-voyage-recommence/header/1.%20TEST%20ONE%20PILEO_header.jpg'}
+                                 alt='hero1'></img>
+                        </div>
+                    </div>
+                    <div
+                        style={{backgroundColor: '#F9F9F9'}}
+                        className="col-4 col-md-6 container d-flex justify-content-center align-items-center custom-container">
+                        <div style={{marginLeft: '100px',marginRight: '100px'}} className="ml-2">
+                            <h1 className="custom-heading">Le Voyage Recommencé</h1>
+                            <p style={{marginTop:'20px'}} className="custom-paragraph-search">
+                                Our diamonds exemplify exceptional quality and timeless elegance. With brilliant cuts and flawless clarity, each piece reflects our dedication to perfection. Discover Bridgerton's refined beauty, where every gem tells a story of elegance and excellence.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div className='container'>
                 <div className='row mt-5'>
                     <div style={{width: '300px'}} className='col-6'>
-                        <div className='d-flex'>
-                            <input className='form-control me-2 w-auto' type='search'
-                                   placeholder='Search' aria-labelledby='Search'
-                                   onChange={e => setSearch(e.target.value)}/>
-                            <button className='btn btn-outline-dark' onClick={() => searchHandleChange()}>Search
+                        <div
+                            className='d-flex'>
+                            <input
+                                style={{borderRadius: '0'}}
+                                className='form-control me-2 w-auto' type='search'
+                                placeholder='Search' aria-labelledby='Search'
+                                onChange={e => setSearch(e.target.value)}/>
+                            <button
+                                style={{borderRadius: '0'}}
+                                className='btn btn-outline-dark' onClick={() => searchHandleChange()}>Search
                             </button>
                         </div>
                     </div>
                     <div className='col-4'>
                         <div className='dropdown'>
-                            <button className='btn btn-outline-dark dropdown-toggle' type='button'
-                                    id='dropdownMenuButton1' data-bs-toggle='dropdown' aria-expanded='false'
+                            <button
+                                style={{borderRadius: '0'}}
+                                className='btn btn-outline-dark dropdown-toggle' type='button'
+                                id='dropdownMenuButton1' data-bs-toggle='dropdown' aria-expanded='false'
                             >
                                 {searchCategory}
                             </button>
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li onClick={() => searchCategoryHandleChange('All')}>
-                                    <a className="dropdown-item">
+                                <a className="dropdown-item">
                                         All category
                                     </a>
                                 </li>
@@ -151,32 +177,32 @@ export const SearchProductsPage = () => {
                                     <a className="dropdown-item">
                                         Engagement Rings </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('wedding bands')}>
+                                <li onClick={() => searchCategoryHandleChange('Wedding Bands')}>
                                     <a className="dropdown-item">
                                         Wedding Bands
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('men diamond ring')}>
+                                <li onClick={() => searchCategoryHandleChange('Men Diamond Ring')}>
                                     <a className="dropdown-item">
                                         Men diamond ring
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('women diamond ring')}>
+                                <li onClick={() => searchCategoryHandleChange('Women Diamond Ring')}>
                                     <a className="dropdown-item">
                                         Women diamond ring
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('necklaces')}>
+                                <li onClick={() => searchCategoryHandleChange('Necklace')}>
                                     <a className="dropdown-item">
-                                        Necklaces
+                                        Necklace
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('earrings')}>
+                                <li onClick={() => searchCategoryHandleChange('Earrings')}>
                                     <a className="dropdown-item">
                                         Earrings
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('bracelets')}>
+                                <li onClick={() => searchCategoryHandleChange('Bracelets')}>
                                     <a className="dropdown-item">
                                         Bracelets
                                     </a>
@@ -187,9 +213,9 @@ export const SearchProductsPage = () => {
                     {totalAmountOfProducts > 0 ?
                         <>
                             <div className='mt-3'>
-                                <h5>Number of results: ({totalAmountOfProducts})</h5>
+                                <h5 className='paginate-totalAmount'>Number of results: ({totalAmountOfProducts})</h5>
                             </div>
-                            <p>
+                            <p className='paginate-totalAmount'>
                                 {indexOfFirstProduct + 1} to {lastItem} of {totalAmountOfProducts} results
                             </p>
                             {products.map(product => (
@@ -199,8 +225,6 @@ export const SearchProductsPage = () => {
                         :
                         <div className='m-5'>
                             <h3>Can't find what you are looking for?</h3>
-                            <a type='button' className='btn main-color btn-md px-4 me-md-2 fw-bold text-black' href='#'>Library
-                                Services</a>
                         </div>
                     }
                     {totalPages > 1 &&

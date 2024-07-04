@@ -39,39 +39,40 @@ export const Table: React.FC = () => {
     };
 
     useEffect(() => {
-        const fetchRole = async () => {
-            try {
-                if (headers) {
-                    const enCrypt = jwtDecode(headers) as { role: string; name: string; };
-                    setUserName(enCrypt.name);
-                    if (enCrypt.role.toUpperCase() !== 'ADMIN') {
-                        window.location.href = '/';
-                        return;
-                    }
-                } else {
-                    window.location.href = '/';
-                    return;
-                }
-
-                const response = await fetch('http://localhost:8888/manage/accounts', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${headers}`
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data');
-                }
-                const data = await response.json();
-                setDataSource(data.content || []);
-            } catch (error) {
-                console.error('Error fetching roles: ', error);
-            }
-        };
-
-        fetchRole();
+         fetchRole();
     }, []);
 
+    const fetchRole = async () => {
+        try {
+            if (headers) {
+                const enCrypt = jwtDecode(headers) as { role: string; name: string; };
+                setUserName(enCrypt.name);
+                if (enCrypt.role.toUpperCase() !== 'ADMIN') {
+                    window.location.href = '/';
+                    return;
+                }else{
+                    setUserName(enCrypt.name)
+                }
+            } else {
+                window.location.href = '/';
+                return;
+            }
+
+            const response = await fetch('http://localhost:8888/manage/accounts', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${headers}`
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            const data = await response.json();
+            setDataSource(data.content || []);
+        } catch (error) {
+            console.error('Error fetching roles: ', error);
+        }
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
         const {name, value} = e.target;
@@ -117,14 +118,7 @@ export const Table: React.FC = () => {
             });
 
             if (postResponse.ok) {
-                const response = await fetch('http://localhost:8888/manage/accounts', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${headers}`
-                    },
-                });
-                const data = await response.json();
-                setDataSource(data.content || []);
+                fetchRole();
                 setIsAddingNew(false);
             } else {
                 throw new Error('Failed to add new account');
@@ -158,6 +152,7 @@ export const Table: React.FC = () => {
                     'Authorization': `Bearer ${headers}`
                 },
             });
+            
             const result = await response.json();
 
             result.content.some((account: { userid: string; email: string; phoneNumber: string; }) => {
@@ -183,15 +178,8 @@ export const Table: React.FC = () => {
                     body: JSON.stringify(formData)
                 });
                 if (response.ok) {
+                    fetchRole();
                     setIsUpdating(false);
-                    const response = await fetch('http://localhost:8888/manage/accounts', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${headers}`
-                        },
-                    });
-                    const data = await response.json();
-                    setDataSource(data.content || []);
                 }
             } else {
                 alert("Email or PhoneNumber already exists");
@@ -212,14 +200,7 @@ export const Table: React.FC = () => {
                 }
             });
 
-            const response = await fetch('http://localhost:8888/manage/accounts', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${headers}`
-                },
-            });
-            const data = await response.json();
-            setDataSource(data.content || []);
+           fetchRole();
         } catch (error) {
             console.error("Error during delete: ", error);
         }

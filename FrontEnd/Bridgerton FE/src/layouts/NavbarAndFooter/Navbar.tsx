@@ -1,8 +1,9 @@
-import {Space, Layout, Menu, Dropdown, Button} from 'antd';
-import {Link, NavLink} from 'react-router-dom';
-import {ShoppingCartOutlined, UserOutlined} from '@ant-design/icons';
+import {Button, Dropdown, Layout, Menu, Space} from 'antd';
+import {NavLink} from 'react-router-dom';
+import {UserOutlined} from '@ant-design/icons';
 import React, {useEffect, useState} from 'react';
 import {jwtDecode} from 'jwt-decode';
+import CartIcon from './component/CartIcon';
 
 const {Header} = Layout;
 
@@ -39,9 +40,7 @@ export const Navbar = () => {
             }
             lastScrollY = window.scrollY;
         };
-
         window.addEventListener('scroll', handleScroll);
-
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
@@ -53,7 +52,7 @@ export const Navbar = () => {
     };
 
     return (
-        <div style={{marginBottom: '130px'}}>
+        <div style={{marginBottom: '153px'}}>
             <div className="logo-container">
                 <NavLink to="/home"
                          style={{
@@ -66,7 +65,7 @@ export const Navbar = () => {
                 </NavLink>
             </div>
             <Header className={`custom-header ${showNavbar ? 'visible' : 'hidden'}`}>
-                <Space size={60} className="nav-links">
+                <Space size={60} className="nav-links" style={{justifyContent: 'center', flex: 1, marginLeft: '70px'}}>
                     <NavLink className="nav-link" to="/home">
                         Home
                     </NavLink>
@@ -75,6 +74,12 @@ export const Navbar = () => {
                     </NavLink>
                     <NavLink className="nav-link" to="/price">
                         Diamond Price
+                    </NavLink>
+                    <NavLink className="nav-link" to="/contactus">
+                        Contact Us
+                    </NavLink>
+                    <NavLink className="nav-link" to="/ordersuccess">
+                        Order Success
                     </NavLink>
                 </Space>
                 <Space>
@@ -87,10 +92,7 @@ export const Navbar = () => {
                             Sign in
                         </NavLink>
                     )}
-                    <NavLink to="/cart">
-                        <ShoppingCartOutlined className="cart-icon"/>
-                    </NavLink>
-
+                    <CartIcon/>
                 </Space>
             </Header>
         </div>

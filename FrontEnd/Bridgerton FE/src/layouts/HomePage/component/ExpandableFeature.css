@@ -1,0 +1,32 @@
+.feature-item {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 10px 0;
+}
+
+.feature-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.feature-header h3 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #0B2447;
+    margin: 0;
+}
+
+.toggle-icon {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0B2447;
+    transition: transform 0.2s ease;
+}
+
+.feature-content {
+    font-size: 16px;
+    color: #555555;
+    margin-top: 10px;
+    padding-left: 20px;
+}

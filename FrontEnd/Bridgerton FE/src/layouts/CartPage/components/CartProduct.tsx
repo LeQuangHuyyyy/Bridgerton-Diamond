@@ -1,10 +1,10 @@
 import CartModel from "../../../models/CartModel";
 
 
-export const CartProduct: React.FC<{ product: CartModel; onRemoveProduct: (productId: number, size: string) => void }> = (props) => {
+export const CartProduct: React.FC<{ product: CartModel; onRemoveProduct: (productId: number, sizeId: number) => void }> = (props) => {
 
     const handleRemoveProduct = () => {
-        props.onRemoveProduct(props.product.productId, props.product.size);
+        props.onRemoveProduct(props.product.productId, props.product.sizeId);
     };
     return (
         <tr>
@@ -18,7 +18,7 @@ export const CartProduct: React.FC<{ product: CartModel; onRemoveProduct: (produ
             <td className='text-center'>{props.product.size}</td>
             <td className='text-center'>${props.product.totalPrice}</td>
             <td className='text-center'>
-                <div onClick={handleRemoveProduct}>
+                <div onClick={handleRemoveProduct} style={{cursor: 'pointer'}}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          className="bi bi-trash" viewBox="0 0 16 16">
                         <path

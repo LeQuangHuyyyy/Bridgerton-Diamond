@@ -15,7 +15,7 @@ export const CarouselProduct = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             const baseUrl: string = "http://localhost:8888/home";
-            const url: string = `${baseUrl}?page=0&size=10`;
+            const url: string = `${baseUrl}`;
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Something went wrong!');
@@ -65,7 +65,6 @@ export const CarouselProduct = () => {
     }
     const responsive = {
         superLargeDesktop: {
-            // the naming can be any, depends on you.
             breakpoint: {max: 4000, min: 3000},
             items: 5
         },
@@ -87,7 +86,7 @@ export const CarouselProduct = () => {
             <div className='homepage-carousel-title'>
                 <h1 style={{fontSize: '45px'}} className='custom-heading'>New Products</h1>
             </div>
-            <Carousel responsive={responsive} className='mt-5'>
+            <Carousel responsive={responsive}>
                 {product.slice(0, 10).map((product) => (
                     <ReturnProducts key={product.productId} product={product}/>
                 ))}
