@@ -12,14 +12,12 @@ import {VerifyCode} from "./Auth/VerifyCode";
 import {ResetPassword} from "./Auth/ResetPassword";
 import {DiamondPricePage} from "./layouts/DiamondPrice/DiamondPricePage";
 import Checkout from "./layouts/CartPage/components/Checkout";
-import {SaleStaffPage} from "./layouts/SaleStaff/SaleStaffPage";
 import {SearchProductsPage} from "./layouts/SearchProductsPage/SearchProductsPage";
 import {Table} from "./layouts/dashboard/Table";
 import {jwtDecode} from "jwt-decode";
-import {Promotion} from "./layouts/Manager/Promotion";
-import {Product} from "./layouts/Manager/Product";
-
-import {SideBar} from "./layouts/Manager/component/NavBar";
+import ContactUs from "./layouts/ContactUs/ContactUs";
+import {SaleStaffPage} from "./layouts/SaleStaff/SaleStaffPage";
+import OrderSuccessPage from "./layouts/OrderSuccessPage/OrderSuccessPage";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -60,6 +58,9 @@ export const App = () => {
                             <Route path='/cart'>
                                 <CartPage/>
                             </Route>
+                            <Route path='/contactus'>
+                                <ContactUs/>
+                            </Route>
                             <Route path='/login'>
                                 <Login/>
                             </Route>
@@ -71,6 +72,9 @@ export const App = () => {
                             </Route>
                             <Route path='/reset-password'>
                                 <ResetPassword/>
+                            </Route>
+                            <Route path='/ordersuccess'>
+                                <OrderSuccessPage/>
                             </Route>
                             <Footer/>
                         </div>
@@ -98,6 +102,9 @@ export const App = () => {
                             <Route path='/price'>
                                 <DiamondPricePage/>
                             </Route>
+                            <Route path='/contactus'>
+                                <ContactUs/>
+                            </Route>
                             <Route path='/login'>
                                 <Login/>
                             </Route>
@@ -110,9 +117,16 @@ export const App = () => {
                             <Route path='/reset-password'>
                                 <ResetPassword/>
                             </Route>
+                            <Route path='/ordersuccess'>
+                                <OrderSuccessPage/>
+                            </Route>
                             <Footer/>
                         </div>
-                    )}
+                    )
+
+
+                    }
+
 
                     {token === 'ADMIN' && (
                         <>
@@ -124,19 +138,15 @@ export const App = () => {
                     )}
                     {token === 'MANAGER' && (
                         <>
-                            <SideBar/>
                             <Redirect from='/' to='/manager' exact/>
-                            <Route path='/promotion'>
-                                <Promotion/>
-                            </Route>
-                            <Route path='/product'>
-                                <Product/>
-                            </Route>
                         </>
                     )}
                     {token === 'SALE_STAFF' && (
                         <>
-                            <Redirect from='/' to='/sale-staff' exact/>
+                            <Redirect from='/' to='/salestaff' exact/>
+                            <Route path='/salestaff'>
+                                <SaleStaffPage/>
+                            </Route>
                         </>
                     )}
                     {token === 'DELIVERY_STAFF' && (

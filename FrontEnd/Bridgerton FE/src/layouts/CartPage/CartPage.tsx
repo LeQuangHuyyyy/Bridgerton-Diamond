@@ -9,12 +9,9 @@ export const CartPage = () => {
     const [products, setProducts] = useState<CartModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchUrl, setSearchUrl] = useState('');
-    const token = localStorage.getItem("token");
-    const headers = {
-        'Authorization': `Bearer ${token}`
-    }
+    const [updateFlag, setUpdateFlag] = useState(false);
+
+
     useEffect(() => {
         const fetchProducts = async () => {
             const baseUrl: string = "http://localhost:8888/cart/cart";
@@ -37,6 +34,7 @@ export const CartPage = () => {
             const responseJson = await response.json();
             const responseData = responseJson.data.content;
 
+            console.log(responseData);
             const loadedProducts: CartModel[] = [];
 
             for (const key in responseData) {
@@ -47,7 +45,8 @@ export const CartPage = () => {
                     image1: responseData[key].image1,
                     quantity: responseData[key].quantity,
                     size: responseData[key].size,
-                    price: 0
+                    price: responseData[key].price,
+                    sizeId: responseData[key].sizeId,
                 });
             }
             setProducts(loadedProducts);
@@ -58,7 +57,8 @@ export const CartPage = () => {
             setHttpError(error.message);
         })
         window.scrollTo(0, 0);
-    }, [currentPage, searchUrl]);
+    }, [updateFlag]);
+
     if (isLoading) {
         return (
             <SpinnerLoading/>
@@ -77,17 +77,20 @@ export const CartPage = () => {
         return products.reduce((total, product) => total + product.totalPrice, 0);
     };
 
-    const removeProduct = async (productId: number, size: string) => {
+    const removeProduct = async (productId: number, sizeId: number) => {
         try {
 
             let products = JSON.parse(localStorage.getItem('cart') || '[]');
 
 
-            products = products.filter((product: { productId: string, size: string }) => product.productId !== productId.toString() || product.size !== size);
+            products = products.filter((product: { productId: string, sizeId: number }) =>
+                !(product.productId === productId.toString() && product.sizeId === sizeId)
+            );
 
             localStorage.setItem('cart', JSON.stringify(products));
-            setProducts(products);
-            console.log(`Product with ID ${productId} removed from local storage`);
+            setUpdateFlag(!updateFlag);
+            const event = new CustomEvent('cartUpdated');
+            window.dispatchEvent(event);
 
         } catch (error) {
             console.error('Failed to delete product from local storage', error);
@@ -95,26 +98,33 @@ export const CartPage = () => {
         }
     };
 
-
+    const handleGoBack = () => {
+        window.history.back();
+    };
     return (
         <div className="container mt-5">
             <div className="row">
                 <div className="col-md-8 mt-5">
-                    <h1 className="mb-4 custom-heading text-center">Cart</h1>
+                    <h1 className="mb-4 custom-heading text-center">Shopping Cart</h1>
                     <table className="table table-hover">
                         <thead>
+                        <tr>
+                            <td colSpan={6}>
+                                <button style={{backgroundColor: '#001529'}} className="text-white" onClick={handleGoBack}>Continue Shopping</button>
+                            </td>
+                        </tr>
                         <tr className='text-center'>
                             <th scope="col">IMAGE</th>
                             <th scope="col">PRODUCT NAME</th>
                             <th scope="col">QUANTITY</th>
                             <th scope="col">SIZE</th>
                             <th scope="col">PRICE</th>
-                            <th scope="col">ACTION</th>
+                            <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
                         {products.map((product) => (
-                            <CartProduct product={product} key={product.productId} onRemoveProduct={removeProduct}/>
+                            <CartProduct product={product} key={product.productId + product.size} onRemoveProduct={removeProduct}/>
                         ))}
                         <tr>
                             <td colSpan={5} style={{color: 'green'}} className="text-right"><strong>Total

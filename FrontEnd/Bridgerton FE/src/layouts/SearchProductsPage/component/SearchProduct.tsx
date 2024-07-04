@@ -1,42 +1,36 @@
 import ProductModel from "../../../models/ProductModel";
 import {Link} from "react-router-dom";
+import {useState} from "react";
+import './SearchProduct.css';
 
 export const SearchProduct: React.FC<{ product: ProductModel }> = (props) => {
+    const [hovered, setHovered] = useState(false);
+
+    const handleHover = () => {
+        setHovered(true);
+    };
+
+    const handleLeave = () => {
+        setHovered(false);
+    };
     return (
-        <div className='card mt-3 shadow p-3 mb-3 bg-body rounded col-2'
-             style={{
-                 width: '300px',
-                 height: '420px'
-             }}
-        >
-            <Link className="text-decoration-none text-dark" to={`/detail/${props.product.productId}`}>
-                <div className='text-center pb-2'>
-                    {props.product.image1 ?
-                        <img
-                            className='product-image'
-                            src={`http://localhost:8888/product/load-image/${props.product.image1}.jpg`}
-                            alt='product image'
-                        />
-                        :
-                        <img
-                            className='product-image'
-                            src={'https://i.pinimg.com/564x/f2/7c/89/f27c899fee5b10ffdcce5b57c7a4e111.jpg'}
-                            alt="product image"
-                        />
-                    }
-                    <h2 className='card-title'
-                        style={{fontSize: '15px', fontWeight: '600'}}>
-                        {props.product.productName}
-                    </h2>
-                    <p className='price text-center'><small className='text-muted'
-                                                            style={{fontWeight: 'bolder'}}>${props.product.price}</small>
-                    </p>
+            <Link to={`/detail/${props.product.productId}`} className='card text-decoration-none border-0 shadow-none' style={{ width: '300px',height: '350px', borderRadius: '0'}}>
+                <div style={{padding: '0'}} className={`text-center card-body ${hovered ? 'hovered' : ''}`}
+                     onMouseEnter={handleHover} onMouseLeave={handleLeave}>
+                    <img
+                        className='product-image'
+                        src={hovered ? `http://localhost:8888/product/load-image/${props.product.image2}.jpg` :
+                            `http://localhost:8888/product/load-image/${props.product.image1}.jpg`}
+                        alt="product image"
+                    />
+                    <div>
+                        <h2 className='product-name'
+                            style={{fontWeight: '600'}}>{props.product.productName.length > 50 ?
+                            <h2 className='product-name'>{props.product.productName.substring(0, 50)}...</h2>
+                            : <h2 className='product-name'>{props.product.productName}</h2>}</h2>
+                        <p className='price'>${props.product.price}</p>
+                    </div>
                 </div>
-                <p>
-                    <Link className='btn-add-to-cart text-decoration-none text-center'
-                          to={`/detail/${props.product.productId}`}>View Product</Link>
-                </p>
             </Link>
-        </div>
     );
 }

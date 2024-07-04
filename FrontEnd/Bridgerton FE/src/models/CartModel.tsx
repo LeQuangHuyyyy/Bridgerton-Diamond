@@ -5,9 +5,10 @@ class CartModel{
     image1: string;
     totalPrice: number;
     quantity: number;
-    size: string;
+    size: number;
+    sizeId: number;
 
-    constructor(productId: number, productName: string, price: number, image1: string, totalPrice: number, quantity: number, size: string){
+    constructor(productId: number, productName: string, price: number, image1: string, totalPrice: number, quantity: number, size: number, sizeId: number) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -15,6 +16,7 @@ class CartModel{
         this.totalPrice = totalPrice;
         this.quantity = quantity;
         this.size = size;
+        this.sizeId = sizeId;
     }
 }
 export default CartModel;

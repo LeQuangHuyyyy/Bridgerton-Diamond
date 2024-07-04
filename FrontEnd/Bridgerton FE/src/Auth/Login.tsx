@@ -150,7 +150,7 @@ export const Login = () => {
                           onSubmit={handleSubmit}>
                         <h2 className="text-center mb-4">LOGIN</h2>
                         <div className="form-group mb-2">
-                            <label htmlFor="username">Username:</label>
+                            <label htmlFor="username">Email:</label>
                             <input required type="text" className="form-control" id="username" value={email}
                                    onChange={(e) => setUsername(e.target.value)}/>
                         </div>

@@ -1,0 +1,17 @@
+.product-name-homepage{
+    font-size: 15px;
+    color: black;
+    text-align: center;
+    margin-top: 1em;
+    text-decoration: none;
+}
+.card-body img {
+    transition: transform 0.3s ease;
+}
+
+.card-body:hover img {
+    opacity: 1;
+}
+.card-body:hover{
+    border: #0B2447 1px solid;
+}

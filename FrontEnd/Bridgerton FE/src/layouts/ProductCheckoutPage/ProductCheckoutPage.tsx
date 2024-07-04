@@ -6,7 +6,7 @@ import DiamondTable from "./DiamondAndShellTable/DiamondTable";
 import ShellTable from "./DiamondAndShellTable/ShellTable";
 import SizeModel from "../../models/SizeModel";
 import Carousel from "react-multi-carousel";
-import {ReturnProducts} from "../HomePage/component/ReturnProducts";
+import {SimilarItems} from "./component/SimilarItems";
 
 export const ProductCheckoutPage = () => {
     const [suggest, setSuggest] = useState<ProductModel[]>([]);
@@ -17,10 +17,12 @@ export const ProductCheckoutPage = () => {
     const [quantity, setQuantity] = useState<number>(1);
     const [selectedSize, setSelectedSize] = useState<SizeModel>();
     const [sizeError, setSizeError] = useState<string | null>(null);
+
     const token = localStorage.getItem("token");
     const headers = {
         'Authorization': `Bearer ${token}`
     }
+
     const [size, setSize] = useState<SizeModel[]>([]);
 
     const productId = window.location.pathname.split("/")[2];
@@ -150,6 +152,8 @@ export const ProductCheckoutPage = () => {
             };
             cart.push(product);
             localStorage.setItem("cart", JSON.stringify(cart));
+            const event = new CustomEvent('cartUpdated');
+            window.dispatchEvent(event);
         }
     };
 
@@ -206,7 +210,7 @@ export const ProductCheckoutPage = () => {
                         {selectedImage ? (
                             <img
                                 src={`http://localhost:8888/product/load/${selectedImage}.jpg`}
-                                style={{width: "450px", height: "450px", border: '1px solid black'}}
+                                style={{width: "455px", height: "390px", border: '1px solid black'}}
                                 alt="product"
                             />
                         ) : (
@@ -222,8 +226,8 @@ export const ProductCheckoutPage = () => {
                                     <img
                                         src={`http://localhost:8888/product/load/${product?.image1}.jpg`}
                                         style={{
-                                            width: "105px",
-                                            height: "105px",
+                                            width: "106px",
+                                            height: "100px",
                                             margin: "5px",
                                             cursor: "pointer",
                                             border: "1px solid black"
@@ -234,8 +238,8 @@ export const ProductCheckoutPage = () => {
                                     <img
                                         src={`http://localhost:8888/product/load/${product?.image2}.jpg`}
                                         style={{
-                                            width: "105px",
-                                            height: "105px",
+                                            width: "106px",
+                                            height: "100px",
                                             margin: "5px",
                                             cursor: "pointer",
                                             border: "1px solid black"
@@ -246,8 +250,8 @@ export const ProductCheckoutPage = () => {
                                     <img
                                         src={`http://localhost:8888/product/load/${product?.image3}.jpg`}
                                         style={{
-                                            width: "105px",
-                                            height: "105px",
+                                            width: "106px",
+                                            height: "100px",
                                             margin: "5px",
                                             cursor: "pointer",
                                             border: "1px solid black"
@@ -258,8 +262,8 @@ export const ProductCheckoutPage = () => {
                                     <img
                                         src={`http://localhost:8888/product/load/${product?.image4}.jpg`}
                                         style={{
-                                            width: "105px",
-                                            height: "105px",
+                                            width: "106px",
+                                            height: "100px",
                                             margin: "5px",
                                             cursor: "pointer",
                                             border: "1px solid black"
@@ -318,7 +322,7 @@ export const ProductCheckoutPage = () => {
                             <button
                                 style={{borderRadius: '0'}}
                                 className="btn btn-success mt-3 w-100"
-                                onClick={addToCartHandler} // Add this onClick event
+                                onClick={addToCartHandler}
                             >
                                 ADD TO CART
                             </button>
@@ -327,104 +331,104 @@ export const ProductCheckoutPage = () => {
                 </div>
             </div>
 
-            <div className="container d-lg-none mt-5">
-                <div className="d-flex justify-content-center align-items-center">
-                    {selectedImage ? (
-                        <img
-                            src={`http://localhost:8888/product/load/${selectedImage}.jpg`}
-                            className="product-image"
-                            alt="product"
-                            style={{width: "340px", height: "340px", border: "1px solid black"}}
-                        />
-                    ) : (
-                        <img
-                            src={require("./../../Images/PublicImages/hm13-slider-1.png")}
-                            className="w-auto h-100 product-image"
-                            alt="product"
-                        />
-                    )}
-                </div>
-                <div className="d-flex justify-content-center mt-3">
-                    {product?.image1 && (
-                        <>
-                            <img
-                                src={`http://localhost:8888/product/load/${product?.image1}.jpg`}
-                                style={{
-                                    width: "80px",
-                                    height: "80px",
-                                    margin: "5px",
-                                    cursor: "pointer",
-                                    border: "1px solid black"
-                                }}
-                                alt="thumbnail"
-                                onClick={() => handleThumbnailClick(product.image1)}
-                            />
-                            <img
-                                src={`http://localhost:8888/product/load/${product?.image2}.jpg`}
-                                style={{
-                                    width: "80px",
-                                    height: "80px",
-                                    margin: "5px",
-                                    cursor: "pointer",
-                                    border: "1px solid black"
-                                }}
-                                alt="thumbnail"
-                                onClick={() => handleThumbnailClick(product.image1)}
-                            />
-                            <img
-                                src={`http://localhost:8888/product/load/${product?.image3}.jpg`}
-                                style={{
-                                    width: "80px",
-                                    height: "80px", margin: "5px", cursor: "pointer", border: "1px solid black"
-                                }}
-                                alt="thumbnail"
-                                onClick={() => handleThumbnailClick(product.image1)}
-                            />
-                            <img
-                                src={`http://localhost:8888/product/load/${product?.image4}.jpg`}
-                                style={{
-                                    width: "80px",
-                                    height: "80px",
-                                    margin: "5px",
-                                    cursor: "pointer",
-                                    border: "1px solid black"
-                                }}
-                                alt="thumbnail"
-                                onClick={() => handleThumbnailClick(product.image1)}
-                            />
-                        </>
-                    )}
-                </div>
+            {/*<div className="container d-lg-none mt-5">*/}
+            {/*    <div className="d-flex justify-content-center align-items-center">*/}
+            {/*        {selectedImage ? (*/}
+            {/*            <img*/}
+            {/*                src={`http://localhost:8888/product/load/${selectedImage}.jpg`}*/}
+            {/*                className="product-image"*/}
+            {/*                alt="product"*/}
+            {/*                style={{width: "340px", height: "340px", border: "1px solid black"}}*/}
+            {/*            />*/}
+            {/*        ) : (*/}
+            {/*            <img*/}
+            {/*                src={require("./../../Images/PublicImages/hm13-slider-1.png")}*/}
+            {/*                className="w-auto h-100 product-image"*/}
+            {/*                alt="product"*/}
+            {/*            />*/}
+            {/*        )}*/}
+            {/*    </div>*/}
+            {/*    <div className="d-flex justify-content-center mt-3">*/}
+            {/*        {product?.image1 && (*/}
+            {/*            <>*/}
+            {/*                <img*/}
+            {/*                    src={`http://localhost:8888/product/load/${product?.image1}.jpg`}*/}
+            {/*                    style={{*/}
+            {/*                        width: "80px",*/}
+            {/*                        height: "80px",*/}
+            {/*                        margin: "5px",*/}
+            {/*                        cursor: "pointer",*/}
+            {/*                        border: "1px solid black"*/}
+            {/*                    }}*/}
+            {/*                    alt="thumbnail"*/}
+            {/*                    onClick={() => handleThumbnailClick(product.image1)}*/}
+            {/*                />*/}
+            {/*                <img*/}
+            {/*                    src={`http://localhost:8888/product/load/${product?.image2}.jpg`}*/}
+            {/*                    style={{*/}
+            {/*                        width: "80px",*/}
+            {/*                        height: "80px",*/}
+            {/*                        margin: "5px",*/}
+            {/*                        cursor: "pointer",*/}
+            {/*                        border: "1px solid black"*/}
+            {/*                    }}*/}
+            {/*                    alt="thumbnail"*/}
+            {/*                    onClick={() => handleThumbnailClick(product.image1)}*/}
+            {/*                />*/}
+            {/*                <img*/}
+            {/*                    src={`http://localhost:8888/product/load/${product?.image3}.jpg`}*/}
+            {/*                    style={{*/}
+            {/*                        width: "80px",*/}
+            {/*                        height: "80px", margin: "5px", cursor: "pointer", border: "1px solid black"*/}
+            {/*                    }}*/}
+            {/*                    alt="thumbnail"*/}
+            {/*                    onClick={() => handleThumbnailClick(product.image1)}*/}
+            {/*                />*/}
+            {/*                <img*/}
+            {/*                    src={`http://localhost:8888/product/load/${product?.image4}.jpg`}*/}
+            {/*                    style={{*/}
+            {/*                        width: "80px",*/}
+            {/*                        height: "80px",*/}
+            {/*                        margin: "5px",*/}
+            {/*                        cursor: "pointer",*/}
+            {/*                        border: "1px solid black"*/}
+            {/*                    }}*/}
+            {/*                    alt="thumbnail"*/}
+            {/*                    onClick={() => handleThumbnailClick(product.image1)}*/}
+            {/*                />*/}
+            {/*            </>*/}
+            {/*        )}*/}
+            {/*    </div>*/}
 
-                <div className="mt-4">
-                    <div className="ml-2">
-                        <h2>{product?.productName}</h2>
-                        <p style={{fontWeight: 'bolder', color: 'red'}}>Giá: ${product?.price}</p>
-                        <p>{product?.description}</p>
-                        <p>Stock Quantity: {product?.stockQuantity}</p>
-                        <StarsReview rating={2.5} size={20}/>
-                        <input
-                            style={{width: '70px', marginLeft: '10px'}}
-                            type="number"
-                            id="typeNumber"
-                            className="form-control"
-                            min="1"
-                            value={quantity}
-                            onChange={(e) => setQuantity(e.target.value as unknown as number)}
-                        />
-                    </div>
-                </div>
-                <hr/>
-            </div>
+            {/*    <div className="mt-4">*/}
+            {/*        <div className="ml-2">*/}
+            {/*            <h2>{product?.productName}</h2>*/}
+            {/*            <p style={{fontWeight: 'bolder', color: 'red'}}>Giá: ${product?.price}</p>*/}
+            {/*            <p>{product?.description}</p>*/}
+            {/*            <p>Stock Quantity: {product?.stockQuantity}</p>*/}
+            {/*            <StarsReview rating={2.5} size={20}/>*/}
+            {/*            <input*/}
+            {/*                style={{width: '70px', marginLeft: '10px'}}*/}
+            {/*                type="number"*/}
+            {/*                id="typeNumber"*/}
+            {/*                className="form-control"*/}
+            {/*                min="1"*/}
+            {/*                value={quantity}*/}
+            {/*                onChange={(e) => setQuantity(e.target.value as unknown as number)}*/}
+            {/*            />*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*    <hr/>*/}
+            {/*</div>*/}
 
             <>
                 <div className='container mt-5' style={{height: 550}}>
                     <div className='homepage-carousel-title'>
-                        <h1 style={{fontSize: '45px'}} className='custom-heading'>New Products</h1>
+                        <h1 style={{fontSize: '45px', marginBottom: '0'}} className='custom-heading'>Similar Items</h1>
                     </div>
                     <Carousel responsive={responsive} className='mt-5'>
-                        {suggest.slice(0, 10).map((product) => (
-                            <ReturnProducts key={product.productId} product={product}/>
+                        {suggest.slice(0, 4).map((product) => (
+                            <SimilarItems key={product.productId} product={product}/>
                         ))}
                     </Carousel>
                 </div>

@@ -4,10 +4,10 @@ export const Heros = () => {
     return (
         <div>
             <div className="d-none d-lg-block">
-                <div className="row g-0 mt-5">
+                <div className="row g-0">
                     <div className="col-sm-6 col-md-6">
                         <div>
-                            <img className="col-image-left" src={'https://physics.aps.org/assets/58434729-f278-4bc7-ad3c-faf98d3db26b/e40_1.png'} alt='hero1'></img>
+                            <img className="col-image-left" src={'https://ecommo--ion.bluenile.com/bn-main/jewel_desktop(2_2).b9138.jpg'} alt='hero1'></img>
                         </div>
                     </div>
                     <div
@@ -38,7 +38,7 @@ export const Heros = () => {
                     </div>
                     <div className="col-sm-6 col-md-6">
                         <div>
-                            <img className="col-image-right" src={'https://lighthouse.mq.edu.au/__data/assets/image/0007/1274992/700x400_AdobeStock_DiamondCut_623238557.jpeg'} alt='hero2'></img>
+                            <img className="col-image-right" src={'https://ecommo--ion.bluenile.com/bn-main/wedding_desktop(2_2).59184.jpg'} alt='hero2'></img>
                         </div>
                     </div>
                 </div>

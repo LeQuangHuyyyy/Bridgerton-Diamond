@@ -1,63 +1,191 @@
-import React, { useState } from "react";
-import { Layout, Form, Input, Button, Checkbox, Row, Col, Card, Radio, List } from "antd";
+import React, {useEffect, useState} from "react";
+import { Layout, Form, Input, Button, Row, Col, Card, Radio, List } from "antd";
+import {jwtDecode} from "jwt-decode";
+import CartModel from "../../../models/CartModel";
+import {SpinnerLoading} from "../../Utils/SpinnerLoading";
 
 const { Content } = Layout;
 
 const Checkout = () => {
-    const [paymentMethod, setPaymentMethod] = useState<string>("cash");
+    const [products, setProducts] = useState<CartModel[]>([]);
+    const [paymentMethod, setPaymentMethod] = useState<string>();
+    const [email, setEmail] = useState<string | undefined>();
+    const [phone, setPhone] = useState<string | undefined>();
+    const [namee, setName] = useState<string | undefined>();
+    const [isLoading, setIsLoading] = useState(true);
+    const [httpError, setHttpError] = useState(null);
+    const [updateFlag, setUpdateFlag] = useState(false);
+    const [discount, setDiscount] = useState(0);
+    const [address, setAddress] = useState<string | undefined>();
+    const [userId, setUserId] = useState<number | undefined>();
 
-    const handlePaymentChange = (e: any) => {
-        setPaymentMethod(e.target.value);
+    useEffect(() => {
+        const data = localStorage.getItem('token');
+
+        if (data) {
+            const decodedToken = jwtDecode(data) as { id: number, email: string, name: string, phone: string };
+            setEmail(decodedToken.email);
+            setPhone(decodedToken.phone);
+            setName(decodedToken.name)
+            setUserId(decodedToken.id);
+            console.log(decodedToken.email, decodedToken.name, decodedToken.phone);
+        } else {
+            console.log("No token found");
+        }
+    }, []);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const baseUrl: string = "http://localhost:8888/cart/cart";
+
+            const addProductRequests = localStorage.getItem("cart");
+            console.log(addProductRequests);
+            const response = await fetch(baseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXlscXNlMTcxMjkzQGZwdC5lZHUudm4ifQ.FzAs3FrNbICbW9dUGZivmqNtMvUs7dh-fCgJy0EvluQ'
+                },
+                body: addProductRequests,
+            });
+
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+
+            const responseJson = await response.json();
+            const responseData = responseJson.data.content;
+
+            console.log(responseData);
+            const loadedProducts: CartModel[] = [];
+
+            for (const key in responseData) {
+                loadedProducts.push({
+                    productId: responseData[key].productId,
+                    productName: responseData[key].productName,
+                    totalPrice: responseData[key].totalPrice,
+                    image1: responseData[key].image1,
+                    quantity: responseData[key].quantity,
+                    size: responseData[key].size,
+                    price: responseData[key].price,
+                    sizeId: responseData[key].sizeId,
+                });
+            }
+            setProducts(loadedProducts);
+            setIsLoading(false);
+        };
+        fetchProducts().catch((error: any) => {
+            setIsLoading(false);
+            setHttpError(error.message);
+        })
+        window.scrollTo(0, 0);
+    }, [updateFlag]);
+
+    const totalAmount = products.reduce((acc, product) => acc + product.totalPrice, 0);
+    const finalAmount = totalAmount - discount;
+    const handleSubmit = async () => {
+        const orderData = {
+            userId,
+            discountCode: discount,
+            addressOrder: address,
+            addProductRequestList: products.map(product => ({
+                productId: product.productId,
+                sizeId: product.sizeId,
+                quantity: product.quantity,
+            })),
+            amount: finalAmount,
+        };
+
+        try {
+            const token = localStorage.getItem("token");
+            const orderResponse = await fetch('http://localhost:8888/cart/create', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            if (orderResponse.ok) {
+                const orderResult = await orderResponse.json();
+                const orderId = orderResult.orderId;  // Assuming the response contains the orderId
+
+                const paymentData = {
+                    orderId,
+                    bankCode: "NCB",
+                };
+                const paymentResponse = await fetch('http://localhost:8888/payment', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(paymentData),
+                });
+
+                if (paymentResponse.ok) {
+                    const paymentResult = await paymentResponse.json();
+                    window.location.href = paymentResult.paymentUrl;
+                } else {
+                    console.error("Failed to create payment");
+                }
+            } else {
+                console.error("Failed to create order");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
     };
 
-    // Giả sử có danh sách sản phẩm và các thông tin cần thiết
-    const products = [
-        { name: "Product 1", price: 100 },
-        { name: "Product 2", price: 200 },
-    ];
-
-    const totalAmount = products.reduce((acc, product) => acc + product.price, 0);
-    const discount = 50; // Giảm giá cố định
-    const finalAmount = totalAmount - discount;
+    if (isLoading) {
+        return (
+            <SpinnerLoading/>
+        )
+    }
+    if (httpError) {
+        return (
+            <div className='container m-5'>
+                <p>{httpError}</p>
+            </div>
+        )
+    }
 
     return (
         <Layout style={{ minHeight: "100vh" }}>
-            <Content style={{ padding: '50px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Content style={{ padding: '50px',paddingTop: '0px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Row gutter={24} style={{ width: '100%' }}>
                     <Col span={16}>
                         <Card title="Checkout">
                             <Form
                                 name="checkout"
-                                initialValues={{ remember: true }}
                                 layout="vertical"
+                                onFinish={handleSubmit}
                             >
                                 <Row gutter={24}>
                                     <Col span={12}>
                                         <Form.Item
-                                            label="First Name"
-                                            name="firstName"
-                                            rules={[{ required: true, message: 'Please input your first name!' }]}
+                                            label="Email"
+                                            name="email"
                                         >
-                                            <Input />
+                                            {email}
                                         </Form.Item>
                                     </Col>
                                     <Col span={12}>
                                         <Form.Item
-                                            label="Last Name"
-                                            name="lastName"
-                                            rules={[{ required: true, message: 'Please input your last name!' }]}
+                                            label="Name"
+                                            name="name"
                                         >
-                                            <Input />
+                                            {namee}
                                         </Form.Item>
                                     </Col>
                                 </Row>
 
                                 <Form.Item
                                     label="Phone"
-                                    name="phone"
-                                    rules={[{ required: true, message: 'Please input your phone number!' }]}
+                                    name="phoneNumber"
                                 >
-                                    <Input />
+                                    {phone}
                                 </Form.Item>
 
                                 <Form.Item
@@ -67,38 +195,6 @@ const Checkout = () => {
                                 >
                                     <Input />
                                 </Form.Item>
-
-                                <Form.Item
-                                    name="paymentMethod"
-                                    label="Payment Method"
-                                    rules={[{ required: true, message: 'Please select a payment method!' }]}
-                                >
-                                    <Radio.Group onChange={handlePaymentChange} value={paymentMethod}>
-                                        <Radio value="cash">Cash on Delivery</Radio>
-                                        <Radio value="vnpay">VNPay</Radio>
-                                    </Radio.Group>
-                                </Form.Item>
-
-                                {paymentMethod === "vnpay" && (
-                                    <div>
-                                        <Form.Item
-                                            label="VNPay Account"
-                                            name="vnpayAccount"
-                                            rules={[{ required: true, message: 'Please input your VNPay account!' }]}
-                                        >
-                                            <Input />
-                                        </Form.Item>
-
-                                        <Form.Item
-                                            label="VNPay Transaction ID"
-                                            name="vnpayTransactionId"
-                                            rules={[{ required: true, message: 'Please input your VNPay transaction ID!' }]}
-                                        >
-                                            <Input />
-                                        </Form.Item>
-                                    </div>
-                                )}
-
                                 <Form.Item>
                                     <Button style={{backgroundColor: 'black', color: "white"}} htmlType="submit">
                                         Place Order
@@ -108,17 +204,52 @@ const Checkout = () => {
                         </Card>
                     </Col>
                     <Col span={8}>
-                        <Card title="Bill Summary">
+                            <Card title="Bill Summary">
                             <List
                                 dataSource={products}
                                 renderItem={item => (
                                     <List.Item>
-                                        <div>{item.name}</div>
-                                        <div>${item.price}</div>
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            padding: '10px',
+                                            borderBottom: '1px solid #f0f0f0'
+                                        }}>
+                                            <div style={{ marginRight: '15px' }}>
+                                                <img
+                                                    src={`http://localhost:8888/product/load-image/${item.image1}.jpg`}
+                                                    alt="product"
+                                                    style={{
+                                                        width: '50px',
+                                                        height: '50px',
+                                                        objectFit: 'cover',
+                                                        borderRadius: '5px'
+                                                    }}
+                                                />
+                                            </div>
+                                            <div style={{
+                                                flex: 1,
+                                                display: 'flex',
+                                                flexDirection: 'column'
+                                            }}>
+                                                <div style={{
+                                                    fontSize: '14px',
+                                                    fontWeight: 'bold',
+                                                    marginBottom: '5px'
+                                                }}>{item.productName}</div>
+                                                <div style={{
+                                                    fontSize: '12px',
+                                                    color: '#888'
+                                                }}>
+                                                    {item.quantity} x ${item.totalPrice}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </List.Item>
+
                                 )}
                             />
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+                            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
                                 <div>Total:</div>
                                 <div>${totalAmount}</div>
                             </div>
