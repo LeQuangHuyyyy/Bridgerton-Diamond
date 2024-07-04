@@ -53,6 +53,9 @@ public class Products {
     @Column(name = "[image_4]")
     private String image4;
 
+    @Column(name = "warranties_year")
+    private double warrantiesYear;
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     @JsonBackReference
@@ -63,19 +66,14 @@ public class Products {
     @JsonBackReference
     private Shell shell;
 
-    @OneToMany(
-            mappedBy = "product", fetch = FetchType.LAZY,
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
-    )
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonBackReference
     private Set<Diamond> diamonds = new HashSet<>();
 
-    @OneToMany(
-            mappedBy = "product", fetch = FetchType.LAZY,
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
-    )
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonBackReference
-    private List<Warranties> warranties;
+    @JoinColumn(name = "warranties_id")
+    private Warranties warranties;
 
     @Override
     public boolean equals(Object obj) {

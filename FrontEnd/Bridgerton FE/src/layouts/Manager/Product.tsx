@@ -9,15 +9,24 @@ interface ProductData {
     productId: string;
     collection: string;
     description: string;
-    image_1: string;
-    image_2: string;
-    image_3: string;
-    image_4: string;
+    image1: File | string;
+    image2: File | string;
+    image3: File | string;
+    image4: File | string;
     price: number;
-    product_name: string;
-    stock_quantity: number;
-    category_id: number;
-    shell_id: number;
+    productName: string;
+    stockQuantity: number;
+    categoryId: number;
+    shellId: number;
+}
+
+interface Diamond {
+    diamondId: number;
+    name: string;
+    carat: number;
+    color: string;
+    clarity: string;
+    cut: string;
 }
 
 export const Product = () => {
@@ -33,24 +42,30 @@ export const Product = () => {
     const [searchCategory, setSearchCategory] = useState('All Category');
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [diamonds, setDiamonds] = useState<Diamond[]>([]);
     const [formData, setFormData] = useState<ProductData>({
         productId: '',
         collection: '',
         description: '',
-        image_1: '',
-        image_2: '',
-        image_3: '',
-        image_4: '',
+        image1: '',
+        image2: '',
+        image3: '',
+        image4: '',
         price: 0,
-        product_name: '',
-        stock_quantity: 0,
-        category_id: 0,
-        shell_id: 0,
+        productName: '',
+        stockQuantity: 0,
+        categoryId: 0,
+        shellId: 0,
     });
+    const [image1, setImage1] = useState<string | null>(null);
+    const [image2, setImage2] = useState<string | null>(null);
+    const [image3, setImage3] = useState<string | null>(null);
+    const [image4, setImage4] = useState<string | null>(null);
 
     const headers = localStorage.getItem('token');
 
     useEffect(() => {
+
         const fetchProducts = async () => {
             const baseUrl: string = "http://localhost:8888/home";
             let url: string = '';
@@ -69,7 +84,6 @@ export const Product = () => {
 
             const responseJson = await response.json();
             const responseData = responseJson.content;
-            console.log(responseJson);
             setTotalAmountOfProducts(responseJson.totalElements)
             setTotalPages(responseJson.totalPages);
 
@@ -121,39 +135,125 @@ export const Product = () => {
             productId: '',
             collection: '',
             description: '',
-            image_1: '',
-            image_2: '',
-            image_3: '',
-            image_4: '',
+            image1: '',
+            image2: '',
+            image3: '',
+            image4: '',
             price: 0,
-            product_name: '',
-            stock_quantity: 0,
-            category_id: 0,
-            shell_id: 0,
+            productName: '',
+            stockQuantity: 0,
+            categoryId: 0,
+            shellId: 0,
         });
         setIsAddingNew(!isAddingNew);
     }
 
+    ///////////////////////// NOTICE //////////////////////////
+    const getFileNameWithoutExtension = (file: File): string => {
+        const fileName = file.name.split('\\').pop()?.split('/').pop();
+        return fileName ? fileName.split('.').slice(0, -1).join('.') : '';
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, files} = e.target;
+        if (files && files.length > 0) {
+            const fileName = files[0].name;
+            console.log(name + ':    ' + files[0].name)
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: files[0],
+            }));
+
+            switch (name) {
+                case 'image1':
+                    setImage1(fileName);
+                    break;
+                case 'image2':
+                    setImage2(fileName);
+                    break;
+                case 'image3':
+                    setImage3(fileName);
+                    break;
+                case 'image4':
+                    setImage4(fileName);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:8888/manage/promotion/create', {
+            const formDataObj = new FormData();
+            if (formData.image1) formDataObj.append('files', formData.image1);
+            if (formData.image2) formDataObj.append('files', formData.image2);
+            if (formData.image3) formDataObj.append('files', formData.image3);
+            if (formData.image4) formDataObj.append('files', formData.image4);
+
+            const response = await fetch('http://localhost:8888/product/saveFile', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${headers}`
+                    'Authorization': `Bearer ${headers}`,
                 },
-                body: JSON.stringify(formData)
+                body: formDataObj,
             });
+
             if (response.ok) {
-                setIsAddingNew(false);
+                console.log("Product save successfully");
+                const requestBody = {
+                    productId: '',
+                    collection: formData.collection,
+                    description: formData.description,
+                    image1: image1,
+                    image2: image2,
+                    image3: image3,
+                    image4: image4,
+                    price: formData.price,
+                    productName: formData.productName,
+                    stockQuantity: formData.stockQuantity,
+                    categoryId: formData.categoryId,
+                    shellId: formData.shellId,
+                }
+                const createProduct = await fetch('http://localhost:8888/product/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${headers}`
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                if (createProduct.ok) {
+                    setIsAddingNew(false);
+                } else {
+                    console.error('Failed to create promotion');
+                }
             } else {
-                console.error('Failed to create promotion');
+                console.error('Failed to save product');
+                return;
             }
+
+
         } catch (error) {
             console.error('Error creating promotion: ', error);
         }
     };
+
+    const handleCreateProduct = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('http://localhost:8888/manage/diamond'); // Địa chỉ API của bạn
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data: Diamond[] = await response.json();
+            setDiamonds(data);
+        } catch (error) {
+            console.error('There was an error fetching the diamonds:', error);
+        }
+        
+    }
 
     const searchHandleChange = () => {
         setCurrentPage(1);
@@ -183,11 +283,14 @@ export const Product = () => {
         }
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
         const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
-        console.log(name + ':   ' + value)
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
+        }));
     };
+
 
     const handleDelete = async (promotionId: string) => {
         try {
@@ -330,6 +433,8 @@ export const Product = () => {
                         onSubmit={handleSubmit}
                         formData={formData}
                         handleChange={handleChange}
+                        handleFileChange={handleFileChange}
+
                     />
                 </div>
             </div>

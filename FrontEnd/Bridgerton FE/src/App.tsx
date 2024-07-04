@@ -18,6 +18,10 @@ import {jwtDecode} from "jwt-decode";
 import ContactUs from "./layouts/ContactUs/ContactUs";
 import {SaleStaffPage} from "./layouts/SaleStaff/SaleStaffPage";
 import OrderSuccessPage from "./layouts/OrderSuccessPage/OrderSuccessPage";
+import {SideBar} from "./layouts/Manager/component/NavBar";
+import {Promotion} from "./layouts/Manager/Promotion";
+import {Product} from "./layouts/Manager/Product";
+import {Diamond} from "./layouts/Manager/Diamond";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -73,7 +77,7 @@ export const App = () => {
                             <Route path='/reset-password'>
                                 <ResetPassword/>
                             </Route>
-                            <Route path='/ordersuccess'>
+                            <Route path='/order-success'>
                                 <OrderSuccessPage/>
                             </Route>
                             <Footer/>
@@ -138,7 +142,17 @@ export const App = () => {
                     )}
                     {token === 'MANAGER' && (
                         <>
-                            <Redirect from='/' to='/manager' exact/>
+                            <SideBar/>
+                            <Redirect from='/' to='/diamond' exact/>
+                            <Route path='/promotion'>
+                                <Promotion/>
+                            </Route>
+                            <Route path='/product'>
+                                <Product/>
+                            </Route>
+                            <Route path='/diamond'>
+                                <Diamond/>
+                            </Route>
                         </>
                     )}
                     {token === 'SALE_STAFF' && (

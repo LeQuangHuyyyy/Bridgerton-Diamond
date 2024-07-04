@@ -69,7 +69,7 @@ public class Order {
     private List<FeedBack> feedBacks;
 
     @OneToMany(
-            mappedBy = "order", fetch = FetchType.LAZY,
+            mappedBy = "order", fetch = FetchType.EAGER,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
     )
     @JsonBackReference

@@ -34,6 +34,9 @@ export const SideBar: React.FC = () => {
                     <NavLink to="/product" className="navbar-brand">
                         Product
                     </NavLink>
+                    <NavLink to="/diamond" className="navbar-brand">
+                        Diamond
+                    </NavLink>
                 </div>
                 <div className="d-flex align-items-center w-25 justify-content-center">
                     <h5 className="me-4">Hello, {userName}</h5>

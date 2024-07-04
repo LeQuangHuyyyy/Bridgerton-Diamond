@@ -101,7 +101,7 @@ export const Login = () => {
                 </div>
                 {showRegister ? (
                     <form className="bg-white pt-1 pb-4 ps-4 pe-4"
-                          style={{height: "520px", width: "370px", position: "relative"}} onSubmit={handleRegister}>
+                          style={{height: "540px", width: "370px", position: "relative"}} onSubmit={handleRegister}>
                         <h2 className="text-center mb-4">REGISTER</h2>
                         <div className="form-group mb-2">
                             <label htmlFor="username">Username:</label>
@@ -135,7 +135,7 @@ export const Login = () => {
                         </div>
                         <button type="submit" className="btn btn-dark btn-block" style={{
                             position: "absolute",
-                            bottom: "60px",
+                            bottom: '0',
                             left: "20px",
                             right: "20px",
                             width: "330px",
@@ -150,7 +150,7 @@ export const Login = () => {
                           onSubmit={handleSubmit}>
                         <h2 className="text-center mb-4">LOGIN</h2>
                         <div className="form-group mb-2">
-                            <label htmlFor="username">Email:</label>
+                            <label htmlFor="username">Username:</label>
                             <input required type="text" className="form-control" id="username" value={email}
                                    onChange={(e) => setUsername(e.target.value)}/>
                         </div>
@@ -165,7 +165,7 @@ export const Login = () => {
                         </NavLink>
                         <button type="submit" className="btn btn-dark btn-block" style={{
                             position: "absolute",
-                            bottom: "140px",
+                            bottom: "120px",
                             left: "20px",
                             right: "20px",
                             width: "330px",

@@ -78,7 +78,7 @@ export const Navbar = () => {
                     <NavLink className="nav-link" to="/contactus">
                         Contact Us
                     </NavLink>
-                    <NavLink className="nav-link" to="/ordersuccess">
+                    <NavLink className="nav-link" to="/order-success">
                         Order Success
                     </NavLink>
                 </Space>

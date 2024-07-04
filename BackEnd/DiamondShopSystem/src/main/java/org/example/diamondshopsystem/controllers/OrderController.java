@@ -6,6 +6,7 @@ import org.example.diamondshopsystem.dto.OrderDetailDTO;
 import org.example.diamondshopsystem.entities.Order;
 import org.example.diamondshopsystem.payload.ResponseData;
 import org.example.diamondshopsystem.payload.requests.AddProductRequest;
+import org.example.diamondshopsystem.payload.requests.OrderDetailRequest;
 import org.example.diamondshopsystem.repositories.OrderRepository;
 import org.example.diamondshopsystem.services.OrderDetailsService;
 import org.example.diamondshopsystem.services.ShoppingCartService;
@@ -44,10 +45,11 @@ public class OrderController {
             Page<OrderDTO> allOrder = orderServiceImp.getAllOrder(pageable);
             return ResponseEntity.ok(allOrder);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    // lấy cả name, email, orderDate, totalAmount, product của order detail đó product có tên, số lượng và price
 
     @GetMapping("/OrdersData/{orderId}")
     public ResponseEntity<?> getOrderById(@PathVariable int orderId) {
@@ -75,5 +77,13 @@ public class OrderController {
             responseData.setDescription("Order details not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
         }
+    }
+
+    @GetMapping("/OrderDetail")
+    public ResponseEntity<?> getOrderDetailSaleStaff() {
+        List<OrderDetailRequest> orderDetailRequests = orderDetailsService.getOrderDetailSaleStaff();
+        ResponseData responseData = new ResponseData();
+        responseData.setData(orderDetailRequests);
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 }
