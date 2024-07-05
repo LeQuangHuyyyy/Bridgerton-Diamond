@@ -60,17 +60,7 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
             String mail = user.getEmail();
 
             for (OrderDetails od : o.getOrderDetails()) {
-                OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
-
-                Products products = od.getProduct();
-                String productName = products.getProductName();
-                int quantity = od.getQuantity();
-                double price = od.getPrice();
-
-                orderProductDetailRequests.setProductName(productName);
-                orderProductDetailRequests.setQuantity(quantity);
-                orderProductDetailRequests.setPrice(price);
-                orderProductDetailRequests.setSize(od.getSize());
+                OrderProductDetailRequest orderProductDetailRequests = getOrderProductDetailRequest(od);
                 list.add(orderProductDetailRequests);
             }
             orderDetailRequest.setUserName(username);
@@ -86,6 +76,21 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         }
 
         return orderDetailList;
+    }
+
+    private static OrderProductDetailRequest getOrderProductDetailRequest(OrderDetails od) {
+        OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
+
+        Products products = od.getProduct();
+        String productName = products.getProductName();
+        int quantity = od.getQuantity();
+        double price = od.getPrice();
+
+        orderProductDetailRequests.setProductName(productName);
+        orderProductDetailRequests.setQuantity(quantity);
+        orderProductDetailRequests.setPrice(price);
+        orderProductDetailRequests.setSize(od.getSize());
+        return orderProductDetailRequests;
     }
 }
 

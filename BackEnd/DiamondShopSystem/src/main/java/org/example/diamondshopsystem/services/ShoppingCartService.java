@@ -285,6 +285,7 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
 
             OrderDetails orderDetails = orderMapper.mapOrderDetailDTOToOrderDetail(orderDetailDTO, order, products);
             orderDetailRepository.save(orderDetails);
+
             warrantiesServiceImp.createWarranties(o.getProductId(), order.getOrderId());
 
         }

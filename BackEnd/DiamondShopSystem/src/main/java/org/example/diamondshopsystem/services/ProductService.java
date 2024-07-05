@@ -135,7 +135,6 @@ public class ProductService implements ProductServiceImp {
 
 
         diamondPrice = diamondsRepository.findFirstAvailableDiamondByProductId(product.getProductId()).getPrice();
-        System.out.println("follow Hưng-" + diamondPrice);
 
         if (product.getShellId() != 0) {
             Shell shell = shellRepository.findById(product.getShellId()).orElseThrow(() -> new NoSuchElementException("Cannot find shell with shell id: " + product.getShellId()));
@@ -147,6 +146,13 @@ public class ProductService implements ProductServiceImp {
 
     @Override
     public Page<ProductDTO> getAllProduct(Pageable pageable) {
+        List<Products> products = productRepository.findAll();
+        resetAllStockQuantity();
+        for (Products p : products) {
+            p.setPrice(calculateTotalPrice(p.getProductId()));
+            productRepository.save(p);
+        }
+
         return productRepository.findAll(pageable).map(productMapper::mapProductToDTO);
     }
 
@@ -248,7 +254,6 @@ public class ProductService implements ProductServiceImp {
             diamonds = diamondsRepository.findDiamondsByProductId(product.getProductId());
             product.setStockQuantity(diamonds.size());
             productRepository.save(product);
-            System.out.println("Product " + product.getProductId() + " quantitty: " + product.getStockQuantity());
         }
     }
 
