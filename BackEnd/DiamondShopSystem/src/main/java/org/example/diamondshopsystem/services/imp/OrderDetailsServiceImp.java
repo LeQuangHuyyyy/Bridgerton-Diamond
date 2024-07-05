@@ -9,4 +9,6 @@ public interface OrderDetailsServiceImp {
     List<OrderDetailDTO> getOrderDetailsByOrderId(int orderId);
 
     List<OrderDetailRequest> getOrderDetailSaleStaff();
+
+    OrderDetailRequest getOrderDetailSaleStaffById(int orderId);
 }

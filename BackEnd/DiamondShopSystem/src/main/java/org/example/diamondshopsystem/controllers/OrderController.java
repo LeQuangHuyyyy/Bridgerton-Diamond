@@ -53,11 +53,12 @@ public class OrderController {
 
     @GetMapping("/OrdersData/{orderId}")
     public ResponseEntity<?> getOrderById(@PathVariable int orderId) {
-        OrderDTO orderDTO = orderServiceImp.getOrderById(orderId);
+        OrderDetailRequest orderDetailRequest = orderDetailsService.getOrderDetailSaleStaffById(orderId);
         ResponseData responseData = new ResponseData();
-        if (orderDTO != null) {
+
+        if (orderDetailRequest != null) {
             responseData.setDescription("Order detail found");
-            responseData.setData(orderDTO);
+            responseData.setData(orderDetailRequest);
             return ResponseEntity.status(HttpStatus.OK).body(responseData);
         } else {
             responseData.setDescription("Order detail not found");
