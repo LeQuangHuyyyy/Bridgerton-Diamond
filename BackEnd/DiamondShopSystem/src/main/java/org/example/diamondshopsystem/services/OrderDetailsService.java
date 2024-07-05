@@ -9,6 +9,7 @@ import org.example.diamondshopsystem.payload.requests.OrderDetailRequest;
 import org.example.diamondshopsystem.payload.requests.OrderProductDetailRequest;
 import org.example.diamondshopsystem.repositories.OrderDetailRepository;
 import org.example.diamondshopsystem.repositories.OrderRepository;
+import org.example.diamondshopsystem.repositories.ProductRepository;
 import org.example.diamondshopsystem.repositories.UserRepository;
 import org.example.diamondshopsystem.services.imp.OrderDetailsServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,12 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
 
     @Autowired
     private OrderRepository orderRepository;
+
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public List<OrderDetailDTO> getOrderDetailsByOrderId(int orderId) {
@@ -43,6 +48,39 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         dto.setPrice(orderDetails.getPrice());
         dto.setSize(orderDetails.getSize());
         return dto;
+    }
+
+
+    @Override
+    public OrderDetailRequest getOrderDetailSaleStaffById(int orderId) {
+        Order orders = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("who is this Order"));
+
+        OrderDetailRequest orderDetailRequest = new OrderDetailRequest();
+
+        List<OrderProductDetailRequest> list = new ArrayList<>();
+        User user = orders.getCustomer();
+        String username = user.getName();
+        String mail = user.getEmail();
+
+        OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
+        for (OrderDetails od : orders.getOrderDetails()) {
+            orderProductDetailRequests = getOrderProductDetailRequest(od);
+            list.add(orderProductDetailRequests);
+
+            orderDetailRequest.setImage(od.getProduct().getImage1());
+        }
+        orderDetailRequest.setUserName(username);
+        orderDetailRequest.setEmail(mail);
+        orderDetailRequest.setOrderDate(orders.getOrderDate());
+        orderDetailRequest.setTotalAmount(orders.getOrderTotalAmount());
+
+        orderDetailRequest.setOrderId(orderId);
+        orderDetailRequest.setOrderStatus(orders.getStatus());
+        orderDetailRequest.setTotalProductInOrder(list.size());
+
+        orderDetailRequest.setProduct(list);
+
+        return orderDetailRequest;
     }
 
     @Override
