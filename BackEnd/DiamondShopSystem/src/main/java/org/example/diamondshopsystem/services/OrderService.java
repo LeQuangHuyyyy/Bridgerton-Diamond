@@ -130,19 +130,13 @@ public class OrderService implements OrderServiceImp {
 
 
     private boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
-        switch (currentStatus) {
-            case PENDING:
-                return newStatus == OrderStatus.PAYMENT || newStatus == OrderStatus.CANCELED;
-            case PAYMENT:
-                return newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.CANCELED;
-            case DELIVERED:
-                return newStatus == OrderStatus.RECEIVED || newStatus == OrderStatus.CANCELED;
-            case CANCELED:
-                return false;
-            case RECEIVED:
-                return false;
-            default:
-                return false;
-        }
+        return switch (currentStatus) {
+            case PENDING -> newStatus == OrderStatus.PAYMENT || newStatus == OrderStatus.CANCELED;
+            case PAYMENT -> newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.CANCELED;
+            case DELIVERED -> newStatus == OrderStatus.RECEIVED || newStatus == OrderStatus.CANCELED;
+            case CANCELED -> false;
+            case RECEIVED -> false;
+            default -> false;
+        };
     }
 }

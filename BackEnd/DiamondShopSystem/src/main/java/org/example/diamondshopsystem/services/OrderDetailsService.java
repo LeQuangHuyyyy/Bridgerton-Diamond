@@ -62,6 +62,7 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         String username = user.getName();
         String mail = user.getEmail();
         String phoneNumber = user.getPhoneNumber();
+        String address = user.getAddress();
 
         OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
         for (OrderDetails od : orders.getOrderDetails()) {
@@ -73,6 +74,7 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         orderDetailRequest.setUserName(username);
         orderDetailRequest.setEmail(mail);
         orderDetailRequest.setPhoneNumber(phoneNumber);
+        orderDetailRequest.setAddress(address);
 
         orderDetailRequest.setOrderDate(orders.getOrderDate());
         orderDetailRequest.setTotalAmount(orders.getOrderTotalAmount());

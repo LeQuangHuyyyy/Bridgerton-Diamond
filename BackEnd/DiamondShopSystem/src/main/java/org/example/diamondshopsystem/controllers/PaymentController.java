@@ -56,7 +56,7 @@ public class PaymentController {
             String responseCode = request.getParameter("vnp_ResponseCode");
             String redirectUrl;
 
-            if ("00".equals(responseCode)) {
+            if (responseCode.equals("00")) {
                 Map<String, String[]> parameterMap = request.getParameterMap();
                 boolean isValid = paymentService.verifyVNPayCallback(parameterMap);
 

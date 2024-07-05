@@ -15,6 +15,7 @@ public class OrderDetailRequest {
     private String userName;
     private String email;
     private String phoneNumber;
+    private String address;
     private Date orderDate;
     private double totalAmount;
 
