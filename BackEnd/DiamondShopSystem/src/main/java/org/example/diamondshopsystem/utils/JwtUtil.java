@@ -23,7 +23,7 @@ public class JwtUtil {
 
     public String generateToken(UserDTO userDTO) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(privateKey));
-        String jws = Jwts.builder()
+        String jwt = Jwts.builder()
                 .setSubject(userDTO.getEmail())
                 .claim("id", userDTO.getUserid())
                 .claim("name", userDTO.getName())
@@ -34,7 +34,7 @@ public class JwtUtil {
                 .signWith(key)
                 .compact();
 
-        return jws;
+        return jwt;
     }
 
     public boolean verifyToken(String token) {
@@ -57,17 +57,17 @@ public class JwtUtil {
         return claims.getSubject();
     }
 
-    public Role getRoleFromToken(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(privateKey));
-        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
-        Claims claims = claimsJws.getBody();
-        return claims.get("role", Role.class);
-    }
-
-    public int getIdFromToken(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(privateKey));
-        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
-        Claims claims = claimsJws.getBody();
-        return claims.get("id", Integer.class);
-    }
+//    public Role getRoleFromToken(String token) {
+//        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(privateKey));
+//        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
+//        Claims claims = claimsJws.getBody();
+//        return claims.get("role", Role.class);
+//    }
+//
+//    public int getIdFromToken(String token) {
+//        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(privateKey));
+//        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
+//        Claims claims = claimsJws.getBody();
+//        return claims.get("id", Integer.class);
+//    }
 }
