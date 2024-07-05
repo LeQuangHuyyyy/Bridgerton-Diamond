@@ -48,6 +48,7 @@ const DiamondTable: React.FC<{ product: ProductModel | undefined }> = (props) =>
             console.log(error);
         })
     },[]);
+
     if(isLoading){
         return (
             <SpinnerLoading/>

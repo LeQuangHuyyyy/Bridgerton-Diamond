@@ -1,76 +1,141 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './OrderTable.css';
 import OrderDetail from './OrderDetail';
+import OrderModel from "../../../models/OrderModel";
+import {SpinnerLoading} from "../../Utils/SpinnerLoading";
+import {Modal} from "antd";
+
+
+const headers = {
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXlscXNlMTcxMjkzQGZwdC5lZHUudm4ifQ.FzAs3FrNbICbW9dUGZivmqNtMvUs7dh-fCgJy0EvluQ'
+}
 const OrderTable: React.FC = () => {
-    const [showOrderDetail, setShowOrderDetail] = useState(false);
+    const [orders, setOrders] = useState<OrderModel[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [httpError, setHttpError] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleShowOrderDetail = () => {
-        setShowOrderDetail(true);
+    const showModal = () => {
+        setIsModalOpen(true);
     };
 
-    const handleCloseOrderDetail = () => {
-        setShowOrderDetail(false);
+    const handleOk = () => {
+        setIsModalOpen(false);
     };
-    const orders = [
-        {
-            orderId: 1,
-            orderDate: new Date('2023-01-01'),
-            orderTotalAmount: 15000,
-            orderDeliveryAddress: '123 Main St, City, Country',
-            status: 'Processing',
-            discountCode: 'DISCOUNT10',
-            customerId: 101,
-            saleId: 201,
-            deliveryId: 301,
-            orderDetails: {
-                orderId: 1,
-                productId: 67890,
-                quantity: 2,
-                price: 100.00,
-                size: 10
-            },
-            feedbacks: 'Feedbacks for order 1',
-            warranties: 'Warranties for order 1',
-            invoices: 'Invoices for order 1',
-            payments: 'Payments for order 1',
-        }
-    ];
 
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
+    useEffect(() => {
+        const fetchOrders = async () => {
+            const baseUrl: string = "http://localhost:8888/order";
+            const url: string = `${baseUrl}`;
+            const response = await fetch(url, {headers: headers});
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+            const responseJson = await response.json();
+            const responseData = responseJson.content;
+            const loadedOrders: OrderModel[] = [];
+            for (const key in responseData) {
+                loadedOrders.push({
+                    orderId: responseData[key].orderId,
+                    orderDate: new Date(responseData[key].orderDate),
+                    orderTotalAmount: responseData[key].orderTotalAmount,
+                    orderDeliveryAddress: responseData[key].orderDeliveryAddress,
+                    status: responseData[key].status,
+                    discountCode: responseData[key].discountCode,
+                    customerId: responseData[key].customerId,
+                    saleId: responseData[key].saleId,
+                    deliveryId: responseData[key].deliveryId,
+                    orderDetails: responseData[key].orderDetails,
+                    feedbacks: responseData[key].feedbacks,
+                    warranties: responseData[key].warranties,
+                    invoices: responseData[key].invoices,
+                    payments: responseData[key].payments,
+                });
+            }
+            setOrders(loadedOrders);
+            setIsLoading(false);
+        };
+        fetchOrders().catch((error: any) => {
+            setIsLoading(false);
+            setHttpError(error.message);
+            console.log(error);
+        })
+    }, []);
+
+    if (isLoading) {
+        return (
+            <SpinnerLoading/>
+        )
+    }
+
+    if (httpError) {
+        return (
+            <div className='container m-5'>
+                <p>{httpError}</p>
+            </div>
+        )
+    }
     return (
-        <div style={{ marginTop: '100px' }} className="container">
+        <div style={{marginTop: '100px'}} className="container">
             <h1 className='custom-heading text-center'>Orders Manager</h1>
             <table className="table table-hover table-striped table-bordered">
                 <thead className="thead-dark">
-                <tr>
-                    <th>ORDER ID</th>
-                    <th>ORDER DATE</th>
-                    <th>ORDER TOTAL AMOUNT</th>
-                    <th>ORDER DELIVERY ADDRESS</th>
-                    <th>DISCOUNT CODE</th>
-                    <th>STATUS</th>
-                    <th>ACTION</th>
+                <div style={{width: '300px'}} className='col-6'>
+                    <div
+                        style={{paddingLeft: '0'}}
+                        className='d-flex'>
+                        <input
+                            style={{borderRadius: '0'}}
+                            className='form-control me-2 w-auto' type='search'
+                            placeholder='Search' aria-labelledby='Search'
+                            // onChange={e => setSearch(e.target.value)}
+                        />
+                        <button
+                            style={{borderRadius: '0'}}
+                            className='btn btn-outline-dark'
+                            // onClick={() => searchHandleChange()}
+                        >
+                            Search
+                        </button>
+                    </div>
+                </div>
+                <tr className='text-center'>
+                    <th className='bg-black text-white'>ORDER ID</th>
+                    <th className='bg-black text-white'>ORDER DATE</th>
+                    <th className='bg-black text-white'>ORDER TOTAL AMOUNT</th>
+                    <th className='bg-black text-white'>ORDER DELIVERY ADDRESS</th>
+                    <th className='bg-black text-white'>DISCOUNT CODE</th>
+                    <th className='bg-black text-white'>STATUS</th>
+                    <th className='bg-black text-white'>ACTION</th>
                 </tr>
                 </thead>
                 <tbody>
                 {orders.map(order => (
-                    <tr key={order.orderId}>
+                    <tr key={order.orderId} className='text-center'>
                         <td>{order.orderId}</td>
-                        <td>{order.orderDate.toDateString()}</td>
-                        <td>{order.orderTotalAmount}</td>
+                        <td>{order.orderDate.toLocaleDateString()}</td>
+                        <td>${order.orderTotalAmount}</td>
                         <td>{order.orderDeliveryAddress}</td>
                         <td>{order.discountCode}</td>
                         <td>{order.status}</td>
                         <td>
-                            <button onClick={handleShowOrderDetail} className='border-0 action-btn' >
+                            <button onClick={showModal} className='border-0 action-btn'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                      className="bi bi-eye" viewBox="0 0 16 16">
-                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
+                                    <path
+                                        d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
                                     <path d="M8 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
                                 </svg>
                             </button>
-                            {showOrderDetail && <OrderDetail onClose={handleCloseOrderDetail} />}
+                            <Modal className='ant-modal-mask' title="Order Detail" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                                {/*<OrderDetail detail={order}/>*/}
+                                Hello
+                            </Modal>
 
                             <button className='border-0 action-btn'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

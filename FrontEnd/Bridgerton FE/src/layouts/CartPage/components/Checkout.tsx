@@ -3,19 +3,17 @@ import { Layout, Form, Input, Button, Row, Col, Card, Radio, List } from "antd";
 import {jwtDecode} from "jwt-decode";
 import CartModel from "../../../models/CartModel";
 import {SpinnerLoading} from "../../Utils/SpinnerLoading";
-
 const { Content } = Layout;
 
 const Checkout = () => {
     const [products, setProducts] = useState<CartModel[]>([]);
-    const [paymentMethod, setPaymentMethod] = useState<string>();
     const [email, setEmail] = useState<string | undefined>();
     const [phone, setPhone] = useState<string | undefined>();
     const [namee, setName] = useState<string | undefined>();
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
     const [updateFlag, setUpdateFlag] = useState(false);
-    const [discount, setDiscount] = useState(0);
+    const [discount, setDiscount] = useState(50);
     const [address, setAddress] = useState<string | undefined>();
     const [userId, setUserId] = useState<number | undefined>();
 
@@ -151,6 +149,10 @@ const Checkout = () => {
         )
     }
 
+    const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setAddress(e.target.value);
+    };
+
     return (
         <Layout style={{ minHeight: "100vh" }}>
             <Content style={{ padding: '50px',paddingTop: '0px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -193,7 +195,7 @@ const Checkout = () => {
                                     name="address"
                                     rules={[{ required: true, message: 'Please input your address!' }]}
                                 >
-                                    <Input />
+                                    <Input value={address} onChange={handleAddressChange} />
                                 </Form.Item>
                                 <Form.Item>
                                     <Button style={{backgroundColor: 'black', color: "white"}} htmlType="submit">

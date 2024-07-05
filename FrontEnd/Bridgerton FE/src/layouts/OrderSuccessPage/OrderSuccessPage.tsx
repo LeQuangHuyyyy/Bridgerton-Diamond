@@ -9,7 +9,7 @@ const OrderSuccessPage: React.FC = () => {
             <Lottie animationData={require('./Animation.json')} style={{width: '280px', height: '280px'}}/>
             <h1 className="order-success-title">Order Success</h1>
             <p className="order-success-message">Thank you for your purchase! Your order has been successfully placed.</p>
-            <Link to="/" className="order-success-link">Go to Home</Link>
+            <Link to="/home" className="order-success-link">Go to Home</Link>
         </div>
     );
 };

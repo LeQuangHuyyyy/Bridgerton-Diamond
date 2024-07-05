@@ -25,3 +25,32 @@
 .action-btn:hover {
     background-color: #f8f9fa;
 }
+
+.status-pending {
+    color: orange;
+}
+
+.status-confirmed {
+    color: blue;
+}
+
+.status-payment {
+    color: purple;
+}
+
+.status-delivered {
+    color: green;
+}
+
+.status-canceled {
+    color: red;
+}
+
+.status-received {
+    color: grey;
+}
+
+.ant-modal-mask {
+    background-color: rgba(0, 0, 0, 0.5); /* Điều chỉnh độ trong suốt tại đây */
+}
+
