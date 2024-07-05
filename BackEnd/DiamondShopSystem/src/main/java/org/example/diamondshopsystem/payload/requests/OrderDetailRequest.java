@@ -14,6 +14,7 @@ import java.util.List;
 public class OrderDetailRequest {
     private String userName;
     private String email;
+    private String phoneNumber;
     private Date orderDate;
     private double totalAmount;
 
