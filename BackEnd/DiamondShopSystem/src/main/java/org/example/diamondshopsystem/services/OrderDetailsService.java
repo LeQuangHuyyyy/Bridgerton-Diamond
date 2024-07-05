@@ -46,6 +46,31 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
     }
 
     @Override
+    public OrderDetailRequest getOrderDetailSaleStaffById(int orderId) {
+        Order orders = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("who is this Order"));
+
+        OrderDetailRequest orderDetailRequest = new OrderDetailRequest();
+
+        List<OrderProductDetailRequest> list = new ArrayList<>();
+        User user = orders.getCustomer();
+        String username = user.getName();
+        String mail = user.getEmail();
+
+        for (OrderDetails od : orders.getOrderDetails()) {
+            OrderProductDetailRequest orderProductDetailRequests = getOrderProductDetailRequest(od);
+            list.add(orderProductDetailRequests);
+        }
+        orderDetailRequest.setUserName(username);
+        orderDetailRequest.setEmail(mail);
+        orderDetailRequest.setOrderDate(orders.getOrderDate());
+        orderDetailRequest.setTotalAmount(orders.getOrderTotalAmount());
+
+        orderDetailRequest.setProduct(list);
+
+        return orderDetailRequest;
+    }
+
+    @Override
     public List<OrderDetailRequest> getOrderDetailSaleStaff() {
 
         List<Order> orders = orderRepository.findAll();
