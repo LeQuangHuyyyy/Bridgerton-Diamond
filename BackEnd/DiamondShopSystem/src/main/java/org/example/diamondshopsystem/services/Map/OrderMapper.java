@@ -82,7 +82,6 @@ public class OrderMapper {
         warrantyDTO.setWarrantiesId(warranty.getWarrantiesId());
         warrantyDTO.setWarrantyStartDate(warranty.getWarrantyStartDate());
         warrantyDTO.setWarrantyExpirationDate(warranty.getWarrantyExpirationDate());
-        warrantyDTO.setWarrantyType(warranty.getWarrantyType());
         return warrantyDTO;
     }
 

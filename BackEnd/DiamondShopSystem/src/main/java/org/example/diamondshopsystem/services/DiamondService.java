@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 @Service
 public class DiamondService implements DiamondServiceImp {
@@ -34,6 +35,11 @@ public class DiamondService implements DiamondServiceImp {
 
     @Autowired
     EntityManager entityManager;
+
+    @Override
+    public List<Diamond> getDiamondWithoutProduct() {
+        return diamondsRepository.findDiamondWithoutProducts();
+    }
 
     @Transactional
     @Override
@@ -66,14 +72,15 @@ public class DiamondService implements DiamondServiceImp {
         diamond.setClarity(diamondDTO.getClarity());
         diamond.setCarat(diamondDTO.getCarat());
         diamond.setCertification(diamondDTO.getCertification());
-
-        diamond.setPrice(diamondPriceRepository.findByCaratAndCutAndColorAndClarity(diamondDTO.getCarat(), diamondDTO.getCut(), diamondDTO.getColor(), diamondDTO.getClarity()).getPrice());
-
-//        Products products = productRepository.findById(diamondDTO.getProductId())
-//                .orElseThrow(() -> new NoSuchElementException("Cannot found product with id: " + diamondDTO.getProductId()));
-//        diamond.setProduct(products);
-
+        diamond.setPrice(diamondDTO.getPrice());
         Diamond savedDiamond = diamondsRepository.save(diamond);
+
+        if (diamond.getProduct() != null) {
+            double price = productService.calculateTotalPrice(diamond.getProduct().getProductId());
+            Products products = productRepository.findById(diamond.getProduct().getProductId()).orElseThrow(() -> new IllegalArgumentException("ke ke ke "));
+            products.setPrice(price);
+            productRepository.save(products);
+        }
         return mapDiamondToDiamondDTO(savedDiamond);
     }
 
