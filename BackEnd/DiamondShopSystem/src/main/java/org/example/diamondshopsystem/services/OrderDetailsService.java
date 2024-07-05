@@ -62,7 +62,7 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         String username = user.getName();
         String mail = user.getEmail();
         String phoneNumber = user.getPhoneNumber();
-        String address = user.getAddress();
+        String address = orders.getOrderDeliveryAddress();
 
         OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
         for (OrderDetails od : orders.getOrderDetails()) {
