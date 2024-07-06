@@ -1,12 +1,9 @@
 package org.example.diamondshopsystem.services;
 
 import org.example.diamondshopsystem.dto.OrderDTO;
-import org.example.diamondshopsystem.dto.PaymentDTO;
 import org.example.diamondshopsystem.entities.Order;
 
 import org.example.diamondshopsystem.entities.OrderStatus;
-import org.example.diamondshopsystem.entities.Products;
-import org.example.diamondshopsystem.payload.requests.AddProductRequest;
 import org.example.diamondshopsystem.repositories.OrderDetailRepository;
 import org.example.diamondshopsystem.repositories.OrderRepository;
 import org.example.diamondshopsystem.repositories.ProductRepository;
@@ -116,6 +113,7 @@ public class OrderService implements OrderServiceImp {
     @Override
     public void setOrderFromPaymentToDelivery(Integer orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+        
         if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.PAYMENT)) {
             order.setStatus(OrderStatus.DELIVERED);
             try {
@@ -136,6 +134,7 @@ public class OrderService implements OrderServiceImp {
         }
         List<OrderDTO> orderDTOList = new ArrayList<>();
         for (Order o : orders) {
+
             orderDTOList.add(orderMapper.getAllOrder(o));
         }
         return orderDTOList;

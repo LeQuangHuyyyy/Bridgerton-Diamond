@@ -153,7 +153,7 @@ public class ProductService implements ProductServiceImp {
             productRepository.save(p);
         }
 
-        return productRepository.findAll(pageable).map(productMapper::mapProductToDTO);
+        return productRepository.findAllProduct(pageable).map(productMapper::mapProductToDTO);
     }
 
     @Override
