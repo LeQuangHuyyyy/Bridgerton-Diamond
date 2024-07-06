@@ -93,9 +93,7 @@ public class OrderController {
             status = OrderStatus.valueOf(keyword.toUpperCase());
         } catch (IllegalArgumentException ignored) {
         }
-        String likeKeyword = "%" + keyword + "%";
-        List<OrderDTO> orderDTOList = orderServiceImp.searchByKeyWord(likeKeyword, status);
-
+        List<OrderDTO> orderDTOList = orderServiceImp.searchByKeyWord(keyword, status);
         ResponseData responseData = new ResponseData();
         if (!orderDTOList.isEmpty()) {
             responseData.setData(orderDTOList);
