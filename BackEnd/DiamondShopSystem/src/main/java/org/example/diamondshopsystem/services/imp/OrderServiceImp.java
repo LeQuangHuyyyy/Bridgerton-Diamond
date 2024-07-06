@@ -30,5 +30,5 @@ public interface OrderServiceImp {
 
     void setOrderFromPaymentToDelivery(Integer orderId);
 
-    List<OrderDTO> searchByKeyWord(String keyword);
+    List<OrderDTO> searchByKeyWord(String keyword, OrderStatus status);
 }

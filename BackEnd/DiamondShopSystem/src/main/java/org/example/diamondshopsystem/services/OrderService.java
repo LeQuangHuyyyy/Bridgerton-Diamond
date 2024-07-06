@@ -129,8 +129,11 @@ public class OrderService implements OrderServiceImp {
     }
 
     @Override
-    public List<OrderDTO> searchByKeyWord(String keyword) {
-        List<Order> orders = orderRepository.findByKeyword(keyword);
+    public List<OrderDTO> searchByKeyWord(String keyword, OrderStatus status) {
+        List<Order> orders = orderRepository.findByKeyword(keyword, status);
+        if (orders.isEmpty()) {
+            orders = List.of(orderRepository.findById(Integer.parseInt(keyword)).orElseThrow(() -> new IllegalArgumentException("ke ke ke ")));
+        }
         List<OrderDTO> orderDTOList = new ArrayList<>();
         for (Order o : orders) {
             orderDTOList.add(orderMapper.getAllOrder(o));

@@ -2,6 +2,7 @@ package org.example.diamondshopsystem.controllers;
 
 import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.dto.OrderDetailDTO;
+import org.example.diamondshopsystem.entities.OrderStatus;
 import org.example.diamondshopsystem.payload.ResponseData;
 import org.example.diamondshopsystem.payload.requests.OrderDetailRequest;
 import org.example.diamondshopsystem.repositories.OrderRepository;
@@ -87,14 +88,22 @@ public class OrderController {
 
     @GetMapping("/search")
     public ResponseEntity<?> SearchOrderByKeyWord(@RequestParam String keyword) {
-        List<OrderDTO> orderDTOList = orderServiceImp.searchByKeyWord(keyword);
+        OrderStatus status = null;
+        try {
+            status = OrderStatus.valueOf(keyword.toUpperCase());
+        } catch (IllegalArgumentException ignored) {
+        }
+        String likeKeyword = "%" + keyword + "%";
+        List<OrderDTO> orderDTOList = orderServiceImp.searchByKeyWord(likeKeyword, status);
+
         ResponseData responseData = new ResponseData();
         if (!orderDTOList.isEmpty()) {
             responseData.setData(orderDTOList);
             return new ResponseEntity<>(responseData, HttpStatus.OK);
         } else {
-            responseData.setDescription("cannot find any things !!");
+            responseData.setDescription("ke ke ke tìm c!!");
             return new ResponseEntity<>(responseData, HttpStatus.NOT_FOUND);
         }
     }
+
 }

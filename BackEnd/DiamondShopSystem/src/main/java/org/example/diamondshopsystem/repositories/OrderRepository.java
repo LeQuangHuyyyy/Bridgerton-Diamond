@@ -1,6 +1,5 @@
 package org.example.diamondshopsystem.repositories;
 
-import org.aspectj.weaver.ast.Or;
 import org.example.diamondshopsystem.entities.Order;
 import org.example.diamondshopsystem.entities.OrderStatus;
 import org.springframework.data.domain.Page;
@@ -31,6 +30,10 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT o FROM Order o WHERE o.status IN :statuses")
     Page<Order> findByStatuses(@Param("statuses") List<OrderStatus> statuses, Pageable pageable);
 
-    @Query("SELECT o FROM Order o WHERE o.customer.name LIKE %:keyword% OR o.orderId = :keyword OR o.orderDeliveryAddress LIKE %:keyword% OR o.status = :keyword")
-    List<Order> findByKeyword(@Param("keyword") String keyword);
+    @Query("SELECT o FROM Order o WHERE " +
+            "o.customer.name LIKE %:keyword% OR " +
+            "o.orderDeliveryAddress LIKE %:keyword% OR " +
+            "STR(o.orderId) = :keyword OR " +
+            "o.status = :status")
+    List<Order> findByKeyword(@Param("keyword") String keyword, @Param("status") OrderStatus status);
 }
