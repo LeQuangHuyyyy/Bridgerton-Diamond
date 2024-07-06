@@ -1,14 +1,10 @@
 package org.example.diamondshopsystem.controllers;
 
-import lombok.RequiredArgsConstructor;
 import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.dto.OrderDetailDTO;
-import org.example.diamondshopsystem.entities.Order;
 import org.example.diamondshopsystem.payload.ResponseData;
-import org.example.diamondshopsystem.payload.requests.AddProductRequest;
 import org.example.diamondshopsystem.payload.requests.OrderDetailRequest;
 import org.example.diamondshopsystem.repositories.OrderRepository;
-import org.example.diamondshopsystem.services.OrderDetailsService;
 import org.example.diamondshopsystem.services.ShoppingCartService;
 import org.example.diamondshopsystem.services.imp.OrderDetailsServiceImp;
 import org.example.diamondshopsystem.services.imp.OrderServiceImp;
@@ -37,6 +33,7 @@ public class OrderController {
 
     @Autowired
     OrderDetailsServiceImp orderDetailsService;
+
 
     @GetMapping
     public ResponseEntity<Page<OrderDTO>> getAllOrders(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
@@ -86,5 +83,18 @@ public class OrderController {
         ResponseData responseData = new ResponseData();
         responseData.setData(orderDetailRequests);
         return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> SearchOrderByKeyWord(@RequestParam String keyword) {
+        List<OrderDTO> orderDTOList = orderServiceImp.searchByKeyWord(keyword);
+        ResponseData responseData = new ResponseData();
+        if (!orderDTOList.isEmpty()) {
+            responseData.setData(orderDTOList);
+            return new ResponseEntity<>(responseData, HttpStatus.OK);
+        } else {
+            responseData.setDescription("cannot find any things !!");
+            return new ResponseEntity<>(responseData, HttpStatus.NOT_FOUND);
+        }
     }
 }

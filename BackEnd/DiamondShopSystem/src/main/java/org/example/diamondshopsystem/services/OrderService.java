@@ -20,7 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +45,8 @@ public class OrderService implements OrderServiceImp {
     @Override
     public Page<OrderDTO> getAllOrder(Pageable pageable) {
         Page<Order> orderPage = orderRepository.findAll(pageable);
-        List<OrderDTO> orderDTOList = orderPage.getContent().stream().map(orderMapper::mapOrderToOrderDTO).collect(Collectors.toList());
+        List<OrderDTO> orderDTOList = orderPage.getContent().stream().map(orderMapper::getAllOrder).collect(Collectors.toList());
+
         return new PageImpl<>(orderDTOList, pageable, orderPage.getTotalElements());
     }
 
@@ -108,7 +109,6 @@ public class OrderService implements OrderServiceImp {
             List<OrderDTO> orderDTOList = orderPage.getContent().stream().map(orderMapper::mapOrderToOrderDTO).collect(Collectors.toList());
             return new PageImpl<>(orderDTOList, pageable, orderPage.getTotalElements());
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException("Failed to fetch orders by statuses");
         }
     }
@@ -128,6 +128,16 @@ public class OrderService implements OrderServiceImp {
         }
     }
 
+    @Override
+    public List<OrderDTO> searchByKeyWord(String keyword) {
+        List<Order> orders = orderRepository.findByKeyword(keyword);
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        for (Order o : orders) {
+            orderDTOList.add(orderMapper.getAllOrder(o));
+        }
+        return orderDTOList;
+    }
+
 
     private boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
         return switch (currentStatus) {
@@ -139,4 +149,5 @@ public class OrderService implements OrderServiceImp {
             default -> false;
         };
     }
+
 }

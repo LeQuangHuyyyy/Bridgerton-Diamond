@@ -28,6 +28,8 @@ public class OrderDTO {
 
     private String discountCode;
 
+    private String username;
+
     private int customerId;
     private int saleId;
     private int deliveryId;
