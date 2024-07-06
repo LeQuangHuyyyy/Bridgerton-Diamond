@@ -13,11 +13,13 @@ import {ResetPassword} from "./Auth/ResetPassword";
 import {DiamondPricePage} from "./layouts/DiamondPrice/DiamondPricePage";
 import Checkout from "./layouts/CartPage/components/Checkout";
 import {SearchProductsPage} from "./layouts/SearchProductsPage/SearchProductsPage";
-import {Table} from "./layouts/dashboard/Table";
+import {Table} from "./layouts/Admin/Table";
 import {jwtDecode} from "jwt-decode";
 import ContactUs from "./layouts/ContactUs/ContactUs";
 import {SaleStaffPage} from "./layouts/SaleStaff/SaleStaffPage";
 import OrderSuccessPage from "./layouts/OrderSuccessPage/OrderSuccessPage";
+import OrderDetail from "./layouts/SaleStaff/component/OrderDetail";
+import DeliveryStaff from "./layouts/DeliveryStaff/DeliveryStaff";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -83,15 +85,17 @@ export const App = () => {
                     {token === 'CUSTOMER' && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
-                            <Redirect from='/' to='/home' exact/>
+                            <Route path='/' exact>
+                                <HomePage/>
+                            </Route>
+                            <Route path='/home'>
+                                <HomePage/>
+                            </Route>
                             <Route path='/cart'>
                                 <CartPage/>
                             </Route>
                             <Route path='/checkout'>
                                 <Checkout/>
-                            </Route>
-                            <Route path='/home'>
-                                <HomePage/>
                             </Route>
                             <Route path='/shop'>
                                 <SearchProductsPage/>
@@ -147,11 +151,17 @@ export const App = () => {
                             <Route path='/salestaff'>
                                 <SaleStaffPage/>
                             </Route>
+                            <Route path='/orderdetail/:orderId'>
+                                <OrderDetail/>
+                            </Route>
                         </>
                     )}
                     {token === 'DELIVERY_STAFF' && (
                         <>
-                            <Redirect from='/' to='/' exact/>
+                            <Redirect from='/' to='/deliverystaff' exact/>
+                            <Route path='/deliverystaff'>
+                                <DeliveryStaff/>
+                            </Route>
                         </>
                     )}
                 </Switch>

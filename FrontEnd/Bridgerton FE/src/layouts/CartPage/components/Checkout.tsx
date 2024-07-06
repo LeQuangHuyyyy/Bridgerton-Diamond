@@ -123,6 +123,7 @@ const Checkout = () => {
                 });
 
                 if (paymentResponse.ok) {
+                    localStorage.removeItem('cart');
                     const paymentResult = await paymentResponse.json();
                     window.location.href = paymentResult.paymentUrl;
                 } else {
