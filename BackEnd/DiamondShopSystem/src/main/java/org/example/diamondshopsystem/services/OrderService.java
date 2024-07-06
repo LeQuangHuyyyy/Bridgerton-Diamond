@@ -86,6 +86,8 @@ public class OrderService implements OrderServiceImp {
         return order.getStatus();
     }
 
+
+    /////////////// NOTICE ///////////////
     @Override
     public Page<OrderDTO> getAllOrderByStatus(OrderStatus status, Pageable pageable) {
         try {
@@ -98,6 +100,8 @@ public class OrderService implements OrderServiceImp {
         }
     }
 
+
+    ////// hiện thêm cái tên của thằng sale !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     @Override
     public Page<OrderDTO> getAllOrdersByStatuses(List<OrderStatus> statuses, Pageable pageable) {
