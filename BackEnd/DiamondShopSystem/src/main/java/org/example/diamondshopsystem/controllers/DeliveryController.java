@@ -31,7 +31,7 @@ public class DeliveryController {
     OrderServiceImp orderServiceImp;
 
 
-    @GetMapping("/ViewOrderDelivery")
+    @GetMapping("/getOrderDelivery")
     public ResponseEntity<List<OrderDTO>> getOrderByDelivery(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         try {
             OrderStatus statuses = OrderStatus.DELIVERED;
@@ -39,7 +39,6 @@ public class DeliveryController {
             List<OrderDTO> newOrders = newOrdersPage.getContent();
             return ResponseEntity.ok(newOrders);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
