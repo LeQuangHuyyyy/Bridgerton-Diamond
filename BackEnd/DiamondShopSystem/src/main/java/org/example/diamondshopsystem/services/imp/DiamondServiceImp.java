@@ -2,11 +2,14 @@ package org.example.diamondshopsystem.services.imp;
 
 import org.example.diamondshopsystem.dto.DiamondDTO;
 import org.example.diamondshopsystem.dto.DiamondPriceDTO;
+import org.example.diamondshopsystem.entities.Diamond;
 import org.example.diamondshopsystem.entities.DiamondPrice;
 
 import java.util.List;
 
 public interface DiamondServiceImp {
+    List<Diamond> getDiamondWithoutProduct();
+
     void createDiamond(DiamondDTO diamondDTO);
 
     DiamondDTO updateDiamond(DiamondDTO diamondDTO);

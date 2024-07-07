@@ -26,7 +26,8 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
 
     Page<Products> findAllByCategoryCategoryId(Integer categoryId, Pageable pageable);
 
-    Page<Products> findAll(Pageable pageable);
+    @Query("SELECT p FROM Products p WHERE  p.stockQuantity > 0 ")
+    Page<Products> findAllProduct(Pageable pageable);
 
     @Query("SELECT p FROM Products p WHERE p.category.categoryName = :#{#categoryName}")
     Page<Products> getProductsByCategory(@Param("categoryName") String categoryName, Pageable pageable);
@@ -63,14 +64,6 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     @Query("SELECT p FROM Products p WHERE p.category.categoryName = :categoryName ORDER BY p.price DESC")
     Page<Products> findByCategoryOrderByPriceDesc(@Param("categoryName") String categoryName, Pageable pageable);
 
-    @Query("SELECT p FROM Products p WHERE " +
-            "(:categoryName IS NULL OR p.category.categoryName = :categoryName) AND " +
-            "(:collection IS NULL OR p.collection = :collection) AND " +
-            "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
-            "(:maxPrice IS NULL OR p.price <= :maxPrice)")
-    Page<Products> findProductsByMultipleCriteria(@Param("categoryName") String categoryName,
-                                                  @Param("collection") String collection,
-                                                  @Param("minPrice") Double minPrice,
-                                                  @Param("maxPrice") Double maxPrice,
-                                                  Pageable pageable);
+    @Query("SELECT p FROM Products p WHERE " + "(:categoryName IS NULL OR p.category.categoryName = :categoryName) AND " + "(:collection IS NULL OR p.collection = :collection) AND " + "(:minPrice IS NULL OR p.price >= :minPrice) AND " + "(:maxPrice IS NULL OR p.price <= :maxPrice)")
+    Page<Products> findProductsByMultipleCriteria(@Param("categoryName") String categoryName, @Param("collection") String collection, @Param("minPrice") Double minPrice, @Param("maxPrice") Double maxPrice, Pageable pageable);
 }

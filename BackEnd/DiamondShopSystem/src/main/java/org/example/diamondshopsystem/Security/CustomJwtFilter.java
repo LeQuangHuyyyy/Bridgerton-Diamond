@@ -1,4 +1,5 @@
 package org.example.diamondshopsystem.Security;
+
 import org.example.diamondshopsystem.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,7 +19,8 @@ import java.util.ArrayList;
 public class CustomJwtFilter extends OncePerRequestFilter {
 
     @Autowired
-   JwtUtil jwtUtil;
+    JwtUtil jwtUtil;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -27,7 +29,7 @@ public class CustomJwtFilter extends OncePerRequestFilter {
             if (jwtUtil.verifyToken(token)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(null, null, new ArrayList<>());
-                SecurityContext securityContext =SecurityContextHolder.getContext();
+                SecurityContext securityContext = SecurityContextHolder.getContext();
                 securityContext.setAuthentication(usernamePasswordAuthenticationToken);
             }
         }

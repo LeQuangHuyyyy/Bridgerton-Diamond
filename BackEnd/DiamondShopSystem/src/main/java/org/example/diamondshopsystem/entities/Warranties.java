@@ -29,18 +29,12 @@ public class Warranties {
     @Column(name = "warranty_expiration_date")
     private Date warrantyExpirationDate;
 
-    @Column(name = "warranty_type")
-    private String warrantyType;
-
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "[order]")
     @JsonBackReference
-    
     private Order order;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
+    @OneToOne(mappedBy = "warranties", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonBackReference
-
     private Products product;
 }

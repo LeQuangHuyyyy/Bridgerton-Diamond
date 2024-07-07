@@ -4,12 +4,19 @@ import org.example.diamondshopsystem.dto.*;
 import org.example.diamondshopsystem.entities.*;
 import org.example.diamondshopsystem.entities.Warranties;
 import org.example.diamondshopsystem.entities.key.KeyOrderDetail;
+import org.example.diamondshopsystem.repositories.UserRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 @Component
 public class OrderMapper {
+
+    private final UserRepository userRepository;
+
+    public OrderMapper(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public Order mapOrderDTOToOrder(OrderDTO orderDTO, User customer) {
         if (orderDTO == null || customer == null) {
@@ -58,6 +65,26 @@ public class OrderMapper {
         return orderDTO;
     }
 
+    public OrderDTO getAllOrder(Order order) {
+        if (order == null) {
+            return null;
+        }
+        OrderDTO orderDTO = new OrderDTO();
+        User user = order.getCustomer();
+
+        orderDTO.setOrderId(order.getOrderId());
+        orderDTO.setOrderDate(order.getOrderDate());
+        orderDTO.setOrderTotalAmount(order.getOrderTotalAmount());
+        orderDTO.setOrderDeliveryAddress(order.getOrderDeliveryAddress());
+        orderDTO.setStatus(order.getStatus());
+        orderDTO.setDiscountCode(order.getDiscountCode() != null ? order.getDiscountCode().getCode() : null);
+        orderDTO.setCustomerId(user.getUserid());
+        orderDTO.setUsername(user.getName());
+        orderDTO.setSaleId(order.getSale() != null ? order.getSale().getUserid() : 0);
+        orderDTO.setDeliveryId(order.getDelivery() != null ? order.getDelivery().getUserid() : 0);
+        return orderDTO;
+    }
+
     private OrderDetailDTO mapOrderDetailToOrderDetailDTO(OrderDetails orderDetails) {
         OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
         orderDetailDTO.setOrderId(orderDetails.getOrder().getOrderId());
@@ -82,7 +109,6 @@ public class OrderMapper {
         warrantyDTO.setWarrantiesId(warranty.getWarrantiesId());
         warrantyDTO.setWarrantyStartDate(warranty.getWarrantyStartDate());
         warrantyDTO.setWarrantyExpirationDate(warranty.getWarrantyExpirationDate());
-        warrantyDTO.setWarrantyType(warranty.getWarrantyType());
         return warrantyDTO;
     }
 

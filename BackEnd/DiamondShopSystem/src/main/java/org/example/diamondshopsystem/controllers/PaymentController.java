@@ -55,7 +55,8 @@ public class PaymentController {
         try {
             String responseCode = request.getParameter("vnp_ResponseCode");
             String redirectUrl;
-            if ("00".equals(responseCode)) {
+
+            if (responseCode.equals("00")) {
                 Map<String, String[]> parameterMap = request.getParameterMap();
                 boolean isValid = paymentService.verifyVNPayCallback(parameterMap);
 
@@ -71,7 +72,7 @@ public class PaymentController {
                     }
                     paymentService.savePayment(paymentDTO);
 
-                    redirectUrl = "http://localhost:3000/payment/result?vnp_ResponseCode=00&orderId=" + orderId;
+                    redirectUrl = "http://localhost:3000/order-success";
                 } else {
                     redirectUrl = "http://localhost:3000/payment/result?vnp_ResponseCode=01";
                 }

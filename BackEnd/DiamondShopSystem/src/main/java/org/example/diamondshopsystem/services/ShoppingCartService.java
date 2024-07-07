@@ -9,6 +9,7 @@ import org.example.diamondshopsystem.services.Map.OrderMapper;
 import org.example.diamondshopsystem.services.Map.UserMapper;
 import org.example.diamondshopsystem.services.exeptions.NotEnoughProductsInStockException;
 import org.example.diamondshopsystem.services.imp.ShoppingCartServiceImp;
+import org.example.diamondshopsystem.services.imp.WarrantiesServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -47,6 +48,9 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
 
     @Autowired
     DiscountCodeRepository discountCodeRepository;
+
+    @Autowired
+    private WarrantiesServiceImp warrantiesServiceImp;
 
     private final Map<Products, Integer> cart = new HashMap<>();
 
@@ -248,7 +252,7 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
     @Override
     public Order creteOrder(OrderRequest orderRequest) {
         Order order = new Order();
-        User user = userRepository.findById(orderRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("thằng đéo nào đây ???"));
+        User user = userRepository.findById(orderRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("who is this, cannot load user  ???"));
         DiscountCodes discountCodes = discountCodeRepository.findByCode(orderRequest.getDiscountCode());
 
         order.setOrderDate(new Date());
@@ -260,10 +264,10 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
 
         order = orderRepository.save(order);
 
+
         for (AddProductRequest o : orderRequest.getAddProductRequestList()) {
             Products products = productRepository.findById(o.getProductId()).orElseThrow(() -> new IllegalArgumentException("Product does not exist in the inventory."));
             Size size = sizeRepository.findById(o.getSizeId()).orElseThrow(() -> new IllegalArgumentException("cc, làm cc gì có cái size như này ????"));
-
 
             int stockQuantity = products.getStockQuantity();
             if (stockQuantity < o.getQuantity()) {
@@ -281,6 +285,9 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
 
             OrderDetails orderDetails = orderMapper.mapOrderDetailDTOToOrderDetail(orderDetailDTO, order, products);
             orderDetailRepository.save(orderDetails);
+
+            warrantiesServiceImp.createWarranties(o.getProductId(), order.getOrderId());
+
         }
 
         return order;

@@ -1,12 +1,9 @@
 package org.example.diamondshopsystem.services;
 
 import org.example.diamondshopsystem.dto.OrderDTO;
-import org.example.diamondshopsystem.dto.PaymentDTO;
 import org.example.diamondshopsystem.entities.Order;
 
 import org.example.diamondshopsystem.entities.OrderStatus;
-import org.example.diamondshopsystem.entities.Products;
-import org.example.diamondshopsystem.payload.requests.AddProductRequest;
 import org.example.diamondshopsystem.repositories.OrderDetailRepository;
 import org.example.diamondshopsystem.repositories.OrderRepository;
 import org.example.diamondshopsystem.repositories.ProductRepository;
@@ -20,7 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +42,8 @@ public class OrderService implements OrderServiceImp {
     @Override
     public Page<OrderDTO> getAllOrder(Pageable pageable) {
         Page<Order> orderPage = orderRepository.findAll(pageable);
-        List<OrderDTO> orderDTOList = orderPage.getContent().stream().map(orderMapper::mapOrderToOrderDTO).collect(Collectors.toList());
+        List<OrderDTO> orderDTOList = orderPage.getContent().stream().map(orderMapper::getAllOrder).collect(Collectors.toList());
+
         return new PageImpl<>(orderDTOList, pageable, orderPage.getTotalElements());
     }
 
@@ -88,6 +86,7 @@ public class OrderService implements OrderServiceImp {
         return order.getStatus();
     }
 
+
     @Override
     public Page<OrderDTO> getAllOrderByStatus(OrderStatus status, Pageable pageable) {
         try {
@@ -100,6 +99,7 @@ public class OrderService implements OrderServiceImp {
         }
     }
 
+    ////// hiện thêm cái tên của thằng sale !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     @Override
     public Page<OrderDTO> getAllOrdersByStatuses(List<OrderStatus> statuses, Pageable pageable) {
@@ -108,7 +108,6 @@ public class OrderService implements OrderServiceImp {
             List<OrderDTO> orderDTOList = orderPage.getContent().stream().map(orderMapper::mapOrderToOrderDTO).collect(Collectors.toList());
             return new PageImpl<>(orderDTOList, pageable, orderPage.getTotalElements());
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException("Failed to fetch orders by statuses");
         }
     }
@@ -116,7 +115,8 @@ public class OrderService implements OrderServiceImp {
     @Override
     public void setOrderFromPaymentToDelivery(Integer orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
-        if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.PAYMENT)) {
+
+        if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.DELIVERED)) {
             order.setStatus(OrderStatus.DELIVERED);
             try {
                 orderRepository.save(order);
@@ -128,21 +128,28 @@ public class OrderService implements OrderServiceImp {
         }
     }
 
+    @Override
+    public List<OrderDTO> searchByKeyWord(String keyword, OrderStatus status) {
+        List<Order> orders = orderRepository.findByKeyword(keyword, status);
+        if (orders.isEmpty()) {
+            orders = List.of(orderRepository.findById(Integer.parseInt(keyword)).orElseThrow(() -> new IllegalArgumentException("ke ke ke ")));
+        }
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        for (Order o : orders) {
+
+            orderDTOList.add(orderMapper.getAllOrder(o));
+        }
+        return orderDTOList;
+    }
+
 
     private boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
-        switch (currentStatus) {
-            case PENDING:
-                return newStatus == OrderStatus.PAYMENT || newStatus == OrderStatus.CANCELED;
-            case PAYMENT:
-                return newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.CANCELED;
-            case DELIVERED:
-                return newStatus == OrderStatus.RECEIVED || newStatus == OrderStatus.CANCELED;
-            case CANCELED:
-                return false;
-            case RECEIVED:
-                return false;
-            default:
-                return false;
-        }
+        return switch (currentStatus) {
+            case PENDING -> newStatus == OrderStatus.PAYMENT || newStatus == OrderStatus.CANCELED;
+            case PAYMENT -> newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.CANCELED;
+            case DELIVERED -> newStatus == OrderStatus.RECEIVED || newStatus == OrderStatus.CANCELED;
+            case CANCELED, RECEIVED -> false;
+        };
     }
+
 }

@@ -35,19 +35,16 @@ public class SaleController {
 
     @Autowired
     OrderServiceImp orderServiceImp;
-    @Autowired
-    private OrderMapper orderMapper;
+
 
     @GetMapping("/ViewOrderPaymentAndPending")
-    public ResponseEntity<List<OrderDTO>> getOrderByPaymentAndPending(@RequestParam(defaultValue = "0") int page,
-                                                                      @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<List<OrderDTO>> getOrderByPaymentAndPending(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         try {
             List<OrderStatus> statuses = Arrays.asList(OrderStatus.PAYMENT, OrderStatus.PENDING, OrderStatus.DELIVERED);
             Page<OrderDTO> newOrdersPage = orderServiceImp.getAllOrdersByStatuses(statuses, PageRequest.of(page, size));
             List<OrderDTO> newOrders = newOrdersPage.getContent();
             return ResponseEntity.ok(newOrders);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }

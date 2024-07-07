@@ -1,13 +1,11 @@
 package org.example.diamondshopsystem.controllers;
 
-import lombok.RequiredArgsConstructor;
 import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.dto.OrderDetailDTO;
-import org.example.diamondshopsystem.entities.Order;
+import org.example.diamondshopsystem.entities.OrderStatus;
 import org.example.diamondshopsystem.payload.ResponseData;
-import org.example.diamondshopsystem.payload.requests.AddProductRequest;
+import org.example.diamondshopsystem.payload.requests.OrderDetailRequest;
 import org.example.diamondshopsystem.repositories.OrderRepository;
-import org.example.diamondshopsystem.services.OrderDetailsService;
 import org.example.diamondshopsystem.services.ShoppingCartService;
 import org.example.diamondshopsystem.services.imp.OrderDetailsServiceImp;
 import org.example.diamondshopsystem.services.imp.OrderServiceImp;
@@ -37,6 +35,7 @@ public class OrderController {
     @Autowired
     OrderDetailsServiceImp orderDetailsService;
 
+
     @GetMapping
     public ResponseEntity<Page<OrderDTO>> getAllOrders(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         try {
@@ -44,18 +43,20 @@ public class OrderController {
             Page<OrderDTO> allOrder = orderServiceImp.getAllOrder(pageable);
             return ResponseEntity.ok(allOrder);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
+    // lấy cả name, email, orderDate, totalAmount, product của order detail đó product có tên, số lượng và price
+
     @GetMapping("/OrdersData/{orderId}")
     public ResponseEntity<?> getOrderById(@PathVariable int orderId) {
-        OrderDTO orderDTO = orderServiceImp.getOrderById(orderId);
+        OrderDetailRequest orderDetailRequest = orderDetailsService.getOrderDetailSaleStaffById(orderId);
         ResponseData responseData = new ResponseData();
-        if (orderDTO != null) {
+
+        if (orderDetailRequest != null) {
             responseData.setDescription("Order detail found");
-            responseData.setData(orderDTO);
+            responseData.setData(orderDetailRequest);
             return ResponseEntity.status(HttpStatus.OK).body(responseData);
         } else {
             responseData.setDescription("Order detail not found");
@@ -76,4 +77,31 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
         }
     }
+
+    @GetMapping("/OrderDetail")
+    public ResponseEntity<?> getOrderDetailSaleStaff() {
+        List<OrderDetailRequest> orderDetailRequests = orderDetailsService.getOrderDetailSaleStaff();
+        ResponseData responseData = new ResponseData();
+        responseData.setData(orderDetailRequests);
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> SearchOrderByKeyWord(@RequestParam String keyword) {
+        OrderStatus status = null;
+        try {
+            status = OrderStatus.valueOf(keyword.toUpperCase());
+        } catch (IllegalArgumentException ignored) {
+        }
+        List<OrderDTO> orderDTOList = orderServiceImp.searchByKeyWord(keyword, status);
+        ResponseData responseData = new ResponseData();
+        if (!orderDTOList.isEmpty()) {
+            responseData.setData(orderDTOList);
+            return new ResponseEntity<>(responseData, HttpStatus.OK);
+        } else {
+            responseData.setDescription("ke ke ke tìm c!!");
+            return new ResponseEntity<>(responseData, HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

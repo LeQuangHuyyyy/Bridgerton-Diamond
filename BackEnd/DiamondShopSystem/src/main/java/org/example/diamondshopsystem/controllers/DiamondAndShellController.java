@@ -29,6 +29,12 @@ public class DiamondAndShellController {
     @Autowired
     private ProductServiceImp productServiceImp;
 
+    @GetMapping("/diamond")
+    // lấy thằng nào mà nó chưa có prodcut ra để bỏ vào product OK !!!
+    public ResponseEntity<?> getDiamondToCreateProduct() {
+        List<Diamond> diamond = diamondServiceImp.getDiamondWithoutProduct();
+        return new ResponseEntity<>(diamond, HttpStatus.OK);
+    }
 
     @GetMapping("/diamond/get-all")
     public ResponseEntity<List<DiamondDTO>> getAllDiamond() {
