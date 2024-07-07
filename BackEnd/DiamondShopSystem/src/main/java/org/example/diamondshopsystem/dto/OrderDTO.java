@@ -30,6 +30,8 @@ public class OrderDTO {
 
     private String username;
 
+    private String phoneNumber;
+
     private int customerId;
     private int saleId;
     private int deliveryId;

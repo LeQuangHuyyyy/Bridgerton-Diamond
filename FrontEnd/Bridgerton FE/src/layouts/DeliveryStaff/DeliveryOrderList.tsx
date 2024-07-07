@@ -1,41 +1,43 @@
 import React from 'react';
-import { Table, Space, Button } from 'antd';
+import {Table, Space, Button} from 'antd';
+import {Link} from 'react-router-dom';
 
 interface DeliveryOrder {
-    id: string;
-    customerName: string;
-    address: string;
-    deliveryDate: string;
+    orderId: string;
+    username: string;
+    orderDeliveryAddress: string;
+    phoneNumber: string;
+    orderDate: string;
     status: string;
 }
 
 interface DeliveryOrderListProps {
     data: DeliveryOrder[];
-    onViewDetails: (record: DeliveryOrder) => void;
+    onViewDetails: (id: string) => void;
     onUpdateStatus: (id: string) => void;
 }
 
-const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({ data, onViewDetails, onUpdateStatus }) => {
+const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({data, onViewDetails, onUpdateStatus}) => {
     const columns = [
         {
             title: 'Order ID',
-            dataIndex: 'id',
-            key: 'id',
+            dataIndex: 'orderId',
+            key: 'orderId',
         },
         {
             title: 'Customer Name',
-            dataIndex: 'customerName',
-            key: 'customerName',
+            dataIndex: 'username',
+            key: 'username',
         },
         {
             title: 'Address',
-            dataIndex: 'address',
-            key: 'address',
+            dataIndex: 'orderDeliveryAddress',
+            key: 'orderDeliveryAddress',
         },
         {
             title: 'Delivery Date',
-            dataIndex: 'deliveryDate',
-            key: 'deliveryDate',
+            dataIndex: 'orderDate',
+            key: 'orderDate',
         },
         {
             title: 'Status',
@@ -47,14 +49,16 @@ const DeliveryOrderList: React.FC<DeliveryOrderListProps> = ({ data, onViewDetai
             key: 'action',
             render: (text: string, record: DeliveryOrder) => (
                 <Space size="middle">
-                    <Button onClick={() => onViewDetails(record)}>View Details</Button>
-                    <Button type="primary" onClick={() => onUpdateStatus(record.id)}>Update Status</Button>
+                    <Link to={`/delivery-detail/${record.orderId}`}>
+                        <Button>View Details</Button>
+                    </Link>
+                    <Button type="primary" onClick={() => onUpdateStatus(record.orderId)}>Update Status</Button>
                 </Space>
             ),
         },
     ];
 
-    return <Table columns={columns} dataSource={data} rowKey="id" />;
+    return <Table columns={columns} dataSource={data} rowKey="orderId"/>;
 };
 
 export default DeliveryOrderList;

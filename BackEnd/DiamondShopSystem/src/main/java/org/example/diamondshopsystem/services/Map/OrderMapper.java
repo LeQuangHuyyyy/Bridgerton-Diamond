@@ -53,6 +53,10 @@ public class OrderMapper {
             return null;
         }
         OrderDTO orderDTO = new OrderDTO();
+        if (order.getCustomer() != null) {
+            orderDTO.setUsername(order.getCustomer().getName());
+            orderDTO.setPhoneNumber(order.getCustomer().getPhoneNumber());
+        }
         orderDTO.setOrderId(order.getOrderId());
         orderDTO.setOrderDate(order.getOrderDate());
         orderDTO.setOrderTotalAmount(order.getOrderTotalAmount());

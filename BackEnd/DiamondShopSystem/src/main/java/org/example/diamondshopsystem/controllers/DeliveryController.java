@@ -2,8 +2,11 @@ package org.example.diamondshopsystem.controllers;
 
 import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.entities.OrderStatus;
+import org.example.diamondshopsystem.payload.ResponseData;
+import org.example.diamondshopsystem.payload.requests.OrderDetailRequest;
 import org.example.diamondshopsystem.repositories.OrderRepository;
 import org.example.diamondshopsystem.services.ShoppingCartService;
+import org.example.diamondshopsystem.services.imp.OrderDetailsServiceImp;
 import org.example.diamondshopsystem.services.imp.OrderServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,6 +33,9 @@ public class DeliveryController {
     @Autowired
     OrderServiceImp orderServiceImp;
 
+    @Autowired
+    OrderDetailsServiceImp orderDetailsServiceImp;
+
 
     @GetMapping("/ViewOrderDelivery")
     public ResponseEntity<?> getOrderByDelivery(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "1000") int size) {
@@ -42,5 +48,4 @@ public class DeliveryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
 }

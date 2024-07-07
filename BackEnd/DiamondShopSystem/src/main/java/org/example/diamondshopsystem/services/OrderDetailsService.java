@@ -75,7 +75,9 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         orderDetailRequest.setEmail(mail);
         orderDetailRequest.setPhoneNumber(phoneNumber);
         orderDetailRequest.setAddress(address);
-
+        if (orders.getSale() != null) {
+            orderDetailRequest.setSaleStaff(orders.getSale().getName());
+        }
         orderDetailRequest.setOrderDate(orders.getOrderDate());
         orderDetailRequest.setTotalAmount(orders.getOrderTotalAmount());
 
@@ -102,6 +104,7 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
             String username = user.getName();
             String mail = user.getEmail();
 
+
             for (OrderDetails od : o.getOrderDetails()) {
                 OrderProductDetailRequest orderProductDetailRequests = getOrderProductDetailRequest(od);
                 list.add(orderProductDetailRequests);
@@ -121,14 +124,21 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         return orderDetailList;
     }
 
+
+    @Override
+    public OrderDetailRequest getDeliveryOrderDetailById(int orderId) {
+
+
+        return null;
+    }
+
     private static OrderProductDetailRequest getOrderProductDetailRequest(OrderDetails od) {
         OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
 
         Products products = od.getProduct();
         String productName = products.getProductName();
+        double price = products.getPrice();
         int quantity = od.getQuantity();
-        double price = od.getPrice();
-
         orderProductDetailRequests.setProductName(productName);
         orderProductDetailRequests.setQuantity(quantity);
         orderProductDetailRequests.setPrice(price);
@@ -136,6 +146,7 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         return orderProductDetailRequests;
     }
 }
+
 
 
 

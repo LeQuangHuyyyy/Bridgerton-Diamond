@@ -11,4 +11,6 @@ public interface OrderDetailsServiceImp {
     List<OrderDetailRequest> getOrderDetailSaleStaff();
 
     OrderDetailRequest getOrderDetailSaleStaffById(int orderId);
+
+    OrderDetailRequest getDeliveryOrderDetailById(int orderId);
 }

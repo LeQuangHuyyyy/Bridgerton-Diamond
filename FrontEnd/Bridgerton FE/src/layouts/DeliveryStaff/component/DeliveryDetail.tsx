@@ -4,55 +4,59 @@ import OrderDetailModel from "../../../models/OrderDetailModel";
 import {SpinnerLoading} from "../../Utils/SpinnerLoading";
 import {Avatar, Card, Descriptions, Form, List, Row, Col, Input} from "antd";
 import {ShoppingCartOutlined, UserOutlined, MailOutlined, PhoneOutlined} from "@ant-design/icons";
-import './OrderDetail.css';
+import './DeliveryDetail.css';
 import {Link} from "react-router-dom";
+import orderDetail from "../../SaleStaff/component/OrderDetail";
 
 const token = localStorage.getItem("token");
 const headers = {
     'Authorization': `Bearer ${token}`
 }
 
-const OrderDetail: React.FC = (props) => {
+const DeliveryDetail: React.FC = (props) => {
     const [details, setDetails] = useState<OrderDetailModel>();
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
     const orderId = window.location.pathname.split("/")[2];
     useEffect(() => {
-        const fetchDetail = async () => {
-            const baseUrl: string = `http://localhost:8888/order/OrdersData/${orderId}`;
-            const url: string = `${baseUrl}`;
-            const response = await fetch(url, {headers: headers});
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
-            }
-
-            const responseJson = await response.json();
-            const loadedDetail: OrderDetailModel = {
-                staff: responseJson.data.staff,
-                orderId: responseJson.data.orderId,
-                productId: responseJson.productId,
-                quantity: responseJson.quantity,
-                price: responseJson.price,
-                size: responseJson.size,
-                email: responseJson.data.email,
-                orderDate: responseJson.data.orderDate,
-                totalAmount: responseJson.data.totalAmount,
-                userName: responseJson.data.userName,
-                products: responseJson.data.product,
-                status: responseJson.data.orderStatus,
-                image: responseJson.data.image,
-                orderAddress: responseJson.data.orderAddress,
-                totalProductInOrder: responseJson.data.totalProductInOrder,
-            };
-            setDetails(loadedDetail);
-            setIsLoading(false);
-        };
-        fetchDetail().catch((error: any) => {
-            setIsLoading(false);
-            setHttpError(error.message);
-            console.log(error);
-        });
+        fetchDetail();
     }, []);
+
+    const fetchDetail = async () => {
+        const baseUrl: string = `http://localhost:8888/order/OrdersData/${orderId}`;
+        const url: string = `${baseUrl}`;
+        const response = await fetch(url, {headers: headers});
+        if (!response.ok) {
+            throw new Error('Something went wrong!');
+        }
+
+        const responseJson = await response.json();
+        const loadedDetail: OrderDetailModel = {
+            orderId: responseJson.data.orderId,
+            productId: responseJson.productId,
+            quantity: responseJson.quantity,
+            size: responseJson.size,
+            email: responseJson.data.email,
+            orderDate: responseJson.data.orderDate,
+            totalAmount: responseJson.data.totalAmount,
+            userName: responseJson.data.userName,
+            staff: responseJson.data.saleStaff,
+            orderAddress: responseJson.data.address,
+            products: responseJson.data.product,
+            price: responseJson.price,
+            status: responseJson.data.orderStatus,
+            image: responseJson.data.image,
+            totalProductInOrder: responseJson.data.totalProductInOrder,
+        };
+        setDetails(loadedDetail);
+        setIsLoading(false);
+    };
+    fetchDetail().catch((error: any) => {
+        setIsLoading(false);
+        setHttpError(error.message);
+        console.log(error);
+    });
+    console.log(details)
 
     if (httpError) {
         return (
@@ -125,53 +129,75 @@ const OrderDetail: React.FC = (props) => {
         <div style={{padding: 24}}>
             <h1 style={{textAlign: 'center', marginBottom: '19px'}} className="custom-heading">Order
                 Details: {details?.orderId}</h1>
-            <Row gutter={16} style={{marginBottom: 24, display: 'flex', justifyContent: 'space-between'}}>
-                <Col span={6}>
-                    <Card style={{backgroundColor: '#D1E7DD', borderRadius: '8px', border: '1px solid #A3CFBB'}}>
-                        <div className="info-container">
-                            <ShoppingCartOutlined className="order-icon"/>
-                            <div className="info">
-                                <div className="order-title">Order Created at</div>
-                                <div className="order-content">{details?.orderDate}</div>
-                            </div>
-                        </div>
-                    </Card>
-                </Col>
-                <Col span={6}>
+            <Row gutter={10}
+                 style={{marginBottom: 24, display: 'flex', justifyContent: 'space-around', alignItems: 'center'}}>
+                <Col span={8}>
                     <Card style={{backgroundColor: '#F8D7DA', borderRadius: '8px', border: '1px solid #F1AEB5'}}>
                         <div className="info-container">
                             <UserOutlined className='name-icon'/>
-                            <div className="info">
-                                <div className="name-title">Name</div>
-                                <div className="name-content">{details?.userName}</div>
+                            <div className="info ms-5">
+                                <div className="name-title d-flex justify-content-between">
+                                    <div>
+                                        Name:
+                                    </div>
+                                    <div>
+                                        {details?.userName}
+                                    </div>
+                                </div>
+
+                                <div className="name-title d-flex justify-content-between gap-5">
+                                    <div>
+                                        Email:
+                                    </div>
+                                    <div>
+                                        {details?.email}
+                                    </div>
+                                </div>
+
+                                <div className="name-title d-flex justify-content-between gap-5">
+                                    <div>
+                                        Name:
+                                    </div>
+                                    <div>
+                                        {details?.userName}
+                                    </div>
+                                </div>
+
+                                <div className="name-title d-flex justify-content-between gap-5">
+                                    <div>
+                                        Order Date:
+                                    </div>
+                                    <div>
+                                        {details?.orderDate.substring(0, 10)}
+                                    </div>
+                                </div>
+
+                                <div className="name-title d-flex justify-content-between gap-5">
+                                    <div>
+                                        Address:
+                                    </div>
+                                    <div>
+                                        {details?.orderAddress}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </Card>
                 </Col>
-                <Col span={6}>
+                <Col span={8}>
                     <Card style={{backgroundColor: '#FFF3CD', borderRadius: '8px', border: '1px solid #FFE69C'}}>
                         <div className="info-container">
-                            <MailOutlined className="email-icon"/>
-                            <div className="info">
-                                <div className="email-title">Email</div>
-                                <div style={{color: '#664D03'}} className="email-content">{details?.email}</div>
+                            <UserOutlined className="email-icon"/>
+                            <div className="info ms-5">
+                                <div className="email-title">Sale Staff</div>
+                                <div style={{color: '#664D03'}} className="email-content">{details?.staff}</div>
                             </div>
                         </div>
                     </Card>
                 </Col>
-                <Col span={6}>
-                    <Card style={{backgroundColor: '#CFF4FC', borderRadius: '8px', border: '1px solid #9EEAF9'}}>
-                        <div className="info-container">
-                            <PhoneOutlined className="contact-icon"/>
-                            <div className="info">
-                                <div className="contact-title">Contact No</div>
-                                <div className="contact-content">202-906-12354</div>
-                            </div>
-                        </div>
-                    </Card>
 
-                </Col>
             </Row>
+
             <Row gutter={20}>
                 <Col span={14}>
                     <Card title="Order Summary">
@@ -229,7 +255,7 @@ const OrderDetail: React.FC = (props) => {
                                 {details?.totalProductInOrder}
                             </Form.Item>
                             <Form.Item>
-                                <Link to={"/salestaff"} style={{
+                                <Link to={"/deliverystaff"} style={{
                                     padding: '10px',
                                     textDecoration: 'none',
                                     fontSize: '16px',
@@ -240,10 +266,11 @@ const OrderDetail: React.FC = (props) => {
                         </Form>
                     </Card>
                 </Col>
+
             </Row>
         </div>
     );
 };
 
 
-export default OrderDetail;
+export default DeliveryDetail;

@@ -28,7 +28,7 @@ public interface OrderServiceImp {
 
     Page<OrderDTO> getAllOrdersByStatuses(List<OrderStatus> statuses, Pageable pageable);
 
-    void setOrderFromPaymentToDelivery(Integer orderId);
+    void setOrderFromPaymentToDelivery(Integer orderId, String email);
 
     List<OrderDTO> searchByKeyWord(String keyword, OrderStatus status);
 }

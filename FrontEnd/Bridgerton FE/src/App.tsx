@@ -20,6 +20,7 @@ import {SaleStaffPage} from "./layouts/SaleStaff/SaleStaffPage";
 import OrderSuccessPage from "./layouts/OrderSuccessPage/OrderSuccessPage";
 import OrderDetail from "./layouts/SaleStaff/component/OrderDetail";
 import DeliveryStaff from "./layouts/DeliveryStaff/DeliveryStaff";
+import DeliveryDetail from "./layouts/DeliveryStaff/component/DeliveryDetail";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -160,6 +161,9 @@ export const App = () => {
                             <Redirect from='/' to='/deliverystaff' exact/>
                             <Route path='/deliverystaff'>
                                 <DeliveryStaff/>
+                            </Route>
+                            <Route path="/delivery-detail/:orderId">
+                                <DeliveryDetail/>
                             </Route>
                         </>
                     )}

@@ -7,18 +7,15 @@ import org.example.diamondshopsystem.entities.OrderStatus;
 import java.util.Date;
 import java.util.List;
 
-// lấy cả name, email, orderDate, totalAmount, product của order detail đó product có tên, số lượng và price
-
 @Getter
 @Setter
-public class OrderDetailRequest {
+public class DeliveryOrderDetail {
     private String userName;
     private String email;
     private String phoneNumber;
     private String address;
     private Date orderDate;
     private double totalAmount;
-    private String saleStaff;
 
     private int orderId;
     private String image;

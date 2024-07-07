@@ -9,14 +9,16 @@ class OrderDetailModel {
     price: number;
     size: number;
     email: string;
+    staff: string;
     orderDate: string;
     totalAmount: number;
     products: OrderItemModel[];
     status: string;
     image: string;
+    orderAddress: string;
     totalProductInOrder: number;
 
-    constructor(userName: string, orderId: number, productId: number, quantity: number, price: number, size: number, email: string, orderDate: string, totalAmount: number, products: OrderItemModel[], status: string, image: string, totalProductInOrder: number) {
+    constructor(userName: string, orderId: number, productId: number, quantity: number, price: number, size: number, email: string, orderDate: string, totalAmount: number, products: OrderItemModel[], status: string, image: string, totalProductInOrder: number, saleStaff: string, orderAddress: string) {
         this.userName = userName;
         this.orderId = orderId;
         this.productId = productId;
@@ -29,7 +31,10 @@ class OrderDetailModel {
         this.products = products;
         this.status = status;
         this.image = image;
+        this.staff = saleStaff;
+        this.orderAddress = orderAddress;
         this.totalProductInOrder = totalProductInOrder;
     }
 }
+
 export default OrderDetailModel;

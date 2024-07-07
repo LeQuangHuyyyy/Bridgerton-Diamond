@@ -4,9 +4,11 @@ import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.entities.Order;
 
 import org.example.diamondshopsystem.entities.OrderStatus;
+import org.example.diamondshopsystem.entities.User;
 import org.example.diamondshopsystem.repositories.OrderDetailRepository;
 import org.example.diamondshopsystem.repositories.OrderRepository;
 import org.example.diamondshopsystem.repositories.ProductRepository;
+import org.example.diamondshopsystem.repositories.UserRepository;
 import org.example.diamondshopsystem.services.Map.OrderMapper;
 import org.example.diamondshopsystem.services.imp.OrderServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,8 @@ public class OrderService implements OrderServiceImp {
 
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public Page<OrderDTO> getAllOrder(Pageable pageable) {
@@ -98,8 +102,6 @@ public class OrderService implements OrderServiceImp {
     }
 
 
-    ///////////// hiện thêm cái tên của thằng sale !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     @Override
     public Page<OrderDTO> getAllOrdersByStatuses(List<OrderStatus> statuses, Pageable pageable) {
         try {
@@ -112,11 +114,12 @@ public class OrderService implements OrderServiceImp {
     }
 
     @Override
-    public void setOrderFromPaymentToDelivery(Integer orderId) {
+    public void setOrderFromPaymentToDelivery(Integer orderId, String email) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
-
+        User saleStaff = userRepository.findByEmail(email);
         if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.DELIVERED)) {
             order.setStatus(OrderStatus.DELIVERED);
+            order.setSale(saleStaff);
             try {
                 orderRepository.save(order);
             } catch (DataIntegrityViolationException e) {
