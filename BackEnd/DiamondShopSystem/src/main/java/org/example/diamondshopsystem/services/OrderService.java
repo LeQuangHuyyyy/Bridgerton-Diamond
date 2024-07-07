@@ -117,8 +117,8 @@ public class OrderService implements OrderServiceImp {
     @Override
     public void setOrderFromPaymentToDelivery(Integer orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
-        
-        if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.PAYMENT)) {
+
+        if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.DELIVERED)) {
             order.setStatus(OrderStatus.DELIVERED);
             try {
                 orderRepository.save(order);
@@ -150,9 +150,7 @@ public class OrderService implements OrderServiceImp {
             case PENDING -> newStatus == OrderStatus.PAYMENT || newStatus == OrderStatus.CANCELED;
             case PAYMENT -> newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.CANCELED;
             case DELIVERED -> newStatus == OrderStatus.RECEIVED || newStatus == OrderStatus.CANCELED;
-            case CANCELED -> false;
-            case RECEIVED -> false;
-            default -> false;
+            case CANCELED, RECEIVED -> false;
         };
     }
 
