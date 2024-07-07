@@ -1,61 +1,64 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import './OrderTable.css';
-import { Table, Tag, Button, Input, Space, Spin, Alert } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
-import { useHistory } from 'react-router-dom';
+import {Alert, Button, Input, Space, Spin, Table, Tag} from 'antd';
+import {EditOutlined} from '@ant-design/icons';
+import {useHistory} from 'react-router-dom';
 import OrderModel from "../../../models/OrderModel"
 
-const { Search } = Input;
+const {Search} = Input;
+const token = localStorage.getItem('token');
 
 const headers = {
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXlscXNlMTcxMjkzQGZwdC5lZHUudm4ifQ.FzAs3FrNbICbW9dUGZivmqNtMvUs7dh-fCgJy0EvluQ'
+    'Authorization': `Bearer ${token}`
 }
 
 const OrderTable: React.FC = () => {
     const [orders, setOrders] = useState<OrderModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
+    const [search, setSearch] = useState('');
 
     const history = useHistory();
 
     useEffect(() => {
-        const fetchOrders = async () => {
-            const baseUrl: string = "http://localhost:8888/order";
-            const url: string = `${baseUrl}`;
-            const response = await fetch(url, { headers: headers });
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
-            }
-            const responseJson = await response.json();
-            const responseData = responseJson.content;
-            const loadedOrders: OrderModel[] = [];
-            for (const key in responseData) {
-                loadedOrders.push({
-                    orderId: responseData[key].orderId,
-                    orderDate: new Date(responseData[key].orderDate),
-                    orderTotalAmount: responseData[key].orderTotalAmount,
-                    orderDeliveryAddress: responseData[key].orderDeliveryAddress,
-                    status: responseData[key].status,
-                    discountCode: responseData[key].discountCode,
-                    customerId: responseData[key].customerId,
-                    saleId: responseData[key].saleId,
-                    deliveryId: responseData[key].deliveryId,
-                    orderDetails: responseData[key].orderDetails,
-                    feedbacks: responseData[key].feedbacks,
-                    warranties: responseData[key].warranties,
-                    invoices: responseData[key].invoices,
-                    payments: responseData[key].payments,
-                });
-            }
-            setOrders(loadedOrders);
-            setIsLoading(false);
-        };
-        fetchOrders().catch((error: any) => {
-            setIsLoading(false);
-            setHttpError(error.message);
-            console.log(error);
-        })
+        fetchOrders();
     }, []);
+    const fetchOrders = async () => {
+        const baseUrl: string = "http://localhost:8888/order";
+        const url: string = `${baseUrl}`;
+        const response = await fetch(url, {headers: headers});
+        if (!response.ok) {
+            throw new Error('Something went wrong!');
+        }
+        const responseJson = await response.json();
+        const responseData = responseJson.content;
+        const loadedOrders: OrderModel[] = [];
+        for (const key in responseData) {
+            loadedOrders.push({
+                orderId: responseData[key].orderId,
+                orderDate: new Date(responseData[key].orderDate),
+                orderTotalAmount: responseData[key].orderTotalAmount,
+                orderDeliveryAddress: responseData[key].orderDeliveryAddress,
+                status: responseData[key].status,
+                discountCode: responseData[key].discountCode,
+                customerId: responseData[key].customerId,
+                saleId: responseData[key].saleId,
+                deliveryId: responseData[key].deliveryId,
+                orderDetails: responseData[key].orderDetails,
+                feedbacks: responseData[key].feedbacks,
+                warranties: responseData[key].warranties,
+                invoices: responseData[key].invoices,
+                payments: responseData[key].payments,
+            });
+        }
+        setOrders(loadedOrders);
+        setIsLoading(false);
+    };
+    fetchOrders().catch((error: any) => {
+        setIsLoading(false);
+        setHttpError(error.message);
+        console.log(error);
+    })
 
     const updateOrderStatus = (orderId: number, newStatus: string) => {
         const orderIndex: number = orders.findIndex(order => order.orderId === orderId);
@@ -72,7 +75,7 @@ const OrderTable: React.FC = () => {
         try {
             const baseUrl = "http://localhost:8888/sale";
             const url = `${baseUrl}/setOrderToDelivery/${orderId}`;
-            const response = await fetch(url, { method: 'POST', headers: headers });
+            const response = await fetch(url, {method: 'POST', headers: headers});
 
             if (!response.ok) {
                 throw new Error('Something went wrong!');
@@ -86,7 +89,7 @@ const OrderTable: React.FC = () => {
     if (isLoading) {
         return (
             <div className="spinner container m-5 d-flex justify-content-center align-items-center vh-100">
-                <Spin size="large" />
+                <Spin size="large"/>
             </div>
         );
     }
@@ -94,7 +97,7 @@ const OrderTable: React.FC = () => {
     if (httpError) {
         return (
             <div className="container">
-                <Alert message="Error" description={httpError} type="error" showIcon />
+                <Alert message="Error" description={httpError} type="error" showIcon/>
             </div>
         );
     }
@@ -127,6 +130,51 @@ const OrderTable: React.FC = () => {
     const navigateToOrderDetails = (orderId: number) => {
         history.push(`/orderdetail/${orderId}`);
     };
+
+    const searchHandleChange = async (keyword: string) => {
+        const data = new FormData();
+        data.append('keyword', keyword);
+
+        if (data) {
+            const url = 'http://localhost:8888/order/search';
+            const response = await fetch(url, {
+                method: "POST",
+                headers: headers,
+                body: data
+            })
+
+            if (!response.ok) {
+                console.log('Something went wrong!');
+            }
+
+            const responseJson = await response.json();
+            const responseData = responseJson.data;
+
+            const loadedOrders: OrderModel[] = [];
+            for (const key in responseData) {
+                loadedOrders.push({
+                    orderId: responseData[key].orderId,
+                    orderDate: new Date(responseData[key].orderDate),
+                    orderTotalAmount: responseData[key].orderTotalAmount,
+                    orderDeliveryAddress: responseData[key].orderDeliveryAddress,
+                    status: responseData[key].status,
+                    discountCode: responseData[key].discountCode,
+                    customerId: responseData[key].customerId,
+                    saleId: responseData[key].saleId,
+                    deliveryId: responseData[key].deliveryId,
+                    orderDetails: responseData[key].orderDetails,
+                    feedbacks: responseData[key].feedbacks,
+                    warranties: responseData[key].warranties,
+                    invoices: responseData[key].invoices,
+                    payments: responseData[key].payments,
+                });
+            }
+            setOrders(loadedOrders);
+            setIsLoading(false);
+        } else {
+            fetchOrders();
+        }
+    }
 
     const columns = [
         {
@@ -171,13 +219,13 @@ const OrderTable: React.FC = () => {
             render: (text: any, record: any) => (
                 <Space size="middle">
                     <Button
-                        icon={<EditOutlined />}
+                        icon={<EditOutlined/>}
                         onClick={() => navigateToOrderDetails(record.orderId)}
                     />
                     <Button
                         onClick={() => handleConfirm(record.orderId)}
                     >
-                     Confirm
+                        Confirm
                     </Button>
                     <Button
                         // onClick={() => handleConfirm(record.orderId)}
@@ -190,13 +238,13 @@ const OrderTable: React.FC = () => {
     ];
 
     return (
-        <div style={{ marginTop: '50px' }} className="container">
+        <div style={{marginTop: '50px'}} className="container">
             <h1 className='custom-heading text-center'>Orders List</h1>
             <Search
                 placeholder="Search"
                 enterButton
-                style={{ marginBottom: '20px', width: '300px' }}
-                // onSearch={value => searchHandleChange(value)}
+                style={{marginBottom: '20px', width: '300px'}}
+                onSearch={(value) => searchHandleChange(value)}
             />
             <Table
                 columns={columns}

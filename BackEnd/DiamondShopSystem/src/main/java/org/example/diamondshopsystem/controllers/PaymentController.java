@@ -72,7 +72,7 @@ public class PaymentController {
                     }
                     paymentService.savePayment(paymentDTO);
 
-                    redirectUrl = "http://localhost:3000/order-success";
+                    redirectUrl = "http://localhost:3000/ordersuccess";
                 } else {
                     redirectUrl = "http://localhost:3000/payment/result?vnp_ResponseCode=01";
                 }

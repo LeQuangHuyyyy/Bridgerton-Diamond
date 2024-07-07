@@ -37,7 +37,7 @@ public class OrderController {
 
 
     @GetMapping
-    public ResponseEntity<Page<OrderDTO>> getAllOrders(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<OrderDTO>> getAllOrders(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "1000") int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
             Page<OrderDTO> allOrder = orderServiceImp.getAllOrder(pageable);
@@ -47,7 +47,6 @@ public class OrderController {
         }
     }
 
-    // lấy cả name, email, orderDate, totalAmount, product của order detail đó product có tên, số lượng và price
 
     @GetMapping("/OrdersData/{orderId}")
     public ResponseEntity<?> getOrderById(@PathVariable int orderId) {
@@ -86,7 +85,7 @@ public class OrderController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<?> SearchOrderByKeyWord(@RequestParam String keyword) {
         OrderStatus status = null;
         try {

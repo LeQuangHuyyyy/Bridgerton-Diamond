@@ -42,6 +42,7 @@ export const App = () => {
                     {token === undefined && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
+                            <Redirect from='/' to="/home"/>
                             <Route path='/' exact>
                                 <HomePage/>
                             </Route>
@@ -75,9 +76,6 @@ export const App = () => {
                             <Route path='/reset-password'>
                                 <ResetPassword/>
                             </Route>
-                            <Route path='/ordersuccess'>
-                                <OrderSuccessPage/>
-                            </Route>
                             <Footer/>
                         </div>
                     )
@@ -85,6 +83,7 @@ export const App = () => {
                     {token === 'CUSTOMER' && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
+                            <Redirect from='/' to="/home"/>
                             <Route path='/' exact>
                                 <HomePage/>
                             </Route>

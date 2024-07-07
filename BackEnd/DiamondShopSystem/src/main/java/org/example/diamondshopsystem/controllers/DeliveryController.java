@@ -32,7 +32,7 @@ public class DeliveryController {
 
 
     @GetMapping("/ViewOrderDelivery")
-    public ResponseEntity<?> getOrderByDelivery(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<?> getOrderByDelivery(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "1000") int size) {
         try {
             OrderStatus statuses = OrderStatus.DELIVERED;
             Page<OrderDTO> newOrdersPage = orderServiceImp.getAllOrderByStatus(statuses, PageRequest.of(page, size));

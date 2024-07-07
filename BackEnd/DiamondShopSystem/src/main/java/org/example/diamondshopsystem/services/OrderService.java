@@ -63,8 +63,6 @@ public class OrderService implements OrderServiceImp {
         return totalPrice;
     }
 
-
-    //set này danh cho sau khi payment thành oong
     @Override
     public void setOrderStatus(Integer orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
@@ -87,7 +85,6 @@ public class OrderService implements OrderServiceImp {
     }
 
 
-    /////////////// NOTICE ///////////////
     @Override
     public Page<OrderDTO> getAllOrderByStatus(OrderStatus status, Pageable pageable) {
         try {
@@ -101,7 +98,7 @@ public class OrderService implements OrderServiceImp {
     }
 
 
-    ////// hiện thêm cái tên của thằng sale !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ///////////// hiện thêm cái tên của thằng sale !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     @Override
     public Page<OrderDTO> getAllOrdersByStatuses(List<OrderStatus> statuses, Pageable pageable) {
