@@ -5,6 +5,9 @@ import org.example.diamondshopsystem.dto.PaymentDTO;
 import org.example.diamondshopsystem.entities.Order;
 import org.example.diamondshopsystem.entities.OrderStatus;
 import org.example.diamondshopsystem.payload.requests.AddProductRequest;
+import org.example.diamondshopsystem.payload.requests.DiamondCategory;
+import org.example.diamondshopsystem.payload.requests.OrderProductDetailRequest;
+import org.example.diamondshopsystem.payload.requests.ProductCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -31,4 +34,13 @@ public interface OrderServiceImp {
     void setOrderFromPaymentToDelivery(Integer orderId, String email);
 
     List<OrderDTO> searchByKeyWord(String keyword, OrderStatus status);
+
+    List<OrderDTO> getOrderSoldInLastWeek();
+
+    List<OrderProductDetailRequest> getTotalProductInLastWeek();
+
+    double revenueLastWeek();
+
+    DiamondCategory diamondSoldByCategory();
+    ProductCategory getProductSoldByCategory();
 }

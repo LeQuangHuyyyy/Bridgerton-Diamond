@@ -84,6 +84,8 @@ public class OrderMapper {
         orderDTO.setDiscountCode(order.getDiscountCode() != null ? order.getDiscountCode().getCode() : null);
         orderDTO.setCustomerId(user.getUserid());
         orderDTO.setUsername(user.getName());
+        orderDTO.setPhoneNumber(user.getPhoneNumber());
+        orderDTO.setOrderDeliveryAddress(order.getOrderDeliveryAddress());
         orderDTO.setSaleId(order.getSale() != null ? order.getSale().getUserid() : 0);
         orderDTO.setDeliveryId(order.getDelivery() != null ? order.getDelivery().getUserid() : 0);
         return orderDTO;

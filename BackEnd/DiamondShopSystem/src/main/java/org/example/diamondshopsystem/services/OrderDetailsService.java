@@ -100,6 +100,7 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         for (Order o : orders) {
             OrderDetailRequest orderDetailRequest = new OrderDetailRequest();
             List<OrderProductDetailRequest> list = new ArrayList<>();
+
             User user = o.getCustomer();
             String username = user.getName();
             String mail = user.getEmail();
@@ -125,12 +126,7 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
     }
 
 
-    @Override
-    public OrderDetailRequest getDeliveryOrderDetailById(int orderId) {
-
-
-        return null;
-    }
+    
 
     private static OrderProductDetailRequest getOrderProductDetailRequest(OrderDetails od) {
         OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();

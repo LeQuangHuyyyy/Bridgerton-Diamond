@@ -1,10 +1,12 @@
 package org.example.diamondshopsystem.services;
 
 import org.example.diamondshopsystem.dto.OrderDTO;
-import org.example.diamondshopsystem.entities.Order;
+import org.example.diamondshopsystem.entities.*;
 
-import org.example.diamondshopsystem.entities.OrderStatus;
-import org.example.diamondshopsystem.entities.User;
+import org.example.diamondshopsystem.payload.requests.DiamondCategory;
+import org.example.diamondshopsystem.payload.requests.OrderDetailRequest;
+import org.example.diamondshopsystem.payload.requests.OrderProductDetailRequest;
+import org.example.diamondshopsystem.payload.requests.ProductCategory;
 import org.example.diamondshopsystem.repositories.OrderDetailRepository;
 import org.example.diamondshopsystem.repositories.OrderRepository;
 import org.example.diamondshopsystem.repositories.ProductRepository;
@@ -19,9 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -30,18 +30,20 @@ public class OrderService implements OrderServiceImp {
 
 
     @Autowired
-    OrderRepository orderRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
-    OrderMapper orderMapper;
+    private OrderMapper orderMapper;
 
     @Autowired
-    OrderDetailRepository orderDetailRepository;
+    private OrderDetailRepository orderDetailRepository;
 
-    @Autowired
-    ProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private OrderDetailsService orderDetailsService;
+
 
     @Override
     public Page<OrderDTO> getAllOrder(Pageable pageable) {
@@ -154,4 +156,165 @@ public class OrderService implements OrderServiceImp {
         };
     }
 
+    private static OrderProductDetailRequest getOrderProductDetailRequest(OrderDetails od) {
+        OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
+
+        Products products = od.getProduct();
+        String productName = products.getProductName();
+        double price = products.getPrice();
+        int quantity = od.getQuantity();
+        orderProductDetailRequests.setProductName(productName);
+        orderProductDetailRequests.setQuantity(quantity);
+        orderProductDetailRequests.setPrice(price);
+        orderProductDetailRequests.setSize(od.getSize());
+        return orderProductDetailRequests;
+    }
+
+    public List<Order> orderListLastWeek() {
+        List<Order> orders = orderRepository.findAll();
+        List<Order> result = new ArrayList<>();
+
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        calendar.add(Calendar.WEEK_OF_YEAR, -1);
+        Date startOfLastWeek = calendar.getTime();
+
+        calendar.setTime(startOfLastWeek);
+        calendar.add(Calendar.DAY_OF_WEEK, 6);
+        Date endOfLastWeek = calendar.getTime();
+
+        for (Order o : orders) {
+            if (o.getOrderDate().after(startOfLastWeek) && o.getOrderDate().before(endOfLastWeek)) {
+                result.add(o);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<OrderDTO> getOrderSoldInLastWeek() {
+        List<Order> orders = orderListLastWeek();
+        List<OrderDTO> orderDTOS = new ArrayList<>();
+
+        for (Order o : orders) {
+            orderDTOS.add(orderMapper.getAllOrder(o));
+        }
+        return orderDTOS;
+    }
+
+
+    @Override
+    public List<OrderProductDetailRequest> getTotalProductInLastWeek() {
+        List<Order> orders = orderListLastWeek();
+        List<OrderProductDetailRequest> list = new ArrayList<>();
+        for (Order o : orders) {
+            for (OrderDetails od : o.getOrderDetails()) {
+                OrderProductDetailRequest orderProductDetailRequests = getOrderProductDetailRequest(od);
+                list.add(orderProductDetailRequests);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public double revenueLastWeek() {
+        List<Order> orders = orderListLastWeek();
+        double price = 0;
+        for (Order o : orders) {
+            price += o.getOrderTotalAmount();
+        }
+        return price;
+    }
+
+    @Override
+    public DiamondCategory diamondSoldByCategory() {
+        List<Order> orders = orderListLastWeek();
+        DiamondCategory diamondCate = new DiamondCategory();
+
+        int heart = 0;
+        int oval = 0;
+        int round = 0;
+
+        for (Order o : orders) {
+            for (OrderDetails od : o.getOrderDetails()) {
+                Products products = od.getProduct();
+                Set<Diamond> diamonds = products.getDiamonds();
+                for (Diamond d : diamonds) {
+                    switch (d.getCut()) {
+                        case "Heart":
+                            heart++;
+                            break;
+                        case "Oval":
+                            oval++;
+                            break;
+                        case "Round":
+                            round++;
+                            break;
+                    }
+                }
+            }
+        }
+        diamondCate.setHeart(heart);
+        diamondCate.setOval(oval);
+        diamondCate.setRound(round);
+
+        return diamondCate;
+    }
+
+
+    public ProductCategory getProductSoldByCategory() {
+        int EngagementRings = 0;
+        int WeddingBands = 0;
+        int MenDiamondRing = 0;
+        int WomenDiamondRing = 0;
+        int DiamondNecklaces = 0;
+        int DiamondEarrings = 0;
+        int DiamondBracelets = 0;
+
+        List<Order> orders = orderListLastWeek();
+        ProductCategory productCategory = new ProductCategory();
+        for (Order o : orders) {
+            for (OrderDetails od : o.getOrderDetails()) {
+                Products products = od.getProduct();
+                Category category = products.getCategory();
+
+                switch (category.getCategoryName()) {
+                    case "Engagement Rings":
+                        EngagementRings++;
+                        break;
+                    case "Wedding Bands":
+                        WeddingBands++;
+                        break;
+                    case "Men diamond ring":
+                        MenDiamondRing++;
+                        break;
+                    case "Women diamond ring":
+                        WomenDiamondRing++;
+                        break;
+                    case "Diamond Necklaces":
+                        DiamondNecklaces++;
+                        break;
+                    case "Diamond Earrings":
+                        DiamondEarrings++;
+                        break;
+                    case "Diamond Bracelets":
+                        DiamondBracelets++;
+                        break;
+
+                }
+            }
+        }
+        productCategory.setEngagementRings(EngagementRings);
+        productCategory.setWeddingBands(WeddingBands);
+        productCategory.setMenDiamondRing(MenDiamondRing);
+        productCategory.setWomenDiamondRing(WomenDiamondRing);
+        productCategory.setDiamondNecklaces(DiamondNecklaces);
+        productCategory.setDiamondEarrings(DiamondEarrings);
+        productCategory.setDiamondBracelets(DiamondBracelets);
+
+        return productCategory;
+    }
 }

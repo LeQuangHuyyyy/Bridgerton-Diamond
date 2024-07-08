@@ -12,5 +12,4 @@ public interface OrderDetailsServiceImp {
 
     OrderDetailRequest getOrderDetailSaleStaffById(int orderId);
 
-    OrderDetailRequest getDeliveryOrderDetailById(int orderId);
 }

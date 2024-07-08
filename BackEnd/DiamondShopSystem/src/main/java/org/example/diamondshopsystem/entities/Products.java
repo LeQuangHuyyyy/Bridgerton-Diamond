@@ -66,7 +66,7 @@ public class Products {
     @JsonBackReference
     private Shell shell;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonBackReference
     private Set<Diamond> diamonds = new HashSet<>();
 
