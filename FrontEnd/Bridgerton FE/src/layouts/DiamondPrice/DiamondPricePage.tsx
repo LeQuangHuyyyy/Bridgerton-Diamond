@@ -16,7 +16,7 @@ export const DiamondPricePage = () => {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const url: string = 'http://localhost:8888/manage/diamond-price/get-all';
+            const url: string = 'https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond-price/get-all';
             const response = await fetch(url, {headers: headers});
             if (!response.ok) {
                 throw new Error('Something went wrong!');

@@ -14,7 +14,7 @@ export const CarouselProduct = () => {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const baseUrl: string = "http://localhost:8888/home";
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/home";
             const url: string = `${baseUrl}`;
             const response = await fetch(url);
             if (!response.ok) {

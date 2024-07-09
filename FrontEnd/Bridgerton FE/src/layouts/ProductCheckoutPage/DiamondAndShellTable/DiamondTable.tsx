@@ -19,7 +19,7 @@ const DiamondTable: React.FC<{ product: ProductModel | undefined }> = (props) =>
     useEffect(() => {
 
         const fetchDiamond = async () => {
-            const baseUrl: string =`http://localhost:8888/manage/diamond/pro/${props.product?.productId}`;
+            const baseUrl: string =`https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond/pro/${props.product?.productId}`;
             const  url: string= `${baseUrl}`;
             const response = await fetch(url, {headers: headers});
             if(!response.ok){

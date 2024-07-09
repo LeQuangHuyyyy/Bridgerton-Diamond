@@ -19,7 +19,7 @@ export const Login = () => {
         formData.append("email", email);
         formData.append("password", password);
 
-        fetch(`http://localhost:8888/login/signin`, {
+        fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/login/signin`, {
                 method: "POST",
                 body: formData
             }
@@ -60,7 +60,7 @@ export const Login = () => {
         e.preventDefault();
         const userModel = new UserModel(registerUsername, registerPassword, registerPhoneNumber, registerEmail, registerAddress)
 
-        const response = await fetch(`http://localhost:8888/login/signup`, {
+        const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/login/signup`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
