@@ -19,7 +19,7 @@ const OrderDetail: React.FC = (props) => {
     const orderId = window.location.pathname.split("/")[2];
     useEffect(() => {
         const fetchDetail = async () => {
-            const baseUrl: string = `http://localhost:8888/order/OrdersData/${orderId}`;
+            const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/order/OrdersData/${orderId}`;
             const url: string = `${baseUrl}`;
             const response = await fetch(url, {headers: headers});
             if (!response.ok) {
@@ -180,7 +180,7 @@ const OrderDetail: React.FC = (props) => {
                             renderItem={item => (
                                 <List.Item>
                                     <List.Item.Meta
-                                        avatar={<Avatar style={{width: '55px', height: '55px'}} shape="square" size="large" src={`http://localhost:8888/product/load-image/${details?.image}.jpg`} />}
+                                        avatar={<Avatar style={{width: '55px', height: '55px'}} shape="square" size="large" src={details?.image} />}
                                         title={<span style={{fontSize: '17px'}}>{item.productName}</span>}
                                         description={<span style={{fontSize: '15px'}}>Size: {item.size}</span>}
                                     />

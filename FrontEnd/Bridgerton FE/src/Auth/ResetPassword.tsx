@@ -16,7 +16,7 @@ export const ResetPassword = () => {
                 verificationCode: verificationCode,
                 password: password
             };
-            const response = await fetch('http://localhost:8888/login/resetpassword', {
+            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/login/resetpassword', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

@@ -22,7 +22,7 @@ export const SearchProductsPage = () => {
     }
     useEffect(() => {
         const fetchProducts = async () => {
-            const baseUrl: string = "http://localhost:8888/home";
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/home";
             let url: string = '';
             if (searchUrl === '') {
                 url = `${baseUrl}/search-by-name?page=${currentPage - 1}&size=${productsPerPage}&keyword=${search}`;

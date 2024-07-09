@@ -1,0 +1,17 @@
+
+.custom-menu {
+    background-color: #F875AA;
+}
+
+.custom-menu .ant-menu-item-selected {
+    background-color: #FBACCC;
+}
+.ant-layout .ant-layout-sider-trigger {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.ant-layout-sider-collapsible .ant-layout-sider-trigger:hover {
+    background-color: #45a049;
+    color: #fff;
+}

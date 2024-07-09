@@ -20,6 +20,11 @@ import {SaleStaffPage} from "./layouts/SaleStaff/SaleStaffPage";
 import OrderSuccessPage from "./layouts/OrderSuccessPage/OrderSuccessPage";
 import OrderDetail from "./layouts/SaleStaff/component/OrderDetail";
 import DeliveryStaff from "./layouts/DeliveryStaff/DeliveryStaff";
+import {SideBar} from "./layouts/Manager/SideBar";
+import {Promotion} from "./layouts/Manager/Promotion";
+import {Product} from "./layouts/Manager/Product";
+import {Diamond} from "./layouts/Manager/Diamond";
+import Dashboard from "./layouts/Manager/Dashboard";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -127,11 +132,7 @@ export const App = () => {
                             <Footer/>
                         </div>
                     )
-
-
                     }
-
-
                     {token === 'ADMIN' && (
                         <>
                             <Redirect from='/' to='/admin' exact/>
@@ -142,7 +143,21 @@ export const App = () => {
                     )}
                     {token === 'MANAGER' && (
                         <>
-                            <Redirect from='/' to='/manager' exact/>
+                            <SideBar>
+                            <Redirect from='/' to='/diamond' exact/>
+                            <Route path='/promotion'>
+                                <Promotion/>
+                            </Route>
+                            <Route path='/dashboard'>
+                                <Dashboard/>
+                            </Route>
+                            <Route path='/product'>
+                                <Product/>
+                            </Route>
+                            <Route path='/diamond'>
+                                <Diamond/>
+                            </Route>
+                            </SideBar>
                         </>
                     )}
                     {token === 'SALE_STAFF' && (

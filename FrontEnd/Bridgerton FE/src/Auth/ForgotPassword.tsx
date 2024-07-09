@@ -8,7 +8,7 @@ export const ForgotPassword = () => {
         const data = {
             email: email,
         };
-        const response = await fetch('http://localhost:8888/login/forgotpassword', {
+        const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/login/forgotpassword', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'

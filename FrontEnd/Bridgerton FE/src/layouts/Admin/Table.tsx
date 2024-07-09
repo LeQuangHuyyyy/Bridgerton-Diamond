@@ -58,7 +58,7 @@ export const Table: React.FC = () => {
                 return;
             }
 
-            const response = await fetch('http://localhost:8888/manage/accounts', {
+            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${headers}`
@@ -83,7 +83,7 @@ export const Table: React.FC = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:8888/manage/accounts', {
+            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts', {
                 method: "GET",
                 headers: {
                     'Authorization': `Bearer ${headers}`
@@ -108,7 +108,7 @@ export const Table: React.FC = () => {
                 formData.status = "true";
             }
 
-            const postResponse = await fetch('http://localhost:8888/manage/accounts', {
+            const postResponse = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts', {
                 method: "POST",
                 body: JSON.stringify(formData),
                 headers: {
@@ -145,7 +145,7 @@ export const Table: React.FC = () => {
         let check = true;
 
         try {
-            const response = await fetch('http://localhost:8888/manage/accounts', {
+            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts', {
                 method: "GET",
                 headers: {
                     'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ export const Table: React.FC = () => {
             });
 
             if (check) {
-                await fetch(`http://localhost:8888/manage/accounts/${formData.userid}`, {
+                await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts/${formData.userid}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ export const Table: React.FC = () => {
     const handleDelete = async (userid: string, e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await fetch(`http://localhost:8888/manage/accounts/${userid}`, {
+            await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts/${userid}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${headers}`
@@ -210,7 +210,7 @@ export const Table: React.FC = () => {
         e.preventDefault();
         console.log(input)
         if (input === "") {
-            const response = await fetch('http://localhost:8888/manage/accounts', {
+            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${headers}`
@@ -219,7 +219,7 @@ export const Table: React.FC = () => {
             const data = await response.json();
             setDataSource(data.content || []);
         } else {
-            const response = await fetch(`http://localhost:8888/manage/searchAccount?keyword=${input}`, {
+            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/searchAccount?keyword=${input}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${headers}`
@@ -233,7 +233,7 @@ export const Table: React.FC = () => {
     const searchRoleHandleChange = async (value: string) => {
         try {
             setSelectedRole(value);
-            const response = await fetch('http://localhost:8888/manage/accounts', {
+            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${headers}`

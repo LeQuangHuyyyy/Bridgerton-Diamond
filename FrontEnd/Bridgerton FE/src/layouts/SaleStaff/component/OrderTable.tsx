@@ -20,7 +20,7 @@ const OrderTable: React.FC = () => {
 
     useEffect(() => {
         const fetchOrders = async () => {
-            const baseUrl: string = "http://localhost:8888/order";
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/order";
             const url: string = `${baseUrl}`;
             const response = await fetch(url, { headers: headers });
             if (!response.ok) {
@@ -70,7 +70,7 @@ const OrderTable: React.FC = () => {
 
     const handleConfirm = async (orderId: number) => {
         try {
-            const baseUrl = "http://localhost:8888/sale";
+            const baseUrl = "https://deploy-be-b176a8ceb318.herokuapp.com/sale";
             const url = `${baseUrl}/setOrderToDelivery/${orderId}`;
             const response = await fetch(url, { method: 'POST', headers: headers });
 

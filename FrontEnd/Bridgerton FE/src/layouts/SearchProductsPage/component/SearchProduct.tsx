@@ -19,8 +19,8 @@ export const SearchProduct: React.FC<{ product: ProductModel }> = (props) => {
                      onMouseEnter={handleHover} onMouseLeave={handleLeave}>
                     <img
                         className='product-image'
-                        src={hovered ? `http://localhost:8888/product/load-image/${props.product.image2}.jpg` :
-                            `http://localhost:8888/product/load-image/${props.product.image1}.jpg`}
+                        src={hovered ? props.product.image2 :
+                            props.product.image1}
                         alt="product image"
                     />
                     <div>

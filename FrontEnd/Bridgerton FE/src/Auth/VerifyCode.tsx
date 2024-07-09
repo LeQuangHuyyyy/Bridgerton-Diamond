@@ -10,7 +10,7 @@ export const VerifyCode = () => {
             email: email,
             verificationCode: verifyCode
         };
-        const response = await fetch('http://localhost:8888/login/verify-registration', {
+        const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/login/verify-registration', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -21,7 +21,7 @@ export const VerifyCode = () => {
             // const email = localStorage.getItem('email-register');
             const password = localStorage.getItem('password-register');
 
-            fetch(`http://localhost:8888/login/signin?email=${email}&password=${password}`, {
+            fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/login/signin?email=${email}&password=${password}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

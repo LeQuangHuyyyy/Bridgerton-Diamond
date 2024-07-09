@@ -35,7 +35,7 @@ const Checkout = () => {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const baseUrl: string = "http://localhost:8888/cart/cart";
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/cart/cart";
 
             const addProductRequests = localStorage.getItem("cart");
             console.log(addProductRequests);
@@ -97,7 +97,7 @@ const Checkout = () => {
 
         try {
             const token = localStorage.getItem("token");
-            const orderResponse = await fetch('http://localhost:8888/cart/create', {
+            const orderResponse = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/cart/create', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -114,7 +114,7 @@ const Checkout = () => {
                     orderId,
                     bankCode: "NCB",
                 };
-                const paymentResponse = await fetch('http://localhost:8888/payment', {
+                const paymentResponse = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/payment', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -227,7 +227,7 @@ const Checkout = () => {
                                         }}>
                                             <div style={{marginRight: '15px'}}>
                                                 <img
-                                                    src={`http://localhost:8888/product/load-image/${item.image1}.jpg`}
+                                                    src={`https://deploy-be-b176a8ceb318.herokuapp.com/product/load-image/${item.image1}.jpg`}
                                                     alt="product"
                                                     style={{
                                                         width: '50px',

@@ -19,7 +19,7 @@ const ShellTable: React.FC<{ product: ProductModel | undefined }> = (props) => {
     useEffect(() => {
 
         const fetchDiamond = async () => {
-            const baseUrl: string =`http://localhost:8888/manage/shell/${props.product?.shellId}`;
+            const baseUrl: string =`https://deploy-be-b176a8ceb318.herokuapp.com/manage/shell/${props.product?.shellId}`;
             const  url: string= `${baseUrl}`;
             const response = await fetch(url, {headers: headers});
             if(!response.ok){

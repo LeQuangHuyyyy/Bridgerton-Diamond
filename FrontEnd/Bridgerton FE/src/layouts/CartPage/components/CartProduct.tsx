@@ -9,7 +9,7 @@ export const CartProduct: React.FC<{ product: CartModel; onRemoveProduct: (produ
     return (
         <tr>
             <td className='text-center' scope="row">
-                <img src={`http://localhost:8888/product/load-image/${props.product.image1}.jpg`}
+                <img src={props.product.image1}
                      alt="product"
                      style={{width: '70px', height: '70px'}}/>
             </td>

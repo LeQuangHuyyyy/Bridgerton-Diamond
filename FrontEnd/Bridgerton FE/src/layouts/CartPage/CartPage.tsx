@@ -14,7 +14,7 @@ export const CartPage = () => {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const baseUrl: string = "http://localhost:8888/cart/cart";
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/cart/cart";
 
             const addProductRequests = localStorage.getItem("cart");
             console.log(addProductRequests);
