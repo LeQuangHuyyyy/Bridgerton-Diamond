@@ -20,7 +20,6 @@ import {SaleStaffPage} from "./layouts/SaleStaff/SaleStaffPage";
 import OrderSuccessPage from "./layouts/OrderSuccessPage/OrderSuccessPage";
 import OrderDetail from "./layouts/SaleStaff/component/OrderDetail";
 import DeliveryStaff from "./layouts/DeliveryStaff/DeliveryStaff";
-import DeliveryDetail from "./layouts/DeliveryStaff/component/DeliveryDetail";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -43,7 +42,6 @@ export const App = () => {
                     {token === undefined && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
-                            <Redirect from='/' to="/home"/>
                             <Route path='/' exact>
                                 <HomePage/>
                             </Route>
@@ -77,6 +75,9 @@ export const App = () => {
                             <Route path='/reset-password'>
                                 <ResetPassword/>
                             </Route>
+                            <Route path='/ordersuccess'>
+                                <OrderSuccessPage/>
+                            </Route>
                             <Footer/>
                         </div>
                     )
@@ -84,7 +85,6 @@ export const App = () => {
                     {token === 'CUSTOMER' && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
-                            <Redirect from='/' to="/home"/>
                             <Route path='/' exact>
                                 <HomePage/>
                             </Route>
@@ -161,9 +161,6 @@ export const App = () => {
                             <Redirect from='/' to='/deliverystaff' exact/>
                             <Route path='/deliverystaff'>
                                 <DeliveryStaff/>
-                            </Route>
-                            <Route path="/delivery-detail/:orderId">
-                                <DeliveryDetail/>
                             </Route>
                         </>
                     )}

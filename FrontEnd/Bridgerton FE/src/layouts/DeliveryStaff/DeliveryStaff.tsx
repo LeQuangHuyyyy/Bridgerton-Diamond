@@ -1,53 +1,45 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
+import { Modal } from 'antd';
 import DeliveryOrderList from './DeliveryOrderList';
 import FooterMapProps from "../ContactUs/component/FooterMapProps";
-import {SpinnerLoading} from "../Utils/SpinnerLoading";
 
 interface DeliveryOrder {
-    orderId: string;
-    username: string;
-    orderDeliveryAddress: string;
-    phoneNumber: string;
-    orderDate: string;
+    id: string;
+    customerName: string;
+    address: string;
+    deliveryDate: string;
     status: string;
 }
 
-const token = localStorage.getItem('token');
-const headers = {
-    'Authorization': `Bearer ${token}`
-}
+const initialData: DeliveryOrder[] = [
+    {
+        id: '1',
+        customerName: 'Alice Johnson',
+        address: '123 Main St, Springfield',
+        deliveryDate: '2024-07-01',
+        status: 'Pending',
+    },
+    {
+        id: '2',
+        customerName: 'Bob Smith',
+        address: '456 Oak Ave, Metropolis',
+        deliveryDate: '2024-07-02',
+        status: 'Delivered',
+    },
+];
 
 const DeliveryStaff: React.FC = () => {
-    const [data, setData] = useState<DeliveryOrder[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [data, setData] = useState<DeliveryOrder[]>(initialData);
+    const [selectedOrder, setSelectedOrder] = useState<DeliveryOrder | null>(null);
 
-    useEffect(() => {
-        fetchDelivery();
-    }, []);
-
-    const fetchDelivery = async () => {
-        try {
-            const baseUrl: string = `http://localhost:8888/delivery/ViewOrderDelivery`;
-            const response = await fetch(baseUrl, {headers: headers, method: "GET"});
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
-            }
-            const responseJson = await response.json();
-            setData(responseJson);
-        } catch (err) {
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    if (isLoading) {
-        return <SpinnerLoading/>;
-    }
+    const handleViewDetails = (record: DeliveryOrder) => {
+        setSelectedOrder(record);
+    };
 
     const handleUpdateStatus = (id: string) => {
-        setData(prevData =>
-            prevData.map(order =>
-                order.orderId === id ? {...order, status: 'Delivered'} : order
+        setData(
+            data.map(order =>
+                order.id === id ? { ...order, status: 'Delivered' } : order
             )
         );
     };
@@ -57,9 +49,25 @@ const DeliveryStaff: React.FC = () => {
             <FooterMapProps/>
             <DeliveryOrderList
                 data={data}
-                onViewDetails={(id: string) => console.log('View details for order', id)}
+                onViewDetails={handleViewDetails}
                 onUpdateStatus={handleUpdateStatus}
             />
+            <Modal
+                title="Order Details"
+                visible={!!selectedOrder}
+                onCancel={() => setSelectedOrder(null)}
+                footer={null}
+            >
+                {selectedOrder && (
+                    <div>
+                        <p><strong>Order ID:</strong> {selectedOrder.id}</p>
+                        <p><strong>Customer Name:</strong> {selectedOrder.customerName}</p>
+                        <p><strong>Address:</strong> {selectedOrder.address}</p>
+                        <p><strong>Delivery Date:</strong> {selectedOrder.deliveryDate}</p>
+                        <p><strong>Status:</strong> {selectedOrder.status}</p>
+                    </div>
+                )}
+            </Modal>
         </div>
     );
 };
