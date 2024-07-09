@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Modal } from 'antd';
+import React, {useState} from 'react';
+import {Modal} from 'antd';
 import DeliveryOrderList from './DeliveryOrderList';
 import FooterMapProps from "../ContactUs/component/FooterMapProps";
 
@@ -39,7 +39,7 @@ const DeliveryStaff: React.FC = () => {
     const handleUpdateStatus = (id: string) => {
         setData(
             data.map(order =>
-                order.id === id ? { ...order, status: 'Delivered' } : order
+                order.id === id ? {...order, status: 'Delivered'} : order
             )
         );
     };
