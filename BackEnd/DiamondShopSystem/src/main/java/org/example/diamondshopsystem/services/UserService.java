@@ -1,5 +1,6 @@
 package org.example.diamondshopsystem.services;
 
+import jakarta.transaction.Transactional;
 import org.example.diamondshopsystem.dto.UserDTO;
 import org.example.diamondshopsystem.entities.User;
 import org.example.diamondshopsystem.repositories.UserRepository;
@@ -43,6 +44,7 @@ public class UserService implements UserServiceImp {
         return null;
     }
 
+    @Transactional
     @Override
     public UserDTO createUser(UserDTO userDTO) {
         User user = userMapper.mapUserDTOToUser(userDTO);
@@ -53,6 +55,7 @@ public class UserService implements UserServiceImp {
         return userMapper.mapUserToDTO(savedUser);
     }
 
+    @Transactional
     @Override
     public UserDTO updateUser(int id, UserDTO userDTO) {
         Optional<User> optionalUser = userRepository.findById(id);
@@ -70,6 +73,7 @@ public class UserService implements UserServiceImp {
         return null;
     }
 
+    @Transactional
     @Override
     public void deleteUser(int id) {
         Optional<User> optionalUser = userRepository.findById(id);

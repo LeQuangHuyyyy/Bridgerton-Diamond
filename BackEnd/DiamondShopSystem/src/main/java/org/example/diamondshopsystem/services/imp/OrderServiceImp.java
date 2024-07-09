@@ -41,6 +41,7 @@ public interface OrderServiceImp {
 
     double revenueLastWeek();
 
-    DiamondCategory diamondSoldByCategory();
+    List<DiamondCategory> diamondSoldByCategory();
+
     ProductCategory getProductSoldByCategory();
 }

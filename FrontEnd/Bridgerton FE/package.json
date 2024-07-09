@@ -2,8 +2,6 @@
   "name": "typescript-react",
   "version": "0.1.0",
   "private": true,
-
-  
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -15,6 +13,7 @@
     "@types/react-router-dom": "^5.3.3",
     "antd": "^5.18.1",
     "bootstrap": "^5.3.3",
+    "firebase": "^10.12.3",
     "jwt-decode": "^4.0.0",
     "lottie-react": "^2.4.0",
     "react": "^18.3.1",

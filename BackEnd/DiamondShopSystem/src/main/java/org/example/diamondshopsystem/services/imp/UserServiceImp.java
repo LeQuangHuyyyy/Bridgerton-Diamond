@@ -23,5 +23,5 @@ public interface UserServiceImp {
 
     UserDTO getUserByUsername(String username);
 
-        List<UserDTO> getUserByKeyWord(String keyWord);
+    List<UserDTO> getUserByKeyWord(String keyWord);
 }

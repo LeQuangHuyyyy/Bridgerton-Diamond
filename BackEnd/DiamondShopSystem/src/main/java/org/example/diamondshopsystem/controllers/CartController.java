@@ -2,6 +2,7 @@ package org.example.diamondshopsystem.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.example.diamondshopsystem.dto.*;
 import org.example.diamondshopsystem.entities.DiscountCodes;
 import org.example.diamondshopsystem.entities.Order;
@@ -141,6 +142,7 @@ public class CartController {
 
 
     // pedding
+    @Transactional
     @PostMapping("/checkout")
     public ResponseEntity<?> checkout(@RequestBody CheckoutRequest checkoutRequest, @RequestHeader("Authorization") String authHeader, HttpServletResponse response) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -174,6 +176,7 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or missing token.");
     }
 
+    @Transactional
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@RequestBody OrderRequest orderRequest) {
         return ResponseEntity.ok(shoppingCartService.creteOrder(orderRequest));

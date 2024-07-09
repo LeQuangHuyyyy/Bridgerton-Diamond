@@ -4,16 +4,13 @@ import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.entities.*;
 
 import org.example.diamondshopsystem.payload.requests.DiamondCategory;
-import org.example.diamondshopsystem.payload.requests.OrderDetailRequest;
 import org.example.diamondshopsystem.payload.requests.OrderProductDetailRequest;
 import org.example.diamondshopsystem.payload.requests.ProductCategory;
-import org.example.diamondshopsystem.repositories.OrderDetailRepository;
-import org.example.diamondshopsystem.repositories.OrderRepository;
-import org.example.diamondshopsystem.repositories.ProductRepository;
-import org.example.diamondshopsystem.repositories.UserRepository;
+import org.example.diamondshopsystem.repositories.*;
 import org.example.diamondshopsystem.services.Map.OrderMapper;
 import org.example.diamondshopsystem.services.imp.OrderServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.sql.init.dependency.DatabaseInitializationDependencyConfigurer;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,21 +33,14 @@ public class OrderService implements OrderServiceImp {
     @Autowired
     private OrderMapper orderMapper;
 
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private OrderDetailsService orderDetailsService;
-
 
     @Override
     public Page<OrderDTO> getAllOrder(Pageable pageable) {
         Page<Order> orderPage = orderRepository.findAll(pageable);
         List<OrderDTO> orderDTOList = orderPage.getContent().stream().map(orderMapper::getAllOrder).collect(Collectors.toList());
-
         return new PageImpl<>(orderDTOList, pageable, orderPage.getTotalElements());
     }
 
@@ -229,41 +220,83 @@ public class OrderService implements OrderServiceImp {
         return price;
     }
 
-    @Override
-    public DiamondCategory diamondSoldByCategory() {
-        List<Order> orders = orderListLastWeek();
-        DiamondCategory diamondCate = new DiamondCategory();
 
-        int heart = 0;
-        int oval = 0;
-        int round = 0;
+    @Override
+    public List<DiamondCategory> diamondSoldByCategory() {
+        List<Order> orders = orderListLastWeek();
+        Map<String, DiamondCategory> diamondCategories = initializeDiamondCategoriesForWeek();
+
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        calendar.add(Calendar.WEEK_OF_YEAR, -1);
+        Date sundayStart = calendar.getTime();
+
+        calendar.add(Calendar.DAY_OF_MONTH, 6);
+        Date saturdayEnd = calendar.getTime();
 
         for (Order o : orders) {
-            for (OrderDetails od : o.getOrderDetails()) {
-                Products products = od.getProduct();
-                Set<Diamond> diamonds = products.getDiamonds();
-                for (Diamond d : diamonds) {
-                    switch (d.getCut()) {
-                        case "Heart":
-                            heart++;
-                            break;
-                        case "Oval":
-                            oval++;
-                            break;
-                        case "Round":
-                            round++;
-                            break;
-                    }
+            Date orderDate = o.getOrderDate();
+            if (orderDate.after(sundayStart) && orderDate.before(saturdayEnd)) {
+                updateDiamondCategories(o.getOrderDetails(), diamondCategories);
+            }
+        }
+
+        return new ArrayList<>(diamondCategories.values());
+    }
+
+
+    private Map<String, DiamondCategory> initializeDiamondCategoriesForWeek() {
+        Map<String, DiamondCategory> categories = new HashMap<>();
+
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        calendar.add(Calendar.WEEK_OF_YEAR, -1);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("E");
+
+        for (int i = 0; i < 7; i++) {
+            Date date = calendar.getTime();
+            String dayOfWeek = sdf.format(date);
+            String[] shapes = {"Heart", "Oval", "Round"};
+
+            for (String shape : shapes) {
+                DiamondCategory category = new DiamondCategory();
+                category.setSoldDate(date);
+                category.setDiamondShape(shape);
+                category.setShapeQuantity(0);
+                categories.put(dayOfWeek + "_" + shape, category);
+            }
+
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return categories;
+    }
+
+    private void updateDiamondCategories(List<OrderDetails> details, Map<String, DiamondCategory> categories) {
+        SimpleDateFormat sdf = new SimpleDateFormat("E");
+
+
+        for (OrderDetails od : details) {
+            Products products = od.getProduct();
+            Set<Diamond> diamonds = products.getDiamonds();
+            Date date = od.getOrder().getOrderDate();
+            String dayOfWeek = sdf.format(date);
+
+            for (Diamond d : diamonds) {
+                String cut = d.getCut();
+                String key = dayOfWeek + "_" + cut;
+
+                if (categories.containsKey(key)) {
+                    DiamondCategory category = categories.get(key);
+                    category.setShapeQuantity(category.getShapeQuantity() + 1);
                 }
             }
         }
-        diamondCate.setHeart(heart);
-        diamondCate.setOval(oval);
-        diamondCate.setRound(round);
-
-        return diamondCate;
     }
-
 
     public ProductCategory getProductSoldByCategory() {
         int EngagementRings = 0;
@@ -317,4 +350,6 @@ public class OrderService implements OrderServiceImp {
 
         return productCategory;
     }
+
+
 }

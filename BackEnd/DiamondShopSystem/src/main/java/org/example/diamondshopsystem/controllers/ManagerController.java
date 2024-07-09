@@ -15,6 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/manager")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class ManagerController {
 
     @Autowired
@@ -68,4 +69,5 @@ public class ManagerController {
         responseData.setDescription("ke ke ke, product bán ra lấy số lựng từng cate trong tuần trc");
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
+
 }
