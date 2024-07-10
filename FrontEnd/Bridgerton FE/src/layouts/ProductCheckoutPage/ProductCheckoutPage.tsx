@@ -17,6 +17,7 @@ export const ProductCheckoutPage = () => {
     const [quantity, setQuantity] = useState<number>(1);
     const [selectedSize, setSelectedSize] = useState<SizeModel>();
     const [sizeError, setSizeError] = useState<string | null>(null);
+    const [outOfStock, setOutOfStock] = useState(false);
 
     const token = localStorage.getItem("token");
     const headers = {
@@ -78,15 +79,19 @@ export const ProductCheckoutPage = () => {
                     diamondId: responseData[key].diamondId,
                     shellId: responseData[key].shellId
                 });
-                console.log(responseData);
             }
+
 
             setSuggest(loadedProducts);
             setIsLoading(false);
-
             setProduct(loadedProduct);
             setSelectedImage(responseJson.image1);
             setIsLoading(false);
+
+            if (loadedProduct.stockQuantity === 0) {
+                setOutOfStock(true)
+            }
+
         };
         fetchProduct().catch((error: any) => {
             setIsLoading(false);
@@ -94,6 +99,7 @@ export const ProductCheckoutPage = () => {
             console.log(error);
         });
     }, []);
+
 
     useEffect(() => {
 
@@ -200,17 +206,17 @@ export const ProductCheckoutPage = () => {
             items: 1
         }
     }
-
+    console.log(product)
     return (
         <div style={{marginTop: "200px", marginBottom: "80px"}} className="container">
             <div className="container d-none d-lg-block w-1000">
                 <div className="row mt-5">
                     <div className="col-sm-2 col-md-6 text-center">
-                            <img
-                                src={selectedImage}
-                                style={{width: "455px", height: "390px", border: '1px solid black'}}
-                                alt="product"
-                            />
+                        <img
+                            src={selectedImage}
+                            style={{width: "455px", height: "390px", border: '1px solid black'}}
+                            alt="product"
+                        />
                         <div className="d-flex justify-content-center mt-3">
                             {product?.image1 && (
                                 <>
@@ -310,13 +316,25 @@ export const ProductCheckoutPage = () => {
                                 ))}
                             </select>
                             {sizeError && <p style={{color: 'red'}}>{sizeError}</p>}
-                            <button
-                                style={{borderRadius: '0'}}
-                                className="btn btn-success mt-3 w-100"
-                                onClick={addToCartHandler}
-                            >
-                                ADD TO CART
-                            </button>
+
+                            {
+                                outOfStock ? <button
+                                        style={{borderRadius: '0'}}
+                                        className="btn btn-danger mt-3 w-100"
+                                    >
+                                        OUT OF STOCK
+                                    </button>
+                                    :
+                                    <button
+                                        style={{borderRadius: '0'}}
+                                        className="btn btn-success mt-3 w-100"
+                                        onClick={addToCartHandler}
+                                    >
+                                        ADD TO CART
+                                    </button>
+                            }
+
+
                         </div>
                     </div>
                 </div>
