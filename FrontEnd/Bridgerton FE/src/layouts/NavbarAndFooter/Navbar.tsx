@@ -10,7 +10,7 @@ const {Header} = Layout;
 const menu = (handleLogout: any) => (
     <Menu>
         <Menu.Item key="0">
-            <NavLink to="/myAccount">Account</NavLink>
+            <NavLink to="/account">Account</NavLink>
         </Menu.Item>
         <Menu.Item key="1" onClick={handleLogout}>
             Log out
@@ -58,7 +58,7 @@ export const Navbar = () => {
                          style={{
                              fontFamily: 'Petit Formal Script, cursive',
                              textDecoration: 'none',
-                             fontSize: '40px',
+                             fontSize: '35px',
                              color: 'white',
                          }}>
                     Bridgerton

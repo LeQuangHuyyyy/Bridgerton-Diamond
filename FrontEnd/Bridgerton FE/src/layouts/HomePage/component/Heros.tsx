@@ -48,7 +48,7 @@ export const Heros = () => {
                     <div className="col-sm-6 col-md-6">
                         <div>
                             <img className="col-image-right"
-                                 src={'https://ecommo--ion.bluenile.com/bn-main/wedding_desktop(2_2).59184.jpg'}
+                                 src={'https://ecommo--ion.bluenile.com/bn-main/engagement_desktop(2_2).a0702.jpg'}
                                  alt='hero2'></img>
                         </div>
                     </div>

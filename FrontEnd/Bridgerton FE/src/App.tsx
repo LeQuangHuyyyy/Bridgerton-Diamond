@@ -25,6 +25,7 @@ import {Promotion} from "./layouts/Manager/Promotion";
 import {Product} from "./layouts/Manager/Product";
 import {Diamond} from "./layouts/Manager/Diamond";
 import Dashboard from "./layouts/Manager/Dashboard";
+import Account from "./layouts/Account";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -128,6 +129,9 @@ export const App = () => {
                             </Route>
                             <Route path='/ordersuccess'>
                                 <OrderSuccessPage/>
+                            </Route>
+                            <Route path='/account'>
+                            <Account/>
                             </Route>
                             <Footer/>
                         </div>

@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {jwtDecode} from 'jwt-decode';
 import { AddPromotion } from './component/AddPromotion';
 import { UpdatePromotion } from './component/UpdatePromotion';
-import { Layout, Table, Button, Modal } from 'antd';
+import { Table, Button} from 'antd';
 
 
-const { Content } = Layout;
 const headers = localStorage.getItem('token');
 
 interface PromotionData {

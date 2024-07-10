@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from "react";
 import ProductModel from "../../models/ProductModel";
-import {Paging} from "../Utils/Paging";
 import {SpinnerLoading} from "../Utils/SpinnerLoading";
 import {AddProduct} from "./component/AddProduct";
 import {Button, Image, Table} from "antd";
-
+import './Product.css'
 interface ProductData {
     productId: string;
     collection: string;
@@ -35,7 +34,6 @@ export const Product = () => {
     const [httpError, setHttpError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalAmountOfProducts, setTotalAmountOfProducts] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
     const [search, setSearch] = useState('');
     const [searchUrl, setSearchUrl] = useState('');
     const [searchCategory, setSearchCategory] = useState('All Category');
@@ -248,7 +246,7 @@ export const Product = () => {
         } catch (error) {
             console.error('There was an error fetching the diamonds:', error);
         }
-        
+
     }
 
     const searchHandleChange = () => {
@@ -359,13 +357,31 @@ export const Product = () => {
             dataIndex: 'description',
             key: 'description',
             render: (text: string) => (
-                <span style={{textAlign: 'center'}}>${text}</span>
+                <div style={{ maxWidth: '500px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {text}
+                </div>
+            ),
+        },
+        {
+            title: 'Color',
+            dataIndex: 'color',
+            key: 'color',
+            render: (text: string) => (
+        <span>{text}</span>
             ),
         },
         {
             title: 'Quantity',
             dataIndex: 'stockQuantity',
             key: 'stockQuantity',
+            render: (text: number) => (
+                <span>{text}</span>
+            ),
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
             render: (text: number) => (
                 <span>{text}</span>
             ),
@@ -451,7 +467,9 @@ export const Product = () => {
                     </div>
                     {totalAmountOfProducts > 0 ?
                         <>
-                            <Table dataSource={products} columns={columns} rowKey="productId" />
+                            <div className='table-wrapper'>
+                                <Table dataSource={products} columns={columns} rowKey="productId" />
+                            </div>
                         </>
                         :
                         <div className='m-5'>
