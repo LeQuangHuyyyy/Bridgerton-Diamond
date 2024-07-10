@@ -56,7 +56,7 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("accounts/{id}")
+    @PutMapping("/accounts/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable int id, @RequestBody UserDTO user) {
         userServiceImp.updateUser(id, user);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

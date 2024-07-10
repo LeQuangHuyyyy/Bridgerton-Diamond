@@ -1,15 +1,18 @@
 package org.example.diamondshopsystem.payload.requests;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class DiamondCategory {
-    private Date soldDate;
-    private String diamondShape;
-    private int shapeQuantity;
-
+    private String date;
+    private int heart;
+    private int round;
+    private int oval;
 }

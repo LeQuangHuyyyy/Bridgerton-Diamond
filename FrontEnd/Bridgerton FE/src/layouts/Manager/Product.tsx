@@ -4,9 +4,10 @@ import {Paging} from "../Utils/Paging";
 import {SpinnerLoading} from "../Utils/SpinnerLoading";
 import {AddProduct} from "./component/AddProduct";
 import {Button, Image, Table} from "antd";
+import productModel from "../../models/ProductModel";
 
 interface ProductData {
-    productId: string;
+    productId: number;
     collection: string;
     description: string;
     image1: File | string;
@@ -17,6 +18,7 @@ interface ProductData {
     productName: string;
     stockQuantity: number;
     categoryId: number;
+    diamondId: number;
     shellId: number;
 }
 
@@ -42,8 +44,9 @@ export const Product = () => {
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [diamonds, setDiamonds] = useState<Diamond[]>([]);
+    const [product, setProduct] = useState<ProductModel>();
     const [formData, setFormData] = useState<ProductData>({
-        productId: '',
+        productId: 0,
         collection: '',
         description: '',
         image1: '',
@@ -54,6 +57,7 @@ export const Product = () => {
         productName: '',
         stockQuantity: 0,
         categoryId: 0,
+        diamondId: 0,
         shellId: 0,
     });
     const [image1, setImage1] = useState<string | null>(null);
@@ -129,7 +133,7 @@ export const Product = () => {
 
     const toggleAddModal = () => {
         setFormData({
-            productId: '',
+            productId: 0,
             collection: '',
             description: '',
             image1: '',
@@ -140,96 +144,81 @@ export const Product = () => {
             productName: '',
             stockQuantity: 0,
             categoryId: 0,
+            diamondId: 0,
             shellId: 0,
         });
         setIsAddingNew(!isAddingNew);
     }
 
-    const getFileNameWithoutExtension = (file: File): string => {
-        const fileName = file.name.split('\\').pop()?.split('/').pop();
-        return fileName ? fileName.split('.').slice(0, -1).join('.') : '';
-    };
-
+    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const {name, files} = e.target;
+    //     if (files && files.length > 0) {
+    //         const fileName = files[0].name;
+    //         console.log(name + ':    ' + files[0].name)
+    //         setFormData((prevFormData) => ({
+    //             ...prevFormData,
+    //             [name]: files[0],
+    //         }));
+    //
+    //         switch (name) {
+    //             case 'image1':
+    //                 setImage1(fileName);
+    //                 break;
+    //             case 'image2':
+    //                 setImage2(fileName);
+    //                 break;
+    //             case 'image3':
+    //                 setImage3(fileName);
+    //                 break;
+    //             case 'image4':
+    //                 setImage4(fileName);
+    //                 break;
+    //             default:
+    //                 break;
+    //         }
+    //     }
+    // };
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, files} = e.target;
-        if (files && files.length > 0) {
-            const fileName = files[0].name;
-            console.log(name + ':    ' + files[0].name)
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                [name]: files[0],
-            }));
-
-            switch (name) {
-                case 'image1':
-                    setImage1(fileName);
-                    break;
-                case 'image2':
-                    setImage2(fileName);
-                    break;
-                case 'image3':
-                    setImage3(fileName);
-                    break;
-                case 'image4':
-                    setImage4(fileName);
-                    break;
-                default:
-                    break;
-            }
+        if (files && files[0]) {
+            setFormData({
+                ...formData,
+                [name]: files[0]
+            });
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent, product: productModel) => {
         e.preventDefault();
+        console.log(product);
         try {
-            const formDataObj = new FormData();
-            if (formData.image1) formDataObj.append('files', formData.image1);
-            if (formData.image2) formDataObj.append('files', formData.image2);
-            if (formData.image3) formDataObj.append('files', formData.image3);
-            if (formData.image4) formDataObj.append('files', formData.image4);
-
-            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/product/saveFile', {
+            const requestBody = {
+                productId: '',
+                collection: product.collection,
+                description: product.description,
+                image1: product.image1,
+                image2: product.image2,
+                image3: product.image3,
+                image4: product.image4,
+                price: product.price,
+                productName: product.productName,
+                stockQuantity: product.stockQuantity,
+                categoryId: product.categoryId,
+                shellId: product.shellId,
+            }
+            const createProduct = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/product/add', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${headers}`,
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${headers}`
                 },
-                body: formDataObj,
+                body: JSON.stringify(requestBody)
             });
-
-            if (response.ok) {
-                console.log("Product save successfully");
-                const requestBody = {
-                    productId: '',
-                    collection: formData.collection,
-                    description: formData.description,
-                    image1: image1,
-                    image2: image2,
-                    image3: image3,
-                    image4: image4,
-                    price: formData.price,
-                    productName: formData.productName,
-                    stockQuantity: formData.stockQuantity,
-                    categoryId: formData.categoryId,
-                    shellId: formData.shellId,
-                }
-                const createProduct = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/product/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${headers}`
-                    },
-                    body: JSON.stringify(requestBody)
-                });
-                if (createProduct.ok) {
-                    setIsAddingNew(false);
-                } else {
-                    console.error('Failed to create promotion');
-                }
+            if (createProduct.ok) {
+                setIsAddingNew(false);
             } else {
-                console.error('Failed to save product');
-                return;
+                console.error('Failed to create promotion');
             }
-
 
         } catch (error) {
             console.error('Error creating promotion: ', error);
@@ -248,7 +237,7 @@ export const Product = () => {
         } catch (error) {
             console.error('There was an error fetching the diamonds:', error);
         }
-        
+
     }
 
     const searchHandleChange = () => {
@@ -351,7 +340,7 @@ export const Product = () => {
             dataIndex: 'price',
             key: 'price',
             render: (text: number) => (
-                <span style={{ fontWeight: 'bolder' }}>${text}</span>
+                <span style={{fontWeight: 'bolder'}}>${text}</span>
             ),
         },
         {
@@ -451,7 +440,7 @@ export const Product = () => {
                     </div>
                     {totalAmountOfProducts > 0 ?
                         <>
-                            <Table dataSource={products} columns={columns} rowKey="productId" />
+                            <Table dataSource={products} columns={columns} rowKey="productId"/>
                         </>
                         :
                         <div className='m-5'>

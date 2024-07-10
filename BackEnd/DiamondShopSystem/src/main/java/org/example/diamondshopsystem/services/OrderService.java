@@ -18,7 +18,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +41,7 @@ public class OrderService implements OrderServiceImp {
 
     @Autowired
     private UserRepository userRepository;
+    private ProductRepository productRepository;
 
     @Override
     public Page<OrderDTO> getAllOrder(Pageable pageable) {
@@ -221,84 +227,93 @@ public class OrderService implements OrderServiceImp {
     }
 
 
+    ///CT: price this week -  priceLastWeek / lastweek
+    @Override
+    public double getProfit() {
+        List<Order> orderListLastWeek = orderListLastWeek();
+        List<Order> orderThisWeek = orderRepository.findAll();
+
+        double priceLastWeek = 0;
+        double priceThisWeek = 0;
+
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        Date startOfThisWeek = calendar.getTime();
+
+        for (Order o : orderListLastWeek) {
+            priceLastWeek += o.getOrderTotalAmount();
+        }
+        for (Order o : orderThisWeek) {
+            if (o.getOrderDate().after(startOfThisWeek) && o.getOrderDate().before(now)) {
+                priceThisWeek += o.getOrderTotalAmount();
+            }
+        }
+
+        double Profit = 0;
+        Profit = (priceThisWeek - priceLastWeek) / priceLastWeek;
+
+        DecimalFormat df = new DecimalFormat("#.##");
+        double LatestProduct = Double.parseDouble(df.format(Profit));
+
+
+        return LatestProduct * 100;
+    }
+
+
     @Override
     public List<DiamondCategory> diamondSoldByCategory() {
+        List<DiamondCategory> diamondCategories = new ArrayList<>();
         List<Order> orders = orderListLastWeek();
-        Map<String, DiamondCategory> diamondCategories = initializeDiamondCategoriesForWeek();
+        List<String> days = new ArrayList<>();
+        days.add("Mon");
+        days.add("Tue");
+        days.add("Wed");
+        days.add("Thu");
+        days.add("Fri");
+        days.add("Sat");
+        days.add("Sun");
 
-        Date now = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        calendar.add(Calendar.WEEK_OF_YEAR, -1);
-        Date sundayStart = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_MONTH, 6);
-        Date saturdayEnd = calendar.getTime();
-
-        for (Order o : orders) {
-            Date orderDate = o.getOrderDate();
-            if (orderDate.after(sundayStart) && orderDate.before(saturdayEnd)) {
-                updateDiamondCategories(o.getOrderDetails(), diamondCategories);
-            }
-        }
-
-        return new ArrayList<>(diamondCategories.values());
-    }
-
-
-    private Map<String, DiamondCategory> initializeDiamondCategoriesForWeek() {
-        Map<String, DiamondCategory> categories = new HashMap<>();
-
-        Date now = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        calendar.add(Calendar.WEEK_OF_YEAR, -1);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("E");
-
-        for (int i = 0; i < 7; i++) {
-            Date date = calendar.getTime();
-            String dayOfWeek = sdf.format(date);
-            String[] shapes = {"Heart", "Oval", "Round"};
-
-            for (String shape : shapes) {
-                DiamondCategory category = new DiamondCategory();
-                category.setSoldDate(date);
-                category.setDiamondShape(shape);
-                category.setShapeQuantity(0);
-                categories.put(dayOfWeek + "_" + shape, category);
-            }
-
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
-        return categories;
-    }
-
-    private void updateDiamondCategories(List<OrderDetails> details, Map<String, DiamondCategory> categories) {
-        SimpleDateFormat sdf = new SimpleDateFormat("E");
-
-
-        for (OrderDetails od : details) {
-            Products products = od.getProduct();
-            Set<Diamond> diamonds = products.getDiamonds();
-            Date date = od.getOrder().getOrderDate();
-            String dayOfWeek = sdf.format(date);
-
-            for (Diamond d : diamonds) {
-                String cut = d.getCut();
-                String key = dayOfWeek + "_" + cut;
-
-                if (categories.containsKey(key)) {
-                    DiamondCategory category = categories.get(key);
-                    category.setShapeQuantity(category.getShapeQuantity() + 1);
+        for (String day : days) {
+            int heartQuantity = 0;
+            int roundQuantity = 0;
+            int ovalQuantity = 0;
+            for (Order o : orders) {
+                for (OrderDetails od : o.getOrderDetails()) {
+                    LocalDateTime localDateTime = LocalDateTime.ofInstant(o.getOrderDate().toInstant(), ZoneId.systemDefault());
+                    DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
+                    if (dayOfWeek.toString().substring(0, 3).equalsIgnoreCase(day)) {
+                        Products p = od.getProduct();
+                        Set<Diamond> diamonds = p.getDiamonds();
+                        for (Diamond d : diamonds) {
+                            switch (d.getCut().toLowerCase()) {
+                                case "heart":
+                                    heartQuantity++;
+                                    break;
+                                case "round":
+                                    roundQuantity++;
+                                    break;
+                                case "oval":
+                                    ovalQuantity++;
+                                    break;
+                            }
+                        }
+                    }
                 }
             }
+            DiamondCategory dc = new DiamondCategory();
+            dc.setDate(day);
+            dc.setHeart(heartQuantity);
+            dc.setRound(roundQuantity);
+            dc.setOval(ovalQuantity);
+            diamondCategories.add(dc);
         }
+        return diamondCategories;
     }
 
-    public ProductCategory getProductSoldByCategory() {
+    @Override
+    public List<ProductCategory> getProductSoldByCategory() {
         int EngagementRings = 0;
         int WeddingBands = 0;
         int MenDiamondRing = 0;
@@ -340,15 +355,45 @@ public class OrderService implements OrderServiceImp {
                 }
             }
         }
-        productCategory.setEngagementRings(EngagementRings);
-        productCategory.setWeddingBands(WeddingBands);
-        productCategory.setMenDiamondRing(MenDiamondRing);
-        productCategory.setWomenDiamondRing(WomenDiamondRing);
-        productCategory.setDiamondNecklaces(DiamondNecklaces);
-        productCategory.setDiamondEarrings(DiamondEarrings);
-        productCategory.setDiamondBracelets(DiamondBracelets);
+        List<ProductCategory> productCategories = new ArrayList<>();
 
-        return productCategory;
+        ProductCategory productCategory1 = new ProductCategory();
+        productCategory1.setName("Engagement Rings");
+        productCategory1.setQuantity(EngagementRings);
+
+        ProductCategory productCategory2 = new ProductCategory();
+        productCategory2.setName("Wedding Bands");
+        productCategory2.setQuantity(WeddingBands);
+
+        ProductCategory productCategory3 = new ProductCategory();
+        productCategory3.setName("Men diamond ring");
+        productCategory3.setQuantity(MenDiamondRing);
+
+        ProductCategory productCategory4 = new ProductCategory();
+        productCategory4.setName("Women diamond ring");
+        productCategory4.setQuantity(WomenDiamondRing);
+
+        ProductCategory productCategory5 = new ProductCategory();
+        productCategory5.setName("Diamond Necklaces");
+        productCategory5.setQuantity(DiamondNecklaces);
+
+        ProductCategory productCategory6 = new ProductCategory();
+        productCategory6.setName("Diamond Earrings");
+        productCategory6.setQuantity(DiamondEarrings);
+
+        ProductCategory productCategory7 = new ProductCategory();
+        productCategory7.setName("Diamond Bracelets");
+        productCategory7.setQuantity(DiamondBracelets);
+
+        productCategories.add(productCategory1);
+        productCategories.add(productCategory2);
+        productCategories.add(productCategory3);
+        productCategories.add(productCategory4);
+        productCategories.add(productCategory5);
+        productCategories.add(productCategory6);
+        productCategories.add(productCategory7);
+
+        return productCategories;
     }
 
 

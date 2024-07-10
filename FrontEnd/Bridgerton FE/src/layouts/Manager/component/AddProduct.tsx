@@ -1,11 +1,15 @@
 import React from "react";
+import uploadFile from '../../../firebase/uploadFile';
+import ProductModel from "../../../models/ProductModel";
+import productModel from "../../../models/ProductModel"; // Path to your uploadFile function
 
 interface AddProductProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+    onSubmit: (e: React.FormEvent,product: ProductModel) => void;
+
     formData: {
-        productId: string;
+        productId: number;
         collection: string;
         description: string;
         image1: File | string;
@@ -16,6 +20,7 @@ interface AddProductProps {
         productName: string;
         stockQuantity: number;
         categoryId: number;
+        diamondId: number;
         shellId: number;
     };
     handleChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -30,6 +35,35 @@ export const AddProduct: React.FC<AddProductProps> = ({
                                                           handleChange,
                                                           handleFileChange,
                                                       }) => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const image1URL = formData.image1 instanceof File ? await uploadFile(formData.image1) : formData.image1;
+            const image2URL = formData.image2 instanceof File ? await uploadFile(formData.image2) : formData.image2;
+            const image3URL = formData.image3 instanceof File ? await uploadFile(formData.image3) : formData.image3;
+            const image4URL = formData.image4 instanceof File ? await uploadFile(formData.image4) : formData.image4;
+
+            const productData  = new  productModel(formData.productId,
+                formData.productName,
+                formData.price,
+                formData.stockQuantity,
+                formData.collection,
+                formData.description,
+                image1URL ?? "",
+                image2URL ?? "",
+                image3URL ?? "",
+                image4URL ?? "",
+                formData.categoryId,
+                formData.diamondId,
+                formData.shellId);
+
+            onSubmit(e,productData);
+        } catch (error) {
+            console.error("Error uploading files:", error);
+        }
+    };
+
     return (
         <div
             className={`modal ${isOpen ? 'show' : ''}`}
@@ -43,7 +77,7 @@ export const AddProduct: React.FC<AddProductProps> = ({
                         <h5 className="modal-title">Add New Product</h5>
                         <button type="button" className="btn-close" onClick={onClose}></button>
                     </div>
-                    <form onSubmit={onSubmit} encType="multipart/form-data">
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="modal-body d-flex gap-5">
                             <div className="col-5">
                                 <div className="mb-3">
@@ -189,8 +223,12 @@ export const AddProduct: React.FC<AddProductProps> = ({
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button type="submit" className="btn btn-primary">Create</button>
-                            <button type="button" className="btn btn-danger" onClick={onClose}>Close</button>
+                            <button type="button" className="btn btn-secondary" onClick={onClose}>
+                                Close
+                            </button>
+                            <button type="submit" className="btn btn-primary">
+                                Save changes
+                            </button>
                         </div>
                     </form>
                 </div>

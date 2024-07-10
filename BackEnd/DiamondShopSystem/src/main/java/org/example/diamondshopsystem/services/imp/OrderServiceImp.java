@@ -43,5 +43,7 @@ public interface OrderServiceImp {
 
     List<DiamondCategory> diamondSoldByCategory();
 
-    ProductCategory getProductSoldByCategory();
+    List<ProductCategory> getProductSoldByCategory();
+
+    double getProfit();
 }

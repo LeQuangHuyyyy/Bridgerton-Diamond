@@ -70,4 +70,13 @@ public class ManagerController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
+
+    @GetMapping("/getProfit")
+    public ResponseEntity<?> getProfit() {
+        ResponseData responseData = new ResponseData();
+        responseData.setData(orderServiceImp.getProfit());
+        responseData.setDescription("ke ke ke, lợi nhuận tuần trc so với bây h");
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
 }

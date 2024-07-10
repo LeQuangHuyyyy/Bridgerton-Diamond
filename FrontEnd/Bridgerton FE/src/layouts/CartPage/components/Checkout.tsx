@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Layout, Form, Input, Button, Row, Col, Card, Radio, List} from "antd";
+import { Layout, Form, Input, Button, Row, Col, Card, Radio, List } from "antd";
 import {jwtDecode} from "jwt-decode";
 import CartModel from "../../../models/CartModel";
 import {SpinnerLoading} from "../../Utils/SpinnerLoading";
-
-const {Content} = Layout;
+const { Content } = Layout;
 
 const Checkout = () => {
     const [products, setProducts] = useState<CartModel[]>([]);
@@ -156,15 +155,9 @@ const Checkout = () => {
     };
 
     return (
-        <Layout style={{minHeight: "100vh"}}>
-            <Content style={{
-                padding: '50px',
-                paddingTop: '0px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
-                <Row gutter={24} style={{width: '100%'}}>
+        <Layout style={{ minHeight: "100vh" }}>
+            <Content style={{ padding: '50px',paddingTop: '0px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Row gutter={24} style={{ width: '100%' }}>
                     <Col span={16}>
                         <Card title="Checkout">
                             <Form
@@ -201,9 +194,9 @@ const Checkout = () => {
                                 <Form.Item
                                     label="Address"
                                     name="address"
-                                    rules={[{required: true, message: 'Please input your address!'}]}
+                                    rules={[{ required: true, message: 'Please input your address!' }]}
                                 >
-                                    <Input value={address} onChange={handleAddressChange}/>
+                                    <Input value={address} onChange={handleAddressChange} />
                                 </Form.Item>
                                 <Form.Item>
                                     <Button style={{backgroundColor: 'black', color: "white"}} htmlType="submit">
@@ -214,7 +207,7 @@ const Checkout = () => {
                         </Card>
                     </Col>
                     <Col span={8}>
-                        <Card title="Bill Summary">
+                            <Card title="Bill Summary">
                             <List
                                 dataSource={products}
                                 renderItem={item => (
@@ -225,7 +218,7 @@ const Checkout = () => {
                                             padding: '10px',
                                             borderBottom: '1px solid #f0f0f0'
                                         }}>
-                                            <div style={{marginRight: '15px'}}>
+                                            <div style={{ marginRight: '15px' }}>
                                                 <img
                                                     src={`https://deploy-be-b176a8ceb318.herokuapp.com/product/load-image/${item.image1}.jpg`}
                                                     alt="product"
@@ -259,20 +252,15 @@ const Checkout = () => {
 
                                 )}
                             />
-                            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '20px'}}>
+                            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
                                 <div>Total:</div>
                                 <div>${totalAmount}</div>
                             </div>
-                            <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '10px'}}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
                                 <div>Discount:</div>
                                 <div>-${discount}</div>
                             </div>
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                marginTop: '10px',
-                                fontWeight: 'bold'
-                            }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontWeight: 'bold' }}>
                                 <div>Final Amount:</div>
                                 <div>${finalAmount}</div>
                             </div>

@@ -1,5 +1,6 @@
 package org.example.diamondshopsystem.services.imp;
 
+import jakarta.mail.MessagingException;
 import org.example.diamondshopsystem.dto.UserDTO;
 import org.example.diamondshopsystem.entities.User;
 import org.springframework.data.domain.Page;
@@ -24,4 +25,5 @@ public interface UserServiceImp {
     UserDTO getUserByUsername(String username);
 
     List<UserDTO> getUserByKeyWord(String keyWord);
+
 }

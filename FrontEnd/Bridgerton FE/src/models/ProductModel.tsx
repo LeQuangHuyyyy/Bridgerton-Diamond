@@ -14,7 +14,7 @@ class ProductModel {
     shellId: number;
 
 
-    constructor(productId: number, productName: string, price: number, stockQuantity: number, collection: string, description: string, image1: string,image2: string,image3: string,image4: string,categoryId: number, diamondId: number, shellId: number) {
+    constructor(productId: number, productName: string, price: number, stockQuantity: number, collection: string, description: string, image1: string, image2: string, image3: string, image4: string, categoryId: number, diamondId: number, shellId: number) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;

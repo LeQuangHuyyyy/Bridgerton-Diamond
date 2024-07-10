@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
@@ -32,6 +33,7 @@ public class RegistrationService {
     private PasswordEncoder passwordEncoder;
 
     private final Map<String, UserDTO> temporaryUserStorage = new ConcurrentHashMap<>();
+
     public void sendVerificationCode(SignupRequest signupRequest) throws MessagingException {
         String verificationCode = generateVerificationCode();
 
@@ -52,11 +54,11 @@ public class RegistrationService {
 
         sendVerificationCodeToEmail(signupRequest.getEmail(), verificationCode);
     }
+
     public boolean verifyRegistration(String email, String verificationCode) {
         UserDTO userDTO = getUserDTOByEmail(email);
 
-        if (userDTO == null || userDTO.getExpirationTime().isBefore(LocalDateTime.now())
-                || !userDTO.getVerificationCode().equals(verificationCode)) {
+        if (userDTO == null || userDTO.getExpirationTime().isBefore(LocalDateTime.now()) || !userDTO.getVerificationCode().equals(verificationCode)) {
             return false;
         }
 
@@ -82,6 +84,18 @@ public class RegistrationService {
     private String generateVerificationCode() {
         return UUID.randomUUID().toString().substring(0, 6).toUpperCase();
     }
+
+    public void sendNoticeEmail(String email) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setTo(email);
+        helper.setSubject("NOTICE");
+        String htmlTemplate = readHtmlTemplate("notice.html");
+        helper.setText(htmlTemplate, true);
+
+        mailSender.send(message);
+    }
+
     public void sendVerificationCodeToEmail(String email, String verificationCode) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -99,6 +113,7 @@ public class RegistrationService {
 
         mailSender.send(message);
     }
+
     private String readHtmlTemplate(String templateName) {
         try {
             return new String(this.getClass().getClassLoader().getResourceAsStream("templates/" + templateName).readAllBytes());
@@ -107,9 +122,11 @@ public class RegistrationService {
             return "";
         }
     }
+
     private UserDTO getUserDTOByEmail(String email) {
         return temporaryUserStorage.get(email);
     }
+
     public void sendResetPasswordVerificationCode(String email) throws MessagingException {
         String verificationCode = generateVerificationCode();
 
@@ -128,8 +145,7 @@ public class RegistrationService {
     public boolean verifyResetPassword(String email, String verificationCode, String password) {
         UserDTO userDTO = getUserDTOByEmail(email);
 
-        if (userDTO == null || userDTO.getExpirationTime().isBefore(LocalDateTime.now())
-                || !userDTO.getVerificationCode().equals(verificationCode)) {
+        if (userDTO == null || userDTO.getExpirationTime().isBefore(LocalDateTime.now()) || !userDTO.getVerificationCode().equals(verificationCode)) {
             return false;
         }
 
@@ -143,4 +159,4 @@ public class RegistrationService {
 
         return true;
     }
-    }
+}

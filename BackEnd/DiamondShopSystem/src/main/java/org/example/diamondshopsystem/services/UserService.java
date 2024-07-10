@@ -1,11 +1,13 @@
 package org.example.diamondshopsystem.services;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.example.diamondshopsystem.dto.UserDTO;
 import org.example.diamondshopsystem.entities.User;
 import org.example.diamondshopsystem.repositories.UserRepository;
 import org.example.diamondshopsystem.services.Map.UserMapper;
 import org.example.diamondshopsystem.services.imp.UserServiceImp;
+import org.example.diamondshopsystem.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,14 +27,18 @@ public class UserService implements UserServiceImp {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    private final UserMapper userMapper = new UserMapper();
+    @Autowired
+    UserMapper userMapper;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+    @Autowired
+    private RegistrationService registrationService;
 
     @Override
     public Page<UserDTO> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable).map(userMapper::mapUserToDTO);
     }
-
-    ;
 
     @Override
     public UserDTO getUserById(int id) {
@@ -48,7 +54,6 @@ public class UserService implements UserServiceImp {
     @Override
     public UserDTO createUser(UserDTO userDTO) {
         User user = userMapper.mapUserDTOToUser(userDTO);
-        // Mã hóa mật khẩu trước khi lưu
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         User savedUser = userRepository.save(user);
@@ -57,12 +62,11 @@ public class UserService implements UserServiceImp {
 
     @Transactional
     @Override
-    public UserDTO updateUser(int id, UserDTO userDTO) {
+    public UserDTO updateUser(int id, UserDTO userDTO)  {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             userMapper.mapUserDTOtoUser(userDTO, user);
-            // Kiểm tra null trước khi so sánh mật khẩu
             if (userDTO.getPassword() != null && !userDTO.getPassword().equals(user.getPassword())) {
                 String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
                 user.setPassword(encodedPassword);
@@ -82,7 +86,6 @@ public class UserService implements UserServiceImp {
             user.setStatus(false);
             userRepository.save(user);
         }
-
     }
 
     @Override
