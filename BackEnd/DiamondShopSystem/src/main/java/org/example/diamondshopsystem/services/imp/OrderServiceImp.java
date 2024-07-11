@@ -3,6 +3,7 @@ package org.example.diamondshopsystem.services.imp;
 import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.dto.PaymentDTO;
 import org.example.diamondshopsystem.entities.Order;
+import org.example.diamondshopsystem.entities.OrderDetails;
 import org.example.diamondshopsystem.entities.OrderStatus;
 import org.example.diamondshopsystem.payload.requests.AddProductRequest;
 import org.example.diamondshopsystem.payload.requests.DiamondCategory;
@@ -46,4 +47,9 @@ public interface OrderServiceImp {
     List<ProductCategory> getProductSoldByCategory();
 
     double getProfit();
+
+    List<OrderDTO> getOrderByUserId(int userId);
+
+    List<OrderDetails> getDetailByOrderId(int orderId);
+
 }

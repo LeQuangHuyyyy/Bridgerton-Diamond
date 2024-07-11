@@ -36,4 +36,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             "STR(o.orderId) = :keyword OR " +
             "o.status = :status")
     List<Order> findByKeyword(@Param("keyword") String keyword, @Param("status") OrderStatus status);
+
+    @Query("SELECT o FROM Order o WHERE o.customer.userid = :userId")
+    List<Order> findByUserId(@Param("userId") int userId);
 }

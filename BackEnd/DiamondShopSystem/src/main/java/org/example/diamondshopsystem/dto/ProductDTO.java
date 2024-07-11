@@ -37,6 +37,10 @@ public class ProductDTO {
 
     private String image4;
 
+    private String certificateImage;
+
+    private String WarrantyImage;
+
     private int categoryId;
 
     private Set<DiamondDTO> diamonds;

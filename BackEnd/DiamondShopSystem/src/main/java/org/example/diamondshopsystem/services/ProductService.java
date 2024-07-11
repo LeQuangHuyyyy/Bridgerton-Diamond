@@ -147,7 +147,7 @@ public class ProductService implements ProductServiceImp {
     @Override
     public Page<ProductDTO> getAllProduct(Pageable pageable) {
         List<Products> products = productRepository.findAll();
-        resetAllStockQuantity();
+//        resetAllStockQuantity();
         for (Products p : products) {
             p.setPrice(calculateTotalPrice(p.getProductId()));
             productRepository.save(p);
@@ -276,7 +276,6 @@ public class ProductService implements ProductServiceImp {
             System.out.println(product.getProductId() + ": " + diamonds.size());
             productRepository.save(product);
         }
-
 
     }
 

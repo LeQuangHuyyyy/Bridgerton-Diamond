@@ -19,6 +19,8 @@ public class OrderDetailRequest {
     private Date orderDate;
     private double totalAmount;
     private String saleStaff;
+    private int saleId;
+
 
     private int orderId;
     private String image;

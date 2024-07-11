@@ -10,18 +10,16 @@ import org.example.diamondshopsystem.repositories.*;
 import org.example.diamondshopsystem.services.Map.OrderMapper;
 import org.example.diamondshopsystem.services.imp.OrderServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.sql.init.dependency.DatabaseInitializationDependencyConfigurer;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -42,6 +40,8 @@ public class OrderService implements OrderServiceImp {
     @Autowired
     private UserRepository userRepository;
     private ProductRepository productRepository;
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
 
     @Override
     public Page<OrderDTO> getAllOrder(Pageable pageable) {
@@ -70,14 +70,26 @@ public class OrderService implements OrderServiceImp {
     public void setOrderStatus(Integer orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
         if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.PAYMENT)) {
-            order.setStatus(OrderStatus.PAYMENT);
             try {
+                System.out.println("ccccc");
+                order.setStatus(OrderStatus.PAYMENT);
                 orderRepository.save(order);
-            } catch (DataIntegrityViolationException e) {
-                throw new IllegalStateException("Cannot update order status. The new status is not allowed.", e);
+
+            } catch (Exception e) {
+                throw new IllegalStateException("cannot save");
             }
         } else {
             throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.PAYMENT + " is not allowed.");
+        }
+        for (OrderDetails od : order.getOrderDetails()) {
+            System.out.println(od.getId());
+            Products p = productRepository.findById(od.getProduct().getProductId()).orElseThrow(() -> new IllegalArgumentException("Product not found with ID: " + od.getProduct().getProductId()));
+            int stockQuantity = p.getStockQuantity();
+            int quantitySold = od.getQuantity();
+            System.out.println(stockQuantity - quantitySold);
+
+            p.setStockQuantity(stockQuantity - quantitySold);
+            productRepository.save(p);
         }
     }
 
@@ -86,7 +98,6 @@ public class OrderService implements OrderServiceImp {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
         return order.getStatus();
     }
-
 
     @Override
     public Page<OrderDTO> getAllOrderByStatus(OrderStatus status, Pageable pageable) {
@@ -396,5 +407,18 @@ public class OrderService implements OrderServiceImp {
         return productCategories;
     }
 
+    @Override
+    public List<OrderDTO> getOrderByUserId(@RequestParam int userId) {
+        List<Order> orders = orderRepository.findByUserId(userId);
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        for (Order o : orders) {
+            orderDTOList.add(orderMapper.getAllOrder(o));
+        }
+        return orderDTOList;
+    }
 
+    @Override
+    public List<OrderDetails> getDetailByOrderId(@RequestParam int orderId) {
+        return orderDetailRepository.findByOrderId(orderId);
+    }
 }

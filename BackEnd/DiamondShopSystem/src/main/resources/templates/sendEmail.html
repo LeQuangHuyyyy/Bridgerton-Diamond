@@ -6,8 +6,8 @@
     <title>Verification Page</title>
     <style>
         body {
-            font-family: 'Times New Roman', Times, serif;
-            background-color: #e0e0e0;
+            font-family: 'Arial', sans-serif;
+            background-color: #e8ebf2;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -16,68 +16,108 @@
         }
 
         .container {
-            background-color: #fff;
+            background-color: #ffffff;
             padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
             text-align: center;
             max-width: 500px;
             width: 100%;
-            border: 1px solid #ccc;
+            border: 1px solid #e2e2e2;
         }
 
         .container h1 {
             margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
+            font-size: 30px;
+            color: #2c3e50;
+            font-weight: 700;
         }
 
         .container p {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: 18px;
-            color: #555;
+            color: #34495e;
         }
 
         .verify {
             display: inline-block;
-            margin-top: 30px;
-            padding: 12px 30px;
-            background-color: #444;
-            color: #fff;
+            margin-top: 20px;
+            padding: 14px 28px;
+            background-color: #333333;
+            color: #ffffff;
             text-decoration: none;
-            border-radius: 25px;
+            border-radius: 30px;
             font-size: 18px;
-            transition: background-color 0.3s ease;
+            font-weight: 600;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .verify:hover {
-            background-color: #333;
+            background-color: #555555;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .footer {
             margin-top: 30px;
-            font-size: 16px;
-            color: #777;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .footer p {
+            margin: 10px 0;
         }
 
         .visit {
-            background-color: white;
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 22px;
+            background-color: #f1f1f1;
+            color: #3498db;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .visit:hover {
+            background-color: #d0d0d0;
+            color: #2980b9;
+        }
+
+        .footer a {
+            display: block;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        .logo {
+            max-width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .discount-code {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 15px;
+            color: #3498db;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 <div class="container">
+    <img class="logo" src="https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2F%E2%80%94Pngtree%E2%80%94diamond%20icon%20for%20your%20project_5239785.png?alt=media&token=59e5f3a4-543e-471c-af6c-eb1d9a9889d2" alt="Logo">
     <h1><strong>BRIDGERTON DIAMOND</strong></h1>
     <p>Your Verification Code: <strong>${verificationCode}</strong></p>
-    <a class="verify" href="http://localhost:3000/verify-register">Click here to verify account</a>
     <div class="footer">
         <p>Thank you for verifying your code.</p>
+
         <p>If you have any questions, please contact our support.</p>
-        <a class="visit" href="http://localhost:3000/">visit shop</a>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cursor"
-             viewBox="0 0 16 16">
-            <path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52z"/>
-        </svg>
+        <p class="discount-code">Discount for new member: WELCOME10OFF</p>
+        <a class="visit" href="http://localhost:3000/">Visit our shop</a>
     </div>
 </div>
 </body>

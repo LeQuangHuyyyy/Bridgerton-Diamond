@@ -66,6 +66,9 @@ public class OrderMapper {
         orderDTO.setCustomerId(order.getCustomer().getUserid());
         orderDTO.setSaleId(order.getSale() != null ? order.getSale().getUserid() : 0);
         orderDTO.setDeliveryId(order.getDelivery() != null ? order.getDelivery().getUserid() : 0);
+        order.setOrderDetails(order.getOrderDetails());
+        order.setFeedBacks(order.getFeedBacks());
+
         return orderDTO;
     }
 

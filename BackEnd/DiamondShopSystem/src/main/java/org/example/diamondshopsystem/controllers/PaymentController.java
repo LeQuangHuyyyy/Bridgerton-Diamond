@@ -72,16 +72,16 @@ public class PaymentController {
                     }
                     paymentService.savePayment(paymentDTO);
 
-                    redirectUrl = "http://localhost:3000/ordersuccess";
+                    redirectUrl = "https://bridgerton.vercel.app/ordersuccess";
                 } else {
-                    redirectUrl = "http://localhost:3000/payment/result?vnp_ResponseCode=01";
+                    redirectUrl = "https://bridgerton.vercel.app/ordersuccess";
                 }
             } else {
                 redirectUrl = "http://localhost:3000/payment/result?vnp_ResponseCode=" + responseCode;
             }
             return ResponseEntity.status(HttpStatus.FOUND).header("Location", redirectUrl).build();
         } catch (Exception e) {
-            String errorUrl = "http://localhost:3000/payment/result?vnp_ResponseCode=02&message=" + e.getMessage();
+            String errorUrl = "http://localhost:3000/ordersuccess";
             return ResponseEntity.status(HttpStatus.FOUND).header("Location", errorUrl).build();
         }
     }

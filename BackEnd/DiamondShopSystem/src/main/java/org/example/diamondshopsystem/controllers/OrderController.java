@@ -103,4 +103,13 @@ public class OrderController {
         }
     }
 
+
+    @GetMapping("/userOrder")
+    public ResponseEntity<?> getOrderDetailByUser(@RequestParam int userId) {
+        ResponseData responseData = new ResponseData();
+        responseData.setData(orderServiceImp.getOrderByUserId(userId));
+        responseData.setDescription("này là lấy order thôi nha, ko dc thì chắc là sai á");
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
 }

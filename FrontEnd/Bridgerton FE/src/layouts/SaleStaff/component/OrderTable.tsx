@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './OrderTable.css';
-import { Table, Tag, Button, Input, Space, Spin, Alert } from 'antd';
+import {Table, Tag, Button, Input, Space, Spin, Alert, message} from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import OrderModel from "../../../models/OrderModel"
@@ -75,6 +75,7 @@ const OrderTable: React.FC = () => {
             const response = await fetch(url, { method: 'POST', headers: headers });
 
             if (!response.ok) {
+                message.error("fail to set delivery")
                 throw new Error('Something went wrong!');
             }
             updateOrderStatus(orderId, 'DELIVERED');

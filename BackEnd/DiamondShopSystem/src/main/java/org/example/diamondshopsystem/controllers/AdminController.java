@@ -27,7 +27,7 @@ public class AdminController {
     UserServiceImp userServiceImp;
 
     @GetMapping("/accounts")
-    public ResponseEntity<Page<UserDTO>> getAllUser(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<Page<UserDTO>> getAllUser(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10000") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
 

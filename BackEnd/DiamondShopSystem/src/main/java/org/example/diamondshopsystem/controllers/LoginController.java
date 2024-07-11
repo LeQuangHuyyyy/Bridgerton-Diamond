@@ -45,13 +45,15 @@ public class LoginController {
     private UserMapper userMapper;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> signin(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<?> signin(@RequestParam String email, @RequestParam String password) throws MessagingException {
         ResponseData responseData = new ResponseData();
         User user = loginServiceImp.checkLogin(email, password);
+
         if (user != null) {
             UserDTO userDTO = userMapper.mapUserToDTO(user);
             String token = jwtUtil.generateToken(userDTO);
             responseData.setData(token);
+            registrationService.checkDiscountCodeSend(email);
         } else {
             responseData.setStatus(404);
             responseData.setData(false);

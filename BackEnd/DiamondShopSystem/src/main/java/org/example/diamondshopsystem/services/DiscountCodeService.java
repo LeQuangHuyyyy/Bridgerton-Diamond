@@ -37,7 +37,7 @@ public class DiscountCodeService implements DiscountCodeServiceImp {
     public List<DiscountCodesDTO> getAllDiscountCodes() {
         List<DiscountCodesDTO> discountCodesDTOList = new ArrayList<>();
         List<DiscountCodes> discountCodesList = discountCodeRepository.findAll();
-        for(DiscountCodes discountCode : discountCodesList) {
+        for (DiscountCodes discountCode : discountCodesList) {
             DiscountCodesDTO discountCodesDTO = mapDiscountCodeToDTO(discountCode);
             discountCodesDTOList.add(discountCodesDTO);
         }
@@ -55,7 +55,7 @@ public class DiscountCodeService implements DiscountCodeServiceImp {
     public List<DiscountCodesDTO> getDiscountCodeByPromotionId(int promotionId) {
         List<DiscountCodes> discountCodesList = discountCodeRepository.findAllByPromotionId(promotionId);
         List<DiscountCodesDTO> discountCodesDTOList = new ArrayList<>();
-        for(DiscountCodes discountCode : discountCodesList) {
+        for (DiscountCodes discountCode : discountCodesList) {
             DiscountCodesDTO discountCodesDTO = mapDiscountCodeToDTO(discountCode);
             discountCodesDTOList.add(discountCodesDTO);
         }
@@ -66,7 +66,7 @@ public class DiscountCodeService implements DiscountCodeServiceImp {
     public List<DiscountCodesDTO> getDiscountCodesByCode(String code) {
         List<DiscountCodesDTO> discountCodesDTOList = new ArrayList<>();
         List<DiscountCodes> discountCodes = discountCodeRepository.findAllByDiscountCode(code);
-        for(DiscountCodes discountCode : discountCodes) {
+        for (DiscountCodes discountCode : discountCodes) {
             DiscountCodesDTO discountCodesDTO = mapDiscountCodeToDTO(discountCode);
             discountCodesDTOList.add(discountCodesDTO);
         }
@@ -138,7 +138,7 @@ public class DiscountCodeService implements DiscountCodeServiceImp {
         }
     }
 
-    private DiscountCodesDTO mapDiscountCodeToDTO (DiscountCodes discountCode) {
+    private DiscountCodesDTO mapDiscountCodeToDTO(DiscountCodes discountCode) {
         DiscountCodesDTO discountCodeDTO = new DiscountCodesDTO();
         discountCodeDTO.setCodeId(discountCode.getCodeId());
         discountCodeDTO.setCode(discountCode.getCode());

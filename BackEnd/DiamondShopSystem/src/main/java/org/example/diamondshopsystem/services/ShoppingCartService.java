@@ -199,7 +199,7 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
         order.setOrderDate(vnpCreateDate);
 
         double priceAfter = totalPrice.doubleValue() - totalPrice.doubleValue() * discount / 100;
-        order.setOrderTotalAmount(priceAfter);    //o day ne
+        order.setOrderTotalAmount(priceAfter);
         order.setStatus(OrderStatus.PENDING);
         order = orderRepository.save(order);
 
@@ -237,7 +237,7 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
             orderDetailDTO.setProductId(managedProduct.getProductId());
             orderDetailDTO.setQuantity(quantity);
             orderDetailDTO.setPrice(product.getPrice());
-            orderDetailDTO.setSize(size); // Updated to use size as double
+            orderDetailDTO.setSize(size);
 
             OrderDetails orderDetails = orderMapper.mapOrderDetailDTOToOrderDetail(orderDetailDTO, order, managedProduct);
             orderDetailRepository.save(orderDetails);
@@ -249,6 +249,7 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
         return order;
     }
 
+    @Transactional
     @Override
     public Order creteOrder(OrderRequest orderRequest) {
         Order order = new Order();
@@ -272,10 +273,11 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
             int stockQuantity = products.getStockQuantity();
             if (stockQuantity < o.getQuantity()) {
                 throw new NotEnoughProductsInStockException("Not enough products in stock.");
-            } else {
-                products.setStockQuantity(stockQuantity - o.getQuantity());
-                productRepository.save(products);
             }
+//            else {
+//                products.setStockQuantity(stockQuantity - o.getQuantity());
+//                productRepository.save(products);
+//            }
 
             OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
             orderDetailDTO.setOrderId(order.getOrderId());

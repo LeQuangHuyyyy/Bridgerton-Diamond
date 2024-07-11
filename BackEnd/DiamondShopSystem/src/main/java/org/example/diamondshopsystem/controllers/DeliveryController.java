@@ -36,7 +36,6 @@ public class DeliveryController {
     @Autowired
     OrderDetailsServiceImp orderDetailsServiceImp;
 
-
     @GetMapping("/ViewOrderDelivery")
     public ResponseEntity<?> getOrderByDelivery(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "1000") int size) {
         try {
@@ -48,4 +47,6 @@ public class DeliveryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+
 }

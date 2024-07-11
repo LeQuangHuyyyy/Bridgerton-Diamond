@@ -176,7 +176,6 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or missing token.");
     }
 
-    @Transactional
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@RequestBody OrderRequest orderRequest) {
         return ResponseEntity.ok(shoppingCartService.creteOrder(orderRequest));

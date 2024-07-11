@@ -64,17 +64,22 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         String phoneNumber = user.getPhoneNumber();
         String address = orders.getOrderDeliveryAddress();
 
+
         OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
         for (OrderDetails od : orders.getOrderDetails()) {
             orderProductDetailRequests = getOrderProductDetailRequest(od);
             list.add(orderProductDetailRequests);
-
             orderDetailRequest.setImage(od.getProduct().getImage1());
         }
+
         orderDetailRequest.setUserName(username);
         orderDetailRequest.setEmail(mail);
         orderDetailRequest.setPhoneNumber(phoneNumber);
         orderDetailRequest.setAddress(address);
+        if (orders.getSale() != null) {
+            orderDetailRequest.setSaleStaff(orders.getSale().getName());
+            orderDetailRequest.setSaleId(orders.getSale().getUserid());
+        }
         if (orders.getSale() != null) {
             orderDetailRequest.setSaleStaff(orders.getSale().getName());
         }
@@ -126,8 +131,6 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
     }
 
 
-
-
     private static OrderProductDetailRequest getOrderProductDetailRequest(OrderDetails od) {
         OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
 
@@ -135,12 +138,16 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         String productName = products.getProductName();
         double price = products.getPrice();
         int quantity = od.getQuantity();
+        orderProductDetailRequests.setCertificateImage(products.getImageCertificate());
+        orderProductDetailRequests.setWarrantiesImage(products.getImageWarranties());
         orderProductDetailRequests.setProductName(productName);
         orderProductDetailRequests.setQuantity(quantity);
         orderProductDetailRequests.setPrice(price);
         orderProductDetailRequests.setSize(od.getSize());
         return orderProductDetailRequests;
     }
+
+
 }
 
 

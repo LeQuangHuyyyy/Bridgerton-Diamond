@@ -56,6 +56,13 @@ public class Products {
     @Column(name = "warranties_year")
     private double warrantiesYear;
 
+    @Column(name = "warranties_image")
+    private String imageWarranties;
+
+    @Column(name = "certificate_image")
+    private String imageCertificate;
+
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     @JsonBackReference

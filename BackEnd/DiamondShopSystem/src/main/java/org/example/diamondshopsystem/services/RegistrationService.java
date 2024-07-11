@@ -33,6 +33,8 @@ public class RegistrationService {
     private PasswordEncoder passwordEncoder;
 
     private final Map<String, UserDTO> temporaryUserStorage = new ConcurrentHashMap<>();
+    private final Map<String, UserDTO> checkDiscountCodeSend = new ConcurrentHashMap<>();
+
 
     public void sendVerificationCode(SignupRequest signupRequest) throws MessagingException {
         String verificationCode = generateVerificationCode();
@@ -55,6 +57,13 @@ public class RegistrationService {
         sendVerificationCodeToEmail(signupRequest.getEmail(), verificationCode);
     }
 
+    public void checkDiscountCodeSend(String email) throws MessagingException {
+        if (checkDiscountCodeSend.containsKey(email)) {
+            sendNoticeEmail(email);
+            checkDiscountCodeSend.clear();
+        }
+    }
+
     public boolean verifyRegistration(String email, String verificationCode) {
         UserDTO userDTO = getUserDTOByEmail(email);
 
@@ -73,7 +82,7 @@ public class RegistrationService {
         user.setRole(userDTO.getRole());
         user.setStatus(userDTO.isStatus());
         userRepository.save(user);
-
+        checkDiscountCodeSend.put(userDTO.getEmail(), userDTO);
         // Remove UserDTO from temporary storage
         temporaryUserStorage.remove(email);
 
@@ -89,8 +98,8 @@ public class RegistrationService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setTo(email);
-        helper.setSubject("NOTICE");
-        String htmlTemplate = readHtmlTemplate("notice.html");
+        helper.setSubject("Welcome to Bridgerton");
+        String htmlTemplate = readHtmlTemplate("senDiscountCode.html");
         helper.setText(htmlTemplate, true);
 
         mailSender.send(message);

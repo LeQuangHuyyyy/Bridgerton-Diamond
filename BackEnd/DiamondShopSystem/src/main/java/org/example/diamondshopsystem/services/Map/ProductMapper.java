@@ -39,6 +39,8 @@ public class ProductMapper {
         productDTO.setImage4(products.getImage4());
         productDTO.setCategoryId(products.getCategory().getCategoryId());
         productDTO.setShellId(products.getShell().getShellId());
+        productDTO.setCertificateImage(products.getImageCertificate());
+        productDTO.setWarrantyImage(products.getImageWarranties());
 
         // Map Diamonds
         Set<DiamondDTO> diamondDTOs = products.getDiamonds().stream().map(diamond -> new DiamondDTO(diamond.getDiamondId(), diamond.getCarat(), diamond.getPrice(), diamond.getCut(), diamond.getColor(), diamond.getClarity(), diamond.getCertification(), diamond.getProduct().getProductId(), diamond.isStatus())).collect(Collectors.toSet());

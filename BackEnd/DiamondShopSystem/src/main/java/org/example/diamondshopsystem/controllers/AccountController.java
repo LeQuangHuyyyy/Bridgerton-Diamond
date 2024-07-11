@@ -19,7 +19,7 @@ public class AccountController {
     @Autowired
     AccountService accountService;
 
-    @GetMapping("")
+    @PostMapping("")
     public ResponseEntity<?> getAccount(@RequestParam int userId) {
         ResponseData responseData = new ResponseData();
         responseData.setData(accountService.getUserDetail(userId));
@@ -27,7 +27,7 @@ public class AccountController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
-    @PostMapping("updateAccount")
+    @PutMapping("updateAccount")
     public ResponseEntity<?> updateAccount(@RequestBody UserDTO userDTO) throws MessagingException {
         ResponseData responseData = new ResponseData();
         if (accountService.updateUser(userDTO)) {
@@ -39,7 +39,7 @@ public class AccountController {
         }
     }
 
-    @PostMapping("/updatePassword")
+    @PutMapping("/updatePassword")
     public ResponseEntity<?> updatePassword(@RequestParam int userid, @RequestParam String oldPassword, @RequestParam String newPassword) throws MessagingException {
         ResponseData responseData = new ResponseData();
         if (accountService.updatePassword(oldPassword, newPassword, userid)) {
