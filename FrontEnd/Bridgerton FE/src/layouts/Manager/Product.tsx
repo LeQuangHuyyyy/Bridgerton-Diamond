@@ -2,10 +2,11 @@ import React, {useEffect, useState} from "react";
 import ProductModel from "../../models/ProductModel";
 import {SpinnerLoading} from "../Utils/SpinnerLoading";
 import {AddProduct} from "./component/AddProduct";
-import {Button, Image, Table} from "antd";
-import './Product.css'
+import {Button, Image, message, Table} from "antd";
+import productModel from "../../models/ProductModel";
+
 interface ProductData {
-    productId: string;
+    productId: number;
     collection: string;
     description: string;
     image1: File | string;
@@ -16,7 +17,10 @@ interface ProductData {
     productName: string;
     stockQuantity: number;
     categoryId: number;
+    diamondId: number;
     shellId: number;
+    warrantyImage: string,
+    certificateImage: string,
 }
 
 interface Diamond {
@@ -34,14 +38,16 @@ export const Product = () => {
     const [httpError, setHttpError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalAmountOfProducts, setTotalAmountOfProducts] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
     const [search, setSearch] = useState('');
     const [searchUrl, setSearchUrl] = useState('');
     const [searchCategory, setSearchCategory] = useState('All Category');
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [diamonds, setDiamonds] = useState<Diamond[]>([]);
+    const [product, setProduct] = useState<ProductModel>();
     const [formData, setFormData] = useState<ProductData>({
-        productId: '',
+        productId: 0,
         collection: '',
         description: '',
         image1: '',
@@ -52,35 +58,43 @@ export const Product = () => {
         productName: '',
         stockQuantity: 0,
         categoryId: 0,
+        diamondId: 0,
         shellId: 0,
+        certificateImage: '',
+        warrantyImage: ''
     });
-    const [image1, setImage1] = useState<string | null>(null);
-    const [image2, setImage2] = useState<string | null>(null);
-    const [image3, setImage3] = useState<string | null>(null);
-    const [image4, setImage4] = useState<string | null>(null);
+
 
     const headers = localStorage.getItem('token');
 
     useEffect(() => {
+        fetchProducts ();
+    }, [currentPage, searchUrl]);
 
-        const fetchProducts = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/home";
-            let url: string = '';
-            if (searchUrl === '') {
-                url = `${baseUrl}/search-by-name?keyword=${search}`;
-            } else {
-                url = baseUrl
-            }
+    const fetchProducts = async () => {
+        const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/home";
+        let url: string = '';
+        if (searchUrl === '') {
+            url = `${baseUrl}/search-by-name?keyword=${search}`;
+        } else {
+            url = baseUrl;
+        }
 
+        try {
             const response = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${headers}`
                 }
             });
 
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+
             const responseJson = await response.json();
             const responseData = responseJson.content;
             setTotalAmountOfProducts(responseJson.totalElements)
+            setTotalPages(responseJson.totalPages);
 
             const loadedProducts: ProductModel[] = [];
 
@@ -98,18 +112,26 @@ export const Product = () => {
                     image4: responseData[key].image4,
                     categoryId: responseData[key].categoryId,
                     diamondId: responseData[key].diamondId,
-                    shellId: responseData[key].shellId
+                    shellId: responseData[key].shellId,
+                    certificateImage: responseData[key].certificateImage,
+                    warrantyImage: responseData[key].warrantyImage,
                 });
             }
             setProducts(loadedProducts);
             setIsLoading(false);
-        };
-        fetchProducts().catch((error: any) => {
-            setIsLoading(false);
-            setHttpError(error.message);
-        })
-        window.scrollTo(0, 0);
-    }, [currentPage, searchUrl]);
+            window.scrollTo(0, 0);
+        } catch (error: any) {
+            setIsLoading(true);
+            message.error('Failed to fetch products');
+        }
+    };
+
+    fetchProducts().catch((error: any) => {
+        setIsLoading(false);
+        setHttpError(error.message);
+    });
+
+
 
     if (isLoading) {
         return (
@@ -127,7 +149,7 @@ export const Product = () => {
 
     const toggleAddModal = () => {
         setFormData({
-            productId: '',
+            productId: 0,
             collection: '',
             description: '',
             image1: '',
@@ -138,116 +160,93 @@ export const Product = () => {
             productName: '',
             stockQuantity: 0,
             categoryId: 0,
+            diamondId: 0,
             shellId: 0,
+            certificateImage: '',
+            warrantyImage: ''
         });
         setIsAddingNew(!isAddingNew);
     }
 
-    const getFileNameWithoutExtension = (file: File): string => {
-        const fileName = file.name.split('\\').pop()?.split('/').pop();
-        return fileName ? fileName.split('.').slice(0, -1).join('.') : '';
-    };
+    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const {name, files} = e.target;
+    //     if (files && files.length > 0) {
+    //         const fileName = files[0].name;
+    //         console.log(name + ':    ' + files[0].name)
+    //         setFormData((prevFormData) => ({
+    //             ...prevFormData,
+    //             [name]: files[0],
+    //         }));
+    //
+    //         switch (name) {
+    //             case 'image1':
+    //                 setImage1(fileName);
+    //                 break;
+    //             case 'image2':
+    //                 setImage2(fileName);
+    //                 break;
+    //             case 'image3':
+    //                 setImage3(fileName);
+    //                 break;
+    //             case 'image4':
+    //                 setImage4(fileName);
+    //                 break;
+    //             default:
+    //                 break;
+    //         }
+    //     }
+    // };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, files} = e.target;
-        if (files && files.length > 0) {
-            const fileName = files[0].name;
-            console.log(name + ':    ' + files[0].name)
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                [name]: files[0],
-            }));
-
-            switch (name) {
-                case 'image1':
-                    setImage1(fileName);
-                    break;
-                case 'image2':
-                    setImage2(fileName);
-                    break;
-                case 'image3':
-                    setImage3(fileName);
-                    break;
-                case 'image4':
-                    setImage4(fileName);
-                    break;
-                default:
-                    break;
-            }
+        if (files && files[0]) {
+            setFormData({
+                ...formData,
+                [name]: files[0]
+            });
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent, product: productModel) => {
         e.preventDefault();
+        console.log('product: ', product)
         try {
-            const formDataObj = new FormData();
-            if (formData.image1) formDataObj.append('files', formData.image1);
-            if (formData.image2) formDataObj.append('files', formData.image2);
-            if (formData.image3) formDataObj.append('files', formData.image3);
-            if (formData.image4) formDataObj.append('files', formData.image4);
+            const requestBody = {
+                productId: '',
+                collection: product.collection,
+                description: product.description,
+                image1: product.image1,
+                image2: product.image2,
+                image3: product.image3,
+                image4: product.image4,
+                price: product.price,
+                productName: product.productName,
+                stockQuantity: product.stockQuantity,
+                categoryId: product.categoryId,
+                shellId: product.shellId,
+                certificateImage: product.certificateImage,
+                warrantyImage: product.warrantyImage,
+            }
 
-            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/product/saveFile', {
+            const createProduct = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/product/add', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${headers}`,
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${headers}`
                 },
-                body: formDataObj,
+                body: JSON.stringify(requestBody)
             });
-
-            if (response.ok) {
-                console.log("Product save successfully");
-                const requestBody = {
-                    productId: '',
-                    collection: formData.collection,
-                    description: formData.description,
-                    image1: image1,
-                    image2: image2,
-                    image3: image3,
-                    image4: image4,
-                    price: formData.price,
-                    productName: formData.productName,
-                    stockQuantity: formData.stockQuantity,
-                    categoryId: formData.categoryId,
-                    shellId: formData.shellId,
-                }
-                const createProduct = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/product/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${headers}`
-                    },
-                    body: JSON.stringify(requestBody)
-                });
-                if (createProduct.ok) {
-                    setIsAddingNew(false);
-                } else {
-                    console.error('Failed to create promotion');
-                }
+            if (createProduct.ok) {
+                setIsAddingNew(false);
+                message.success('Product created successfully');
             } else {
-                console.error('Failed to save product');
-                return;
+                message.error('Failed to create product');
             }
 
-
         } catch (error) {
-            console.error('Error creating promotion: ', error);
+            console.error('Error creating product: ', error);
         }
     };
-
-    const handleCreateProduct = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond'); // Địa chỉ API của bạn
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data: Diamond[] = await response.json();
-            setDiamonds(data);
-        } catch (error) {
-            console.error('There was an error fetching the diamonds:', error);
-        }
-
-    }
 
     const searchHandleChange = () => {
         setCurrentPage(1);
@@ -286,44 +285,28 @@ export const Product = () => {
     };
 
 
-    const handleDelete = async (promotionId: string) => {
-        try {
-            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/promotion/delete/${promotionId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${headers}`
-                }
-            });
-            if (response.ok) {
 
-            } else {
-                console.error('Failed to delete promotion');
-            }
-        } catch (error) {
-            console.error('Error deleting promotion: ', error);
-        }
-    };
 
-    const handleUpdate = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/promotion/update ', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${headers}`
-                },
-                body: JSON.stringify(formData)
-            });
-            if (response.ok) {
-                setIsUpdating(false);
-            } else {
-                console.error('Failed to update promotion');
-            }
-        } catch (error) {
-            console.error('Error update promotion: ', error);
-        }
-    };
+    // const handleUpdate = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     try {
+    //         const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/promotion/update ', {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${headers}`
+    //             },
+    //             body: JSON.stringify(formData)
+    //         });
+    //         if (response.ok) {
+    //             setIsUpdating(false);
+    //         } else {
+    //             console.error('Failed to update promotion');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error update promotion: ', error);
+    //     }
+    // };
 
 
     const columns = [
@@ -349,7 +332,7 @@ export const Product = () => {
             dataIndex: 'price',
             key: 'price',
             render: (text: number) => (
-                <span style={{ fontWeight: 'bolder' }}>${text}</span>
+                <span style={{fontWeight: 'bolder'}}>${text}</span>
             ),
         },
         {
@@ -357,31 +340,13 @@ export const Product = () => {
             dataIndex: 'description',
             key: 'description',
             render: (text: string) => (
-                <div style={{ maxWidth: '500px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {text}
-                </div>
-            ),
-        },
-        {
-            title: 'Color',
-            dataIndex: 'color',
-            key: 'color',
-            render: (text: string) => (
-        <span>{text}</span>
+                <span style={{textAlign: 'center'}}>${text}</span>
             ),
         },
         {
             title: 'Quantity',
             dataIndex: 'stockQuantity',
             key: 'stockQuantity',
-            render: (text: number) => (
-                <span>{text}</span>
-            ),
-        },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
             render: (text: number) => (
                 <span>{text}</span>
             ),
@@ -398,6 +363,7 @@ export const Product = () => {
     ];
     return (
         <div>
+
             <div className='container'>
                 <div className="mb-4 d-flex justify-content-between align-items-center">
                     <h2 className="text-dark">Product</h2>
@@ -467,9 +433,7 @@ export const Product = () => {
                     </div>
                     {totalAmountOfProducts > 0 ?
                         <>
-                            <div className='table-wrapper'>
-                                <Table dataSource={products} columns={columns} rowKey="productId" />
-                            </div>
+                            <Table dataSource={products} columns={columns} rowKey="productId"/>
                         </>
                         :
                         <div className='m-5'>

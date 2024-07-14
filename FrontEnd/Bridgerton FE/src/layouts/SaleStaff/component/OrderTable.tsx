@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import './OrderTable.css';
-import { Table, Tag, Button, Input, Space, Spin, Alert } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
-import { useHistory } from 'react-router-dom';
+import {Alert, Button, Input, message, Space, Spin, Table, Tag} from 'antd';
+import {useHistory} from 'react-router-dom';
 import OrderModel from "../../../models/OrderModel"
+import DiamondModel from "../../../models/DiamondModel";
 
-const { Search } = Input;
-
+const {Search} = Input;
+const token = localStorage.getItem('token')
 const headers = {
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXlscXNlMTcxMjkzQGZwdC5lZHUudm4ifQ.FzAs3FrNbICbW9dUGZivmqNtMvUs7dh-fCgJy0EvluQ'
+    'Authorization': `Bearer ${token}`
 }
 
 const OrderTable: React.FC = () => {
     const [orders, setOrders] = useState<OrderModel[]>([]);
+    const [diamonds, setDiamonds] = useState<DiamondModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
 
@@ -22,7 +23,7 @@ const OrderTable: React.FC = () => {
         const fetchOrders = async () => {
             const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/order";
             const url: string = `${baseUrl}`;
-            const response = await fetch(url, { headers: headers });
+            const response = await fetch(url, {headers: headers});
             if (!response.ok) {
                 throw new Error('Something went wrong!');
             }
@@ -32,7 +33,7 @@ const OrderTable: React.FC = () => {
             for (const key in responseData) {
                 loadedOrders.push({
                     orderId: responseData[key].orderId,
-                    orderDate: new Date(responseData[key].orderDate),
+                    orderDate: responseData[key].orderDate,
                     orderTotalAmount: responseData[key].orderTotalAmount,
                     orderDeliveryAddress: responseData[key].orderDeliveryAddress,
                     status: responseData[key].status,
@@ -45,6 +46,8 @@ const OrderTable: React.FC = () => {
                     warranties: responseData[key].warranties,
                     invoices: responseData[key].invoices,
                     payments: responseData[key].payments,
+                    phoneNumber: responseData[key].phoneNumber,
+                    username: responseData[key].username
                 });
             }
             setOrders(loadedOrders);
@@ -57,6 +60,12 @@ const OrderTable: React.FC = () => {
         })
     }, []);
 
+
+    const logOut = () => {
+        localStorage.removeItem('token');
+        window.location.href = '/';
+    }
+
     const updateOrderStatus = (orderId: number, newStatus: string) => {
         const orderIndex: number = orders.findIndex(order => order.orderId === orderId);
         if (orderIndex === -1) {
@@ -68,13 +77,20 @@ const OrderTable: React.FC = () => {
         setOrders(updatedOrders);
     };
 
-    const handleConfirm = async (orderId: number) => {
+    const handleConfirm = async (e: React.FormEvent, orderId: number) => {
+        const token = localStorage.getItem("token");
+        const headersForPayment = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+        e.preventDefault();
         try {
             const baseUrl = "https://deploy-be-b176a8ceb318.herokuapp.com/sale";
             const url = `${baseUrl}/setOrderToDelivery/${orderId}`;
-            const response = await fetch(url, { method: 'POST', headers: headers });
+            const response = await fetch(url, {method: 'POST', headers: headersForPayment});
 
             if (!response.ok) {
+                message.error('Something when wrong');
                 throw new Error('Something went wrong!');
             }
             updateOrderStatus(orderId, 'DELIVERED');
@@ -86,7 +102,7 @@ const OrderTable: React.FC = () => {
     if (isLoading) {
         return (
             <div className="spinner container m-5 d-flex justify-content-center align-items-center vh-100">
-                <Spin size="large" />
+                <Spin size="large"/>
             </div>
         );
     }
@@ -94,7 +110,7 @@ const OrderTable: React.FC = () => {
     if (httpError) {
         return (
             <div className="container">
-                <Alert message="Error" description={httpError} type="error" showIcon />
+                <Alert message="Error" description={httpError} type="error" showIcon/>
             </div>
         );
     }
@@ -166,38 +182,34 @@ const OrderTable: React.FC = () => {
             ),
         },
         {
-            title: '',
+            title: 'ACTION',
             key: 'action',
-            render: (text: any, record: any) => (
-                <Space size="middle">
-                    <Button
-                        icon={<EditOutlined />}
-                        onClick={() => navigateToOrderDetails(record.orderId)}
-                    />
-                    <Button
-                        onClick={() => handleConfirm(record.orderId)}
-                    >
-                     Confirm
-                    </Button>
-                    <Button
-                        // onClick={() => handleConfirm(record.orderId)}
-                    >
-                        Cancel
-                    </Button>
-                </Space>
+            render: (record: any) => (
+                record.status === 'PAYMENT' ? (
+                    <Space size="middle">
+                        <Button onClick={(event) => handleConfirm(event, record.orderId)}>
+                            CONFIRM
+                        </Button>
+                        {/*<Button>*/}
+                        {/*    EDIT*/}
+                        {/*</Button>*/}
+                    </Space>
+                ) : null
             ),
         },
     ];
 
     return (
-        <div style={{ marginTop: '50px' }} className="container">
-            <h1 className='custom-heading text-center'>Orders List</h1>
-            <Search
-                placeholder="Search"
-                enterButton
-                style={{ marginBottom: '20px', width: '300px' }}
-                // onSearch={value => searchHandleChange(value)}
-            />
+        <div style={{marginTop: '50px'}} className="container">
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <h1 className='custom-heading text-center'>Orders List</h1>
+                <Button onClick={logOut} type="primary" style={{marginBottom: '100px'}}> Logout</Button>
+            </div>
+            {/*<Search*/}
+            {/*    placeholder="Search"*/}
+            {/*    enterButton*/}
+            {/*    style={{marginBottom: '20px', width: '300px'}}*/}
+            {/*/>*/}
             <Table
                 columns={columns}
                 dataSource={orders}

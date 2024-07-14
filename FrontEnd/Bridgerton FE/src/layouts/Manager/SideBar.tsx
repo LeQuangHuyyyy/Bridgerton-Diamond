@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {jwtDecode} from "jwt-decode";
 import './SideBar.css';
-import {Button, Layout, Menu} from 'antd';
+import { Layout, Menu} from 'antd';
 import {
     DashboardOutlined,
     GiftOutlined,

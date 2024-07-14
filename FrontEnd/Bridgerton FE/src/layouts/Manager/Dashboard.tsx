@@ -14,6 +14,7 @@ const Dashboard = () => {
     const [totalOrders, setTotalOrders] = useState();
     const [revenuel, setRevenuel] = useState();
     const [totalProducts, setTotalProducts] = useState();
+    const [profit, setProfit] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
 
@@ -67,6 +68,25 @@ const Dashboard = () => {
             const responseJson = await response.json();
             const responseData = responseJson.data;
             setRevenuel(responseData);
+            setIsLoading(false);
+        };
+        fetchData().catch((error: any) => {
+            setIsLoading(false);
+            setHttpError(error.message);
+            console.log(error);
+        })
+    }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/getProfit";
+            const url: string = `${baseUrl}`;
+            const response = await fetch(url, {headers: headers});
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+            const responseJson = await response.json();
+            const responseData = responseJson.data;
+            setProfit(responseData);
             setIsLoading(false);
         };
         fetchData().catch((error: any) => {
@@ -133,8 +153,8 @@ const Dashboard = () => {
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <LineChartOutlined style={{ fontSize: '48px', color: '#F69899' }} />
                                     <div style={{ marginLeft: '16px' }}>
-                                        <div style={{ fontSize: '16px', color: '#8c8c8c' }}>Total Sale</div>
-                                        <div style={{ fontSize: '24px'}}>2,781</div>
+                                        <div style={{ fontSize: '16px', color: '#8c8c8c' }}>Total Profit</div>
+                                        <div style={{ fontSize: '24px'}}>{profit}%</div>
                                     </div>
                                 </div>
                             </Card>

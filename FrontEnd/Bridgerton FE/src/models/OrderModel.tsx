@@ -6,7 +6,7 @@ import PaymentModel from "./PaymentModel";
 
 class OrderModel {
     orderId: number;
-    orderDate: Date;
+    orderDate: string;
     orderTotalAmount: number;
     orderDeliveryAddress: string;
     status: string;
@@ -14,13 +14,15 @@ class OrderModel {
     customerId: number;
     saleId: number;
     deliveryId: number;
-    orderDetails : OrderDetailModel[];
-    feedbacks : FeedbackModel[];
-    warranties : WarrantyModel[];
-    invoices : InvoiceModel[];
-    payments : PaymentModel[];
+    phoneNumber: string;
+    username: string;
+    orderDetails: OrderDetailModel[];
+    feedbacks: FeedbackModel[];
+    warranties: WarrantyModel[];
+    invoices: InvoiceModel[];
+    payments: PaymentModel[];
 
-    constructor(orderId: number, orderDate: Date, orderTotalAmount: number, orderDeliveryAddress: string, status: string, discountCode: string, customerId: number, saleId: number, deliveryId: number, orderDetails : OrderDetailModel[], feedbacks : FeedbackModel[], warranties : WarrantyModel[], invoices : InvoiceModel[], payments : PaymentModel[]){
+    constructor(orderId: number, orderDate: string, orderTotalAmount: number, orderDeliveryAddress: string, status: string, discountCode: string, customerId: number, saleId: number, deliveryId: number, phoneNumber: string, username: string, orderDetails: OrderDetailModel[], feedbacks: FeedbackModel[], warranties: WarrantyModel[], invoices: InvoiceModel[], payments: PaymentModel[]) {
         this.orderId = orderId;
         this.orderDate = orderDate;
         this.orderTotalAmount = orderTotalAmount;
@@ -30,6 +32,8 @@ class OrderModel {
         this.customerId = customerId;
         this.saleId = saleId;
         this.deliveryId = deliveryId;
+        this.phoneNumber = phoneNumber;
+        this.username = username;
         this.orderDetails = orderDetails;
         this.feedbacks = feedbacks;
         this.warranties = warranties;
@@ -37,4 +41,5 @@ class OrderModel {
         this.payments = payments;
     }
 }
+
 export default OrderModel;

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import OrderDetailModel from "../../../models/OrderDetailModel";
-import {SpinnerLoading} from "../../Utils/SpinnerLoading";
 import {Avatar, Card, Descriptions, Form, List, Row, Col, Input, Image} from "antd";
 import {ShoppingCartOutlined, UserOutlined, MailOutlined, PhoneOutlined} from "@ant-design/icons";
-import './OrderDetail.css';
+import './OrderDeliveryDetail.css'
 import {Link} from "react-router-dom";
+import OrderDetailModel from "../../models/OrderDetailModel";
+import {SpinnerLoading} from "../Utils/SpinnerLoading";
 
 const token = localStorage.getItem("token");
 const headers = {
@@ -45,7 +45,7 @@ const OrderDetail: React.FC = (props) => {
                 totalProductInOrder: responseJson.data.totalProductInOrder,
                 phoneNumber: responseJson.data.phoneNumber,
                 saleStaff: responseJson.data.saleStaff,
-                saleId: responseJson.data.saleId
+                saleId: responseJson.data.saleId,
             };
             setDetails(loadedDetail);
             console.log(loadedDetail);
@@ -73,33 +73,12 @@ const OrderDetail: React.FC = (props) => {
     }
     const getStatusColor = (status: any) => {
         switch (status) {
-            case 'PENDING':
-                return {
-                    backgroundColor: '#FFF3CD',
-                    color: '#FFC107',
-                    fontWeight: 'bold',
-                    border: '1px solid #FFC107',
-                };
-            case 'PAYMENT':
-                return {
-                    backgroundColor: '#CFF4FC',
-                    color: '#13C2C2',
-                    fontWeight: 'bold',
-                    border: '1px solid #13C2C2',
-                };
             case 'DELIVERED':
                 return {
                     backgroundColor: '#D1E7DD',
                     color: '#198754',
                     fontWeight: 'bold',
                     border: '1px solid #198754',
-                };
-            case 'CANCELED':
-                return {
-                    backgroundColor: '#F8D7DA',
-                    color: '#58151C',
-                    fontWeight: 'bold',
-                    border: '1px solid #58151C',
                 };
             case 'RECEIVED':
                 return {
@@ -122,51 +101,49 @@ const OrderDetail: React.FC = (props) => {
         <div style={{ padding: 24 }}>
             <h1 style={{textAlign: 'center', marginBottom: '19px'}} className="custom-heading">Order Details: {details?.orderId}</h1>
             <Row gutter={16} style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between' }}>
-                    <Col span={6}>
-                        <Card style={{backgroundColor: '#D1E7DD', borderRadius: '8px', border: '1px solid #A3CFBB'}}>
-                            <div className="info-container">
-                                <ShoppingCartOutlined className="order-icon"/>
-                                <div className="info">
-                                    <div className="order-title">Order Created at</div>
-                                    <div className="order-content">{details?.orderDate}</div>
+                <Col span={8}>
+                    <div className="card-salestaff">
+                        <div className="info-container">
+                            <UserOutlined className="order-icon"/>
+                            <div className="info">
+                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                    <div className="order-title">Sale Name:</div>
+                                    <div className="order-content">{details?.saleStaff}</div>
+                                </div>
+                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                    <div className="order-title">Sale ID:</div>
+                                    <div className="order-content">{details?.saleId}</div>
+                                </div>
+                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                    <div className="order-title">Order Created at:</div>
+                                    <div className="order-content">{details?.orderDate.substring(0, 10)}</div>
                                 </div>
                             </div>
-                        </Card>
-                    </Col>
-                <Col span={6}>
-                    <Card style={{backgroundColor: '#F8D7DA', borderRadius: '8px', border: '1px solid #F1AEB5'}}>
-                            <div className="info-container">
-                                <UserOutlined className='name-icon'/>
-                                <div className="info">
+                        </div>
+                    </div>
+                </Col>
+                <Col span={8}>
+                        <div className='card-user'>
+                        <div className="info-container">
+                            <UserOutlined className='name-icon'/>
+                            <div className="info">
+                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                     <div className="name-title">Name</div>
                                     <div className="name-content">{details?.userName}</div>
                                 </div>
-                            </div>
-                    </Card>
-            </Col>
-            <Col span={6}>
-                <Card style={{ backgroundColor: '#FFF3CD', borderRadius: '8px', border: '1px solid #FFE69C'}}>
-                            <div className="info-container">
-                                <MailOutlined className="email-icon"/>
-                                <div className="info">
+                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                     <div className="email-title">Email</div>
                                     <div style={{color: '#664D03'}} className="email-content">{details?.email}</div>
                                 </div>
-                            </div>
-                </Card>
-                    </Col>
-                    <Col span={6}>
-                        <Card style={{ backgroundColor: '#CFF4FC', borderRadius: '8px', border: '1px solid #9EEAF9'}}>
-                            <div className="info-container">
-                                <PhoneOutlined className="contact-icon" />
-                                <div className="info">
+                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                     <div className="contact-title">Contact No</div>
-                                    <div className="contact-content">202-906-12354</div>
+                                    <div className="contact-content">{details?.phoneNumber}</div>
                                 </div>
                             </div>
-                        </Card>
+                        </div>
+                        </div>
+                </Col>
 
-                    </Col>
             </Row>
             <Row gutter={20}>
                 <Col span={14}>
@@ -177,14 +154,15 @@ const OrderDetail: React.FC = (props) => {
                             renderItem={item => (
                                 <List.Item>
                                     <List.Item.Meta
-                                        avatar={<Avatar style={{width: '55px', height: '55px'}} shape="square" size="large" src={details?.image} />}
+                                        avatar={<Avatar style={{width: '55px', height: '55px'}} shape="square"
+                                                        size="large" src={details?.image}/>}
                                         title={<span style={{fontSize: '17px'}}>{item.productName}</span>}
                                         description={
                                             <div>
                                                 <span style={{fontSize: '15px'}}>Size: {item.size}</span>
                                                 <div>
                                                     <Image style={{width: '80px', height: '90px'}} src={item.warrantiesImage} />
-                                                    <Image style={{width: '80px', height: '90px'}} src={item.certificateImage} />
+                                                    <Image style={{width: '100px', height: '90px'}} src={item.certificateImage} />
                                                 </div>
                                             </div>
                                         }
@@ -201,14 +179,14 @@ const OrderDetail: React.FC = (props) => {
                                 ${details?.totalAmount}
                             </Descriptions.Item>
                             <Descriptions.Item label="Shipping Cost" style={{ fontSize: '16px' }}>
-                                Free Shipping
+                                Free
                             </Descriptions.Item>
-                            {/*<Descriptions.Item label="Discount" style={{ fontSize: '16px' }}>*/}
-                            {/*    -$0*/}
-                            {/*</Descriptions.Item>*/}
-                            {/*<Descriptions.Item label="Tax" style={{ fontSize: '16px' }}>*/}
-                            {/*    $18%*/}
-                            {/*</Descriptions.Item>*/}
+                            <Descriptions.Item label="Discount" style={{ fontSize: '16px' }}>
+                                -$0
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Tax" style={{ fontSize: '16px' }}>
+                                $18%
+                            </Descriptions.Item>
                             <Descriptions.Item label="Total" style={{ fontWeight: 'bold', fontSize: '20px', color: 'red' }}>
                                 ${details?.totalAmount.toFixed(2)}
                             </Descriptions.Item>
@@ -229,7 +207,7 @@ const OrderDetail: React.FC = (props) => {
                                 {details?.totalProductInOrder}
                             </Form.Item>
                             <Form.Item>
-                                <Link to={"/salestaff"} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#3AA6B9'}} className="text-white">Back to list</Link>
+                                <Link to={"/deliverystaff"} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#3AA6B9'}} className="text-white">Back to list</Link>
                             </Form.Item>
                         </Form>
                     </Card>

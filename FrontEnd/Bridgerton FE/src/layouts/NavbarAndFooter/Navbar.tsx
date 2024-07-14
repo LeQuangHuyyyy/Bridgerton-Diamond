@@ -10,7 +10,7 @@ const {Header} = Layout;
 const menu = (handleLogout: any) => (
     <Menu>
         <Menu.Item key="0">
-            <NavLink to="/account">Account</NavLink>
+            <NavLink style={{textDecoration: 'none'}} to="/myaccount">Account</NavLink>
         </Menu.Item>
         <Menu.Item key="1" onClick={handleLogout}>
             Log out
@@ -61,6 +61,7 @@ export const Navbar = () => {
                              fontSize: '35px',
                              color: 'white',
                          }}>
+                    <img src={'./logo192.png'} style={{width: '90px', height: '90px'}}/>
                     Bridgerton
                 </NavLink>
             </div>

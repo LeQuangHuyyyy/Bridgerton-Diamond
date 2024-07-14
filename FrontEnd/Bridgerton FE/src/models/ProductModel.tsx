@@ -12,9 +12,10 @@ class ProductModel {
     categoryId: number;
     diamondId: number;
     shellId: number;
+    certificateImage: string;
+    warrantyImage: string;
 
-
-    constructor(productId: number, productName: string, price: number, stockQuantity: number, collection: string, description: string, image1: string,image2: string,image3: string,image4: string,categoryId: number, diamondId: number, shellId: number) {
+    constructor(productId: number, productName: string, price: number, stockQuantity: number, collection: string, description: string, image1: string, image2: string, image3: string, image4: string, categoryId: number, diamondId: number, shellId: number, certificateImage: string, warrantyImage: string) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
@@ -28,8 +29,9 @@ class ProductModel {
         this.categoryId = categoryId;
         this.diamondId = diamondId;
         this.shellId = shellId;
+        this.certificateImage = certificateImage;
+        this.warrantyImage = warrantyImage;
     }
-
 
 }
 

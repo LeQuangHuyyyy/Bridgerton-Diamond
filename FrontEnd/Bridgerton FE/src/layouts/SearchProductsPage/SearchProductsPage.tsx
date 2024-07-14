@@ -59,7 +59,9 @@ export const SearchProductsPage = () => {
                     image4: responseData[key].image4,
                     categoryId: responseData[key].categoryId,
                     diamondId: responseData[key].diamondId,
-                    shellId: responseData[key].shellId
+                    shellId: responseData[key].shellId,
+                    certificateImage: responseData[key].certificateImage,
+                    warrantyImage: responseData[key].warrantyImage,
                 });
             }
             setProducts(loadedProducts);
