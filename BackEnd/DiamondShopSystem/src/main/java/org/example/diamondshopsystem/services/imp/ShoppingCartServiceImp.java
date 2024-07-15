@@ -33,4 +33,6 @@ public interface ShoppingCartServiceImp {
     Page<CartDTO> getCartDTOByProductRequest(List<AddProductRequest> addProductRequest, Pageable pageable);
 
     Order creteOrder(OrderRequest orderRequest);
+
+    double totalPriceWithDiscountCode(String discountCode, double totalAmount);
 }

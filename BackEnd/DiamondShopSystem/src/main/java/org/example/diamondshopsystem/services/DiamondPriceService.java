@@ -5,11 +5,15 @@ import org.example.diamondshopsystem.entities.DiamondPrice;
 import org.example.diamondshopsystem.repositories.DiamondPriceRepository;
 import org.example.diamondshopsystem.services.imp.DiamondPriceServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class DiamondPriceService implements DiamondPriceServiceImp {
@@ -30,19 +34,17 @@ public class DiamondPriceService implements DiamondPriceServiceImp {
     }
 
     @Override
-    public List<DiamondPriceDTO> getAllDiamondPrices() {
-        List<DiamondPrice> diamondPrices = diamondPriceRepository.findAll();
-        List<DiamondPriceDTO> diamondPriceDTOs = new ArrayList<DiamondPriceDTO>();
-        for (DiamondPrice diamondPrice : diamondPrices) {
-            diamondPriceDTOs.add(mapDiamondPriceToDTO(diamondPrice));
-        }
-        return diamondPriceDTOs;
+    public Page<DiamondPriceDTO> getAllDiamondPrices(Pageable pageable) {
+        Page<DiamondPrice> diamondPrices = diamondPriceRepository.findAll(pageable);
+        List<DiamondPriceDTO> diamondPriceDTOs = diamondPrices.stream()
+                .map(this::mapDiamondPriceToDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(diamondPriceDTOs);
     }
 
     @Override
     public DiamondPriceDTO getDiamondPrice(int id) {
-        DiamondPrice diamondPrice = diamondPriceRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Can not found diamond price with id: " + id));
+        DiamondPrice diamondPrice = diamondPriceRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Can not found diamond price with id: " + id));
         return mapDiamondPriceToDTO(diamondPrice);
     }
 
@@ -57,8 +59,7 @@ public class DiamondPriceService implements DiamondPriceServiceImp {
 
     @Override
     public DiamondPriceDTO updateDiamondPrice(DiamondPriceDTO diamondPriceDTO) {
-        DiamondPrice diamondPrice = diamondPriceRepository.findById(diamondPriceDTO.getDiamondId())
-                .orElseThrow(() -> new NoSuchElementException("Can not found diamond price with id: " + diamondPriceDTO.getDiamondId()));
+        DiamondPrice diamondPrice = diamondPriceRepository.findById(diamondPriceDTO.getDiamondId()).orElseThrow(() -> new NoSuchElementException("Can not found diamond price with id: " + diamondPriceDTO.getDiamondId()));
         diamondPrice.setPrice(diamondPriceDTO.getPrice());
         diamondPrice.setCarat(diamondPriceDTO.getCarat());
         diamondPrice.setClarity(diamondPriceDTO.getClarity());
@@ -70,8 +71,7 @@ public class DiamondPriceService implements DiamondPriceServiceImp {
 
     @Override
     public DiamondPriceDTO deleteDiamondPrice(int id) {
-        DiamondPrice diamondPrice = diamondPriceRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Can not found diamond price with id: " + id));
+        DiamondPrice diamondPrice = diamondPriceRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Can not found diamond price with id: " + id));
         diamondPriceRepository.delete(diamondPrice);
         return mapDiamondPriceToDTO(diamondPrice);
     }

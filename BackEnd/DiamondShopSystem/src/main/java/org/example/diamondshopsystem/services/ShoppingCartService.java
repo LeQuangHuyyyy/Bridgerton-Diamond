@@ -198,7 +198,15 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
         Date vnpCreateDate = calendar.getTime();
         order.setOrderDate(vnpCreateDate);
 
-        double priceAfter = totalPrice.doubleValue() - totalPrice.doubleValue() * discount / 100;
+
+        double priceAfter = 0.0;
+        if (discount != 0) {
+            priceAfter = totalPrice.doubleValue() - totalPrice.doubleValue() * discount / 100;
+        } else {
+            priceAfter = totalPrice.doubleValue();
+        }
+
+
         order.setOrderTotalAmount(priceAfter);
         order.setStatus(OrderStatus.PENDING);
         order = orderRepository.save(order);
@@ -293,5 +301,19 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
         }
 
         return order;
+    }
+
+    @Transactional
+    @Override
+    public double totalPriceWithDiscountCode(String discountCode, double totalAmount) {
+        DiscountCodes discountCodes = discountCodeRepository.findByCode(discountCode);
+        if (discountCodes == null) {
+            return totalAmount;
+        } else {
+            DiscountCodes resetQuantity = discountCodeRepository.findById(discountCodes.getCodeId()).get();
+            resetQuantity.setCodeQuantity(resetQuantity.getCodeQuantity() - 1);
+            discountCodeRepository.save(resetQuantity);
+            return totalAmount - (totalAmount * discountCodes.getDiscountPercentTage() / 100);
+        }
     }
 }

@@ -119,7 +119,6 @@ export const Product = () => {
             }
             setProducts(loadedProducts);
             setIsLoading(false);
-            window.scrollTo(0, 0);
         } catch (error: any) {
             setIsLoading(true);
             message.error('Failed to fetch products');

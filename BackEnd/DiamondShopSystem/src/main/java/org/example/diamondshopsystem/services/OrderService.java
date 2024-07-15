@@ -211,7 +211,7 @@ public class OrderService implements OrderServiceImp {
         Date endOfLastWeek = calendar.getTime();
 
         for (Order o : orders) {
-            if (o.getOrderDate().after(startOfLastWeek) && o.getOrderDate().before(endOfLastWeek)) {
+            if (o.getOrderDate().after(startOfLastWeek) && o.getOrderDate().before(endOfLastWeek) && o.getStatus().equals(OrderStatus.PAYMENT)) {
                 result.add(o);
             }
         }
@@ -273,7 +273,7 @@ public class OrderService implements OrderServiceImp {
             priceLastWeek += o.getOrderTotalAmount();
         }
         for (Order o : orderThisWeek) {
-            if (o.getOrderDate().after(startOfThisWeek) && o.getOrderDate().before(now)) {
+            if (o.getOrderDate().after(startOfThisWeek) && o.getOrderDate().before(now) && o.getStatus().equals(OrderStatus.PAYMENT)) {
                 priceThisWeek += o.getOrderTotalAmount();
             }
         }

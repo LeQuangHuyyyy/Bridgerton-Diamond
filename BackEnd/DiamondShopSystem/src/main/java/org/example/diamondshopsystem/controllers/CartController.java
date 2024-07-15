@@ -162,6 +162,7 @@ public class CartController {
                             code = code.trim();
                             dis = discountCodeServiceImp.useDiscountCode(code);
                         }
+
                         Order order = shoppingCartService.checkout(orderDTO, userDTO, checkoutRequest.getDeliveryAddress(), dis);
                         CookieUtil.clearCartFromCookies(response);
                         return ResponseEntity.ok(Map.of("message", "Checkout successful.", "orderId", order.getOrderId()));
@@ -174,6 +175,14 @@ public class CartController {
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or missing token.");
+    }
+
+    @PostMapping("/apply-code")
+    public ResponseEntity<?> applyDiscountCode(@RequestParam String discountCode, @RequestParam double totalAmount) {
+        ResponseData responseData = new ResponseData();
+        responseData.setData(shoppingCartService.totalPriceWithDiscountCode(discountCode, totalAmount));
+        responseData.setDescription("total amount after apply discount code!!!");
+        return ResponseEntity.ok(responseData);
     }
 
     @PostMapping("/create")
@@ -191,6 +200,7 @@ public class CartController {
         CookieUtil.clearCartFromCookies(response);
         return ResponseEntity.ok("Cart cleared successfully.");
     }
+
 
     @GetMapping("/get-discount")
     public ResponseEntity<?> getDiscountByCode(String code) {

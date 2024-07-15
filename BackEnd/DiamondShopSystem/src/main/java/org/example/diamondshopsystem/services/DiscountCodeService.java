@@ -1,4 +1,3 @@
-
 package org.example.diamondshopsystem.services;
 
 import jakarta.persistence.EntityManager;
@@ -46,8 +45,7 @@ public class DiscountCodeService implements DiscountCodeServiceImp {
 
     @Override
     public DiscountCodesDTO getDiscountCodeById(int id) {
-        DiscountCodes discountCodes = discountCodeRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Discount not found"));
+        DiscountCodes discountCodes = discountCodeRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Discount not found"));
         return mapDiscountCodeToDTO(discountCodes);
     }
 
@@ -91,8 +89,7 @@ public class DiscountCodeService implements DiscountCodeServiceImp {
 
     @Override
     public DiscountCodesDTO updateDiscountCode(DiscountCodesDTO discountCodeDTO) {
-        DiscountCodes discountCodes = discountCodeRepository.findById(discountCodeDTO.getCodeId())
-                .orElseThrow(() -> new NoSuchElementException("Discount not found"));
+        DiscountCodes discountCodes = discountCodeRepository.findById(discountCodeDTO.getCodeId()).orElseThrow(() -> new NoSuchElementException("Discount not found"));
         discountCodes.setCode(discountCodeDTO.getCode());
         discountCodes.setDiscountPercentTage(discountCodeDTO.getDiscountPercentTage());
         discountCodes.setCodeQuantity(discountCodeDTO.getCodeQuantity());
@@ -107,8 +104,7 @@ public class DiscountCodeService implements DiscountCodeServiceImp {
 
     @Override
     public DiscountCodesDTO deleteDiscountCode(int id) {
-        DiscountCodes discountCodes = discountCodeRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Discount not found"));
+        DiscountCodes discountCodes = discountCodeRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Discount not found"));
         discountCodeRepository.delete(discountCodes);
         return mapDiscountCodeToDTO(discountCodes);
     }
@@ -127,8 +123,7 @@ public class DiscountCodeService implements DiscountCodeServiceImp {
     public double useDiscountCode(String code) {
         try {
             DiscountCodes discountCodes = discountCodeRepository.findByCode(code);
-            DiscountCodes discountCodes1 = discountCodeRepository.findById(discountCodes.getCodeId())
-                    .orElseThrow(() -> new NoSuchElementException("Discount not found"));
+            DiscountCodes discountCodes1 = discountCodeRepository.findById(discountCodes.getCodeId()).orElseThrow(() -> new NoSuchElementException("Discount not found"));
             discountCodes1.setCodeQuantity(discountCodes.getCodeQuantity() - 1);
             discountCodeRepository.save(discountCodes1);
 

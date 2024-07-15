@@ -143,7 +143,8 @@ public class ProductService implements ProductServiceImp {
             shellPrice = shell.getShellPrice();
         }
 
-        return (diamondPrice + shellPrice) * 1.3;
+        double tax = (diamondPrice + shellPrice) * 10 / 100;
+        return (diamondPrice + shellPrice) + tax + 50;
     }
 
     @Override

@@ -2,6 +2,8 @@ package org.example.diamondshopsystem.repositories;
 
 import org.example.diamondshopsystem.entities.Diamond;
 import org.example.diamondshopsystem.entities.DiamondPrice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +17,5 @@ public interface DiamondPriceRepository extends JpaRepository<DiamondPrice, Inte
     @Query("SELECT dp FROM DiamondPrice dp WHERE dp.carat = :carat AND dp.cut = :cut AND dp.color = :color AND dp.clarity = :clarity")
     DiamondPrice findByCaratAndCutAndColorAndClarity(@Param("carat") double carat, @Param("cut") String cut, @Param("color") String color, @Param("clarity") String clarity);
 
+    Page<DiamondPrice> findAll(Pageable pageable);
 }
