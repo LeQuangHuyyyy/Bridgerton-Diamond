@@ -20,6 +20,8 @@ import java.util.List;
 public interface OrderServiceImp {
     OrderDTO getOrderById(int orderId);
 
+    boolean setOrderStatusCancel(int orderId);
+
     BigDecimal findPriceByOrderId(Integer orderId);
 
     void setOrderStatus(Integer orderId);

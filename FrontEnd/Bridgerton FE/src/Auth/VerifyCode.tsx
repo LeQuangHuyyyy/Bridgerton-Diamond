@@ -1,4 +1,5 @@
 import React from "react";
+import {message} from "antd";
 
 export const VerifyCode = () => {
     const [verifyCode, setVerifyCode] = React.useState('');
@@ -18,7 +19,6 @@ export const VerifyCode = () => {
             body: JSON.stringify(data)
         })
         if (response.ok) {
-            // const email = localStorage.getItem('email-register');
             const password = localStorage.getItem('password-register');
 
             fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/login/signin?email=${email}&password=${password}`, {
@@ -34,6 +34,8 @@ export const VerifyCode = () => {
                     window.location.href = '/'
                 }
             )
+        }else {
+            message.error('Change password successful!');
         }
     };
 

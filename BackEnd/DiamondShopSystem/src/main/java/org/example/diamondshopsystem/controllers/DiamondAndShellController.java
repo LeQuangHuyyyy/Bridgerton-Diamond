@@ -3,6 +3,7 @@ package org.example.diamondshopsystem.controllers;
 import org.example.diamondshopsystem.dto.DiamondDTO;
 import org.example.diamondshopsystem.dto.ShellDTO;
 import org.example.diamondshopsystem.entities.Diamond;
+import org.example.diamondshopsystem.entities.Products;
 import org.example.diamondshopsystem.payload.ResponseData;
 import org.example.diamondshopsystem.services.imp.DiamondServiceImp;
 import org.example.diamondshopsystem.services.imp.ProductServiceImp;

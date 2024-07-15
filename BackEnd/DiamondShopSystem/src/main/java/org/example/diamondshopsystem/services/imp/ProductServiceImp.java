@@ -4,6 +4,7 @@ import org.example.diamondshopsystem.dto.ProductDTO;
 import org.example.diamondshopsystem.entities.Diamond;
 import org.example.diamondshopsystem.entities.Products;
 import org.example.diamondshopsystem.entities.Shell;
+import org.example.diamondshopsystem.payload.requests.ProductRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,11 +15,11 @@ public interface ProductServiceImp {
 
     Products getProductById(int id);
 
-    ProductDTO addProduct(ProductDTO product);
+    boolean addProduct(ProductRequest product);
 
     ProductDTO updateProduct(ProductDTO product);
 
-    void deleteProduct(int id);
+    boolean deleteProduct(int id);
 
     Page<ProductDTO> getProductByCollection(String collection, Pageable pageable);
 

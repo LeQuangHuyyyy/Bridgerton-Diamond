@@ -112,4 +112,16 @@ public class OrderController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
+    @PutMapping("/cancel")
+    public ResponseEntity<?> setOrderStatusCancel(@RequestParam int orderId) {
+        ResponseData responseData = new ResponseData();
+        if (orderServiceImp.setOrderStatusCancel(orderId)) {
+            responseData.setDescription("Order have been cancel!!!!");
+            return new ResponseEntity<>(responseData, HttpStatus.OK);
+        } else {
+            responseData.setDescription("Order fail cancel!!!!");
+            return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

@@ -29,9 +29,6 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
     private OrderRepository orderRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private ProductRepository productRepository;
 
     @Override
@@ -76,6 +73,10 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         orderDetailRequest.setEmail(mail);
         orderDetailRequest.setPhoneNumber(phoneNumber);
         orderDetailRequest.setAddress(address);
+
+        if (orders.getDiscountCode() != null) {
+            orderDetailRequest.setPercent(orders.getDiscountCode().getDiscountPercentTage());
+        }
         if (orders.getSale() != null) {
             orderDetailRequest.setSaleStaff(orders.getSale().getName());
             orderDetailRequest.setSaleId(orders.getSale().getUserid());
@@ -83,6 +84,7 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         if (orders.getSale() != null) {
             orderDetailRequest.setSaleStaff(orders.getSale().getName());
         }
+
         orderDetailRequest.setOrderDate(orders.getOrderDate());
         orderDetailRequest.setTotalAmount(orders.getOrderTotalAmount());
 

@@ -1,12 +1,18 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import uploadFile from '../../../firebase/uploadFile';
 import ProductModel from "../../../models/ProductModel";
-import productModel from "../../../models/ProductModel"; // Path to your uploadFile function
+import productModel from "../../../models/ProductModel";
+import DiamondModel from "../../../models/DiamondModel"; // Path to your uploadFile function
 
+const token = localStorage.getItem('token');
+const headers = {
+    'Authorization': `Bearer ${token}`
+
+}
 interface AddProductProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (e: React.FormEvent,product: ProductModel) => void;
+    onSubmit: (e: React.FormEvent, product: ProductModel) => void;
 
     formData: {
         productId: number;
@@ -22,19 +28,15 @@ interface AddProductProps {
         categoryId: number;
         diamondId: number;
         shellId: number;
+        warrantyImage: string,
+        certificateImage: string,
     };
     handleChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLTextAreaElement>) => void;
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const AddProduct: React.FC<AddProductProps> = ({
-                                                          isOpen,
-                                                          onClose,
-                                                          onSubmit,
-                                                          formData,
-                                                          handleChange,
-                                                          handleFileChange,
-                                                      }) => {
+export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit, formData, handleChange, handleFileChange,}) => {
+    const [diamonds, setDiamonds] = useState<DiamondModel[]>([]);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -44,7 +46,11 @@ export const AddProduct: React.FC<AddProductProps> = ({
             const image3URL = formData.image3 instanceof File ? await uploadFile(formData.image3) : formData.image3;
             const image4URL = formData.image4 instanceof File ? await uploadFile(formData.image4) : formData.image4;
 
-            const productData  = new  productModel(formData.productId,
+            const certificateImage = formData.certificateImage? formData.certificateImage :"asdasdasd";
+            const warrantyImage = formData.certificateImage? formData.warrantyImage :"asdasdasd";
+
+            const productData = new productModel(
+                formData.productId,
                 formData.productName,
                 formData.price,
                 formData.stockQuantity,
@@ -56,14 +62,48 @@ export const AddProduct: React.FC<AddProductProps> = ({
                 image4URL ?? "",
                 formData.categoryId,
                 formData.diamondId,
-                formData.shellId);
+                formData.shellId,
+                certificateImage,
+                warrantyImage
+            );
 
-            onSubmit(e,productData);
+            onSubmit(e, productData);
+            console.log(productData);
         } catch (error) {
             console.error("Error uploading files:", error);
         }
     };
 
+    useEffect(() => {
+        const fetchOrders = async () => {
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/diamond";
+            const url: string = `${baseUrl}`;
+            const response = await fetch(url, {headers: headers});
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+            const responseJson = await response.json();
+            const responseData = responseJson.data;
+            const loadedDiamonds: DiamondModel[] = [];
+            for (const key in responseData) {
+                loadedDiamonds.push({
+                    diamondId: responseData[key].diamondId,
+                    carat: responseData[key].carat,
+                    price: responseData[key].price,
+                    cut: responseData[key].cut,
+                    color: responseData[key].color,
+                    clarity: responseData[key].clarity,
+                    certification: responseData[key].certification,
+                    productId: responseData[key].productId,
+                    status: responseData[key].status,
+                });
+            }
+            setDiamonds(loadedDiamonds);
+        };
+        fetchOrders().catch((error: any) => {
+            console.log(error);
+        })
+    }, []);
     return (
         <div
             className={`modal ${isOpen ? 'show' : ''}`}
@@ -138,6 +178,21 @@ export const AddProduct: React.FC<AddProductProps> = ({
                                         onChange={handleChange}
                                         className="form-control"
                                     />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="diamondId" className="form-label">Diamond</label>
+                                    <select
+                                        id="diamondId"
+                                        name="diamondId"
+                                        className="form-select"
+                                        value={formData.diamondId}
+                                        onChange={handleChange}>
+                                        {diamonds.map((diamond) => (
+                                            <option key={diamond.diamondId} value={diamond.diamondId}>
+                                                {`ID: ${diamond.diamondId}, Carat: ${diamond.carat}, Price: ${diamond.price}, Cut: ${diamond.cut}, Color: ${diamond.color}, Clarity: ${diamond.clarity}, Certification: ${diamond.certification}, Product ID: ${diamond.productId}, Status: ${diamond.status}`}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
 

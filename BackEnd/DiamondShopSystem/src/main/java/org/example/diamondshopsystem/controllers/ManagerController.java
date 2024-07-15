@@ -2,7 +2,10 @@ package org.example.diamondshopsystem.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.example.diamondshopsystem.payload.ResponseData;
+import org.example.diamondshopsystem.services.DiamondPriceService;
+import org.example.diamondshopsystem.services.DiamondService;
 import org.example.diamondshopsystem.services.UploadImageService;
+import org.example.diamondshopsystem.services.imp.DiamondServiceImp;
 import org.example.diamondshopsystem.services.imp.OrderServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,10 @@ public class ManagerController {
 
     @Autowired
     private OrderServiceImp orderServiceImp;
+    @Autowired
+    private DiamondPriceService diamondPriceService;
+    @Autowired
+    private DiamondServiceImp diamondServiceImp;
 
     @PostMapping("/cloudinary/upload")
     public ResponseEntity<Map> uploadImage(@RequestParam("image") MultipartFile file) {
@@ -79,4 +86,11 @@ public class ManagerController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
+    @GetMapping("/diamond")
+    public ResponseEntity<?> getDiamondWithoutProduct() {
+        ResponseData responseData = new ResponseData();
+        responseData.setData(diamondServiceImp.getAllDiamondWithoutDTO());
+        responseData.setDescription("lấy diamond mà k có product");
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
 }

@@ -1,7 +1,11 @@
 package org.example.diamondshopsystem.controllers;
 
 import org.example.diamondshopsystem.dto.ProductDTO;
+import org.example.diamondshopsystem.entities.Products;
 import org.example.diamondshopsystem.payload.ResponseData;
+import org.example.diamondshopsystem.payload.requests.ProductRequest;
+import org.example.diamondshopsystem.repositories.ProductRepository;
+import org.example.diamondshopsystem.services.DiamondService;
 import org.example.diamondshopsystem.services.FileService;
 import org.example.diamondshopsystem.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,10 @@ public class ProductController {
 
     @Autowired
     FileService fileService;
+    @Autowired
+    private DiamondService diamondService;
+    @Autowired
+    private ProductRepository productRepository;
 
     @PostMapping("/saveFile")
     public ResponseEntity<ResponseData> uploadFile(@RequestParam MultipartFile[] files) {
@@ -89,9 +97,14 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) {
-        ProductDTO savedProduct = productService.addProduct(productDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
+    public ResponseEntity<?> addProduct(@RequestBody ProductRequest productRequest) {
+        ResponseData responseData = new ResponseData();
+        if (productService.addProduct(productRequest)) {
+            responseData.setDescription("add ok !");
+        } else {
+            responseData.setDescription("add fail!!");
+        }
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
@@ -102,9 +115,14 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteProduct(@PathVariable int id) {
+        ResponseData responseData = new ResponseData();
+        if (productService.deleteProduct(id)) {
+            responseData.setDescription("delete oke nhá ");
+        } else {
+            responseData.setDescription("delete sai gòi, bị gì gòi á");
+        }
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
     @PostMapping("/setprice")

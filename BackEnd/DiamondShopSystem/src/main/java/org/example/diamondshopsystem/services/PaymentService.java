@@ -14,6 +14,7 @@ import org.example.diamondshopsystem.services.imp.PaymentServiceImp;
 import org.example.diamondshopsystem.utils.VNPayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,8 @@ public class PaymentService implements PaymentServiceImp {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+
 
     @Override
     public PaymentDTO.VNPayResponse createVnPayPayment(BigDecimal totalPrice, String bankCode, Integer orderId, HttpServletRequest request) {

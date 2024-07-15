@@ -365,8 +365,8 @@ h2 {
 
 .custom-link:hover,
 .custom-link.active {
-    background-color: lightgray; /* Example hover and active background color */
-    color: white; /* Example hover and active text color */
+    background-color: lightgray;
+    color: white;
 }
 
 .navbar-brand {

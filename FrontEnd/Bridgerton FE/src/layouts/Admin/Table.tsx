@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {jwtDecode} from "jwt-decode";
 import AddAccount from "./AddAccount";
 import UpdateAccount from "./UpdateAccount";
+import {message} from "antd";
 
 const headers = localStorage.getItem('token');
 
@@ -99,7 +100,7 @@ export const Table: React.FC = () => {
             });
 
             if (isDuplicate) {
-                alert("Email or PhoneNumber already exists");
+                message.error("Email or PhoneNumber already exists");
                 setIsAddingNew(true);
                 return;
             }
@@ -169,13 +170,18 @@ export const Table: React.FC = () => {
             });
 
             if (check) {
+                console.log(formData)
+                let abc = formData;
+                abc.name = formData.address;
+                abc.address = formData.name;
+
                 await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts/${formData.userid}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${headers}`
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(abc)
                 });
                 if (response.ok) {
                     fetchRole();

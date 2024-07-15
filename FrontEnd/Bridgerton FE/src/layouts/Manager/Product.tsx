@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
 import ProductModel from "../../models/ProductModel";
-import {Paging} from "../Utils/Paging";
 import {SpinnerLoading} from "../Utils/SpinnerLoading";
 import {AddProduct} from "./component/AddProduct";
-import {Button, Image, Table} from "antd";
+import {Button, Image, message, Table} from "antd";
 import productModel from "../../models/ProductModel";
 
 interface ProductData {
@@ -20,6 +19,8 @@ interface ProductData {
     categoryId: number;
     diamondId: number;
     shellId: number;
+    warrantyImage: string,
+    certificateImage: string,
 }
 
 interface Diamond {
@@ -59,34 +60,41 @@ export const Product = () => {
         categoryId: 0,
         diamondId: 0,
         shellId: 0,
+        certificateImage: '',
+        warrantyImage: ''
     });
-    const [image1, setImage1] = useState<string | null>(null);
-    const [image2, setImage2] = useState<string | null>(null);
-    const [image3, setImage3] = useState<string | null>(null);
-    const [image4, setImage4] = useState<string | null>(null);
+
 
     const headers = localStorage.getItem('token');
 
     useEffect(() => {
+        fetchProducts ();
+    }, [currentPage, searchUrl]);
 
-        const fetchProducts = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/home";
-            let url: string = '';
-            if (searchUrl === '') {
-                url = `${baseUrl}/search-by-name?keyword=${search}`;
-            } else {
-                url = baseUrl
-            }
+    const fetchProducts = async () => {
+        const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/home";
+        let url: string = '';
+        if (searchUrl === '') {
+            url = `${baseUrl}/search-by-name?keyword=${search}`;
+        } else {
+            url = baseUrl;
+        }
 
+        try {
             const response = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${headers}`
                 }
             });
 
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+
             const responseJson = await response.json();
             const responseData = responseJson.content;
             setTotalAmountOfProducts(responseJson.totalElements)
+            setTotalPages(responseJson.totalPages);
 
             const loadedProducts: ProductModel[] = [];
 
@@ -104,18 +112,26 @@ export const Product = () => {
                     image4: responseData[key].image4,
                     categoryId: responseData[key].categoryId,
                     diamondId: responseData[key].diamondId,
-                    shellId: responseData[key].shellId
+                    shellId: responseData[key].shellId,
+                    certificateImage: responseData[key].certificateImage,
+                    warrantyImage: responseData[key].warrantyImage,
                 });
             }
             setProducts(loadedProducts);
             setIsLoading(false);
-        };
-        fetchProducts().catch((error: any) => {
-            setIsLoading(false);
-            setHttpError(error.message);
-        })
-        window.scrollTo(0, 0);
-    }, [currentPage, searchUrl]);
+            window.scrollTo(0, 0);
+        } catch (error: any) {
+            setIsLoading(true);
+            message.error('Failed to fetch products');
+        }
+    };
+
+    fetchProducts().catch((error: any) => {
+        setIsLoading(false);
+        setHttpError(error.message);
+    });
+
+
 
     if (isLoading) {
         return (
@@ -146,6 +162,8 @@ export const Product = () => {
             categoryId: 0,
             diamondId: 0,
             shellId: 0,
+            certificateImage: '',
+            warrantyImage: ''
         });
         setIsAddingNew(!isAddingNew);
     }
@@ -178,6 +196,7 @@ export const Product = () => {
     //         }
     //     }
     // };
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, files} = e.target;
         if (files && files[0]) {
@@ -190,7 +209,7 @@ export const Product = () => {
 
     const handleSubmit = async (e: React.FormEvent, product: productModel) => {
         e.preventDefault();
-        console.log(product);
+        console.log('product: ', product)
         try {
             const requestBody = {
                 productId: '',
@@ -205,7 +224,10 @@ export const Product = () => {
                 stockQuantity: product.stockQuantity,
                 categoryId: product.categoryId,
                 shellId: product.shellId,
+                certificateImage: product.certificateImage,
+                warrantyImage: product.warrantyImage,
             }
+
             const createProduct = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/product/add', {
                 method: 'POST',
                 headers: {
@@ -216,29 +238,15 @@ export const Product = () => {
             });
             if (createProduct.ok) {
                 setIsAddingNew(false);
+                message.success('Product created successfully');
             } else {
-                console.error('Failed to create promotion');
+                message.error('Failed to create product');
             }
 
         } catch (error) {
-            console.error('Error creating promotion: ', error);
+            console.error('Error creating product: ', error);
         }
     };
-
-    const handleCreateProduct = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond'); // Địa chỉ API của bạn
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data: Diamond[] = await response.json();
-            setDiamonds(data);
-        } catch (error) {
-            console.error('There was an error fetching the diamonds:', error);
-        }
-
-    }
 
     const searchHandleChange = () => {
         setCurrentPage(1);
@@ -277,44 +285,28 @@ export const Product = () => {
     };
 
 
-    const handleDelete = async (promotionId: string) => {
-        try {
-            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/promotion/delete/${promotionId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${headers}`
-                }
-            });
-            if (response.ok) {
 
-            } else {
-                console.error('Failed to delete promotion');
-            }
-        } catch (error) {
-            console.error('Error deleting promotion: ', error);
-        }
-    };
 
-    const handleUpdate = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/promotion/update ', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${headers}`
-                },
-                body: JSON.stringify(formData)
-            });
-            if (response.ok) {
-                setIsUpdating(false);
-            } else {
-                console.error('Failed to update promotion');
-            }
-        } catch (error) {
-            console.error('Error update promotion: ', error);
-        }
-    };
+    // const handleUpdate = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     try {
+    //         const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/promotion/update ', {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${headers}`
+    //             },
+    //             body: JSON.stringify(formData)
+    //         });
+    //         if (response.ok) {
+    //             setIsUpdating(false);
+    //         } else {
+    //             console.error('Failed to update promotion');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error update promotion: ', error);
+    //     }
+    // };
 
 
     const columns = [
@@ -371,6 +363,7 @@ export const Product = () => {
     ];
     return (
         <div>
+
             <div className='container'>
                 <div className="mb-4 d-flex justify-content-between align-items-center">
                     <h2 className="text-dark">Product</h2>

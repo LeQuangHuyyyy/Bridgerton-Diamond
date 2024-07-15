@@ -6,6 +6,7 @@ import org.example.diamondshopsystem.entities.Diamond;
 import org.example.diamondshopsystem.entities.Products;
 import org.example.diamondshopsystem.entities.Shell;
 
+import org.example.diamondshopsystem.payload.requests.ProductRequest;
 import org.example.diamondshopsystem.repositories.DiamondsRepository;
 import org.example.diamondshopsystem.repositories.ProductRepository;
 import org.example.diamondshopsystem.repositories.ShellRepository;
@@ -14,7 +15,6 @@ import org.example.diamondshopsystem.services.exeptions.ProductNotFoundException
 import org.example.diamondshopsystem.services.imp.ProductServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,12 +54,12 @@ public class ProductService implements ProductServiceImp {
         return products;
     }
 
-
+    @Transactional
     @Override
-    public ProductDTO addProduct(ProductDTO product) {
-        Products products = productMapper.mapProductDTOToProduct(product);
+    public boolean addProduct(ProductRequest productRequest) {
+        Products products = productMapper.mapProductDTOToProduct(productRequest);
         Products saveProduct = productRepository.save(products);
-        return productMapper.mapProductToDTO(saveProduct);
+        return true;
     }
 
     @Override
@@ -94,13 +94,15 @@ public class ProductService implements ProductServiceImp {
     }
 
     @Override
-    public void deleteProduct(int id) {
-        Optional<Products> productOptional = productRepository.findById(id);
-        if (productOptional.isPresent()) {
-            productRepository.deleteById(id);
-        } else {
-            throw new ProductNotFoundException("Product not found with id: " + id);
+    public boolean deleteProduct(int id) {
+        Products products = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("cannot find product"));
+        try {
+            products.setStatus(false);
+            productRepository.save(products);
+            return true;
+        } catch (Exception ignored) {
         }
+        return false;
     }
 
     @Override

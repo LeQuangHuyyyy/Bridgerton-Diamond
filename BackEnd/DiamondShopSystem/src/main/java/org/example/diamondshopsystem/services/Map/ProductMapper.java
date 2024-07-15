@@ -4,9 +4,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.example.diamondshopsystem.dto.DiamondDTO;
 import org.example.diamondshopsystem.dto.ProductDTO;
+import org.example.diamondshopsystem.entities.Category;
 import org.example.diamondshopsystem.entities.Diamond;
 import org.example.diamondshopsystem.entities.Products;
 import org.example.diamondshopsystem.entities.Shell;
+import org.example.diamondshopsystem.payload.requests.ProductRequest;
+import org.example.diamondshopsystem.repositories.CategoryRepository;
+import org.example.diamondshopsystem.repositories.DiamondsRepository;
+import org.example.diamondshopsystem.repositories.ProductRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +23,17 @@ import java.util.stream.Collectors;
 @Component
 public class ProductMapper {
 
+    private final DiamondsRepository diamondsRepository;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
     @PersistenceContext
     private EntityManager entityManager;
+
+    public ProductMapper(DiamondsRepository diamondsRepository, ProductRepository productRepository, CategoryRepository categoryRepository) {
+        this.diamondsRepository = diamondsRepository;
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     public ProductDTO mapProductToDTO(Products products) {
         if (products == null) {
@@ -49,33 +63,45 @@ public class ProductMapper {
         return productDTO;
     }
 
-    public Products mapProductDTOToProduct(ProductDTO productDTO) {
-        if (productDTO == null) {
+    public Products mapProductDTOToProduct(ProductRequest productRequest) {
+        if (productRequest == null) {
             return null;
         }
 
         Products product = new Products();
-        product.setProductId(productDTO.getProductId());
-        product.setProductName(productDTO.getProductName());
-        product.setPrice(productDTO.getPrice());
-        product.setStockQuantity(productDTO.getStockQuantity());
-        product.setCollection(productDTO.getCollection());
-        product.setDescription(productDTO.getDescription());
-        product.setImage1(productDTO.getImage1());
-        product.setImage2(productDTO.getImage2());
-        product.setImage3(productDTO.getImage3());
-        product.setImage4(productDTO.getImage4());
+        product.setProductId(productRequest.getProductId());
+        product.setProductName(productRequest.getProductName());
+        product.setPrice(productRequest.getPrice());
+        product.setStockQuantity(productRequest.getStockQuantity());
+        product.setCollection(productRequest.getCollection());
+        product.setDescription(productRequest.getDescription());
+        product.setImage1(productRequest.getImage1());
+        product.setImage2(productRequest.getImage2());
+        product.setImage3(productRequest.getImage3());
+        product.setImage4(productRequest.getImage4());
+        product.setStatus(true);
+        product.setWarrantiesYear(2);
 
-        // Map Shell
-        Shell shell = entityManager.find(Shell.class, productDTO.getShellId());
+        product.setImageCertificate("https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2F21B31C3E-B419-46FC-8A1B-F4AC6EF284B9.jpg?alt=media&token=17f3129e-3c67-41cc-83ce-35b8b5b8732f");
+        product.setCategory(categoryRepository.findById(productRequest.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("cannot find category")));
+        product.setWarranties(null);
+
+        Shell shell = entityManager.find(Shell.class, productRequest.getShellId());
         if (shell != null) {
             product.setShell(shell);
         }
 
-        // Map Diamonds
-        Set<Diamond> diamonds = productDTO.getDiamonds().stream().map(diamondDTO -> entityManager.find(Diamond.class, diamondDTO.getDiamondId())) // Assuming DiamondDTO has getId method
-                .filter(diamond -> diamond != null).collect(Collectors.toSet());
-        product.setDiamonds(diamonds);
+        Diamond diamond = diamondsRepository.findById(productRequest.getDiamondId()).orElseThrow(() -> new IllegalArgumentException("cannot find diamond"));
+        if (diamond.getCut().equalsIgnoreCase("Round")) {
+            product.setImageWarranties("https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Fwarranty.jpg?alt=media&token=e7740f7a-13ce-4dec-bc15-37f0469a5ab0");
+        }
+        if (diamond.getCut().equalsIgnoreCase("Heart")) {
+            product.setImageWarranties("https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Fwarranty.jpg?alt=media&token=e7740f7a-13ce-4dec-bc15-37f0469a5ab0");
+        }
+        if (diamond.getCut().equalsIgnoreCase("Oval")) {
+            product.setImageWarranties("https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Fwarranty.jpg?alt=media&token=e7740f7a-13ce-4dec-bc15-37f0469a5ab0");
+        }
+        product.setDiamonds(Set.of(diamond));
 
         return product;
     }

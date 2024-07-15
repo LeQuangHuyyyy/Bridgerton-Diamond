@@ -4,6 +4,7 @@ import org.example.diamondshopsystem.dto.DiamondDTO;
 import org.example.diamondshopsystem.dto.DiamondPriceDTO;
 import org.example.diamondshopsystem.entities.Diamond;
 import org.example.diamondshopsystem.entities.DiamondPrice;
+import org.example.diamondshopsystem.entities.Products;
 
 import java.util.List;
 
@@ -25,4 +26,8 @@ public interface DiamondServiceImp {
     void updateDiamondPrice(DiamondPriceDTO diamondPriceDTO);
 
     DiamondDTO getDiamondByProductId(int productId);
+
+    boolean setProductForDiamond(int diamondId, Products products);
+
+    List<DiamondDTO> getAllDiamondWithoutDTO();
 }

@@ -26,4 +26,7 @@ public interface DiamondsRepository extends JpaRepository<Diamond, Integer> {
 
     @Query("SELECT d from Diamond d WHERE d.product is null")
     List<Diamond> findDiamondWithoutProducts();
+
+    @Query("SELECT d FROM Diamond d WHERE d.product is null")
+    List<Diamond> findDiamondWithoutProduct();
 }

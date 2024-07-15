@@ -25,6 +25,12 @@ import {Promotion} from "./layouts/Manager/Promotion";
 import {Product} from "./layouts/Manager/Product";
 import {Diamond} from "./layouts/Manager/Diamond";
 import Dashboard from "./layouts/Manager/Dashboard";
+import Account from "./layouts/MyAccount/Account";
+import {InformationAccount} from "./layouts/MyAccount/InformationAccount";
+import MyOrders from "./layouts/MyAccount/MyOrders";
+import ChangePassword from "./layouts/MyAccount/ChangePassword";
+import MyOrderDetail from "./layouts/MyAccount/MyOrderDetail";
+import OrderDeliveryDetail from "./layouts/DeliveryStaff/OrderDeliveryDetail";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -47,6 +53,7 @@ export const App = () => {
                     {token === undefined && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
+                            <Redirect from='/' to='/home' exact/>
                             <Route path='/' exact>
                                 <HomePage/>
                             </Route>
@@ -129,6 +136,28 @@ export const App = () => {
                             <Route path='/ordersuccess'>
                                 <OrderSuccessPage/>
                             </Route>
+                            <Switch>
+                                <Route path='/myaccount'>
+                                    <Account>
+                                        <InformationAccount />
+                                    </Account>
+                                </Route>
+                                <Route path='/myorders'>
+                                    <Account>
+                                        <MyOrders />
+                                    </Account>
+                                </Route>
+                                <Route path='/myorderdetail/:orderId'>
+                                    <Account>
+                                        <MyOrderDetail />
+                                    </Account>
+                                </Route>
+                                <Route path='/changepassword'>
+                                    <Account>
+                                        <ChangePassword />
+                                    </Account>
+                                </Route>
+                            </Switch>
                             <Footer/>
                         </div>
                     )
@@ -144,7 +173,7 @@ export const App = () => {
                     {token === 'MANAGER' && (
                         <>
                             <SideBar>
-                            <Redirect from='/' to='/diamond' exact/>
+                            <Redirect from='/' to='/product' exact/>
                             <Route path='/promotion'>
                                 <Promotion/>
                             </Route>
@@ -177,6 +206,9 @@ export const App = () => {
                             <Route path='/deliverystaff'>
                                 <DeliveryStaff/>
                             </Route>
+                            <Route path='/deliverydetailorder/:orderId'>
+                                <OrderDeliveryDetail/>
+                            </Route>
                         </>
                     )}
                 </Switch>
@@ -184,4 +216,3 @@ export const App = () => {
         </div>
     );
 };
-            

@@ -62,6 +62,8 @@ public class Products {
     @Column(name = "certificate_image")
     private String imageCertificate;
 
+    @Column(name = "status")
+    private boolean status;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")

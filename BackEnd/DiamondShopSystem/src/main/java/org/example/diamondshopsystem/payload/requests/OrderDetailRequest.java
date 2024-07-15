@@ -20,6 +20,7 @@ public class OrderDetailRequest {
     private double totalAmount;
     private String saleStaff;
     private int saleId;
+    private int percent;
 
 
     private int orderId;

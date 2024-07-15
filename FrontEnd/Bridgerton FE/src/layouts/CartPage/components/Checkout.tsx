@@ -107,7 +107,7 @@ const Checkout = () => {
 
             if (orderResponse.ok) {
                 const orderResult = await orderResponse.json();
-                const orderId = orderResult.orderId;  // Assuming the response contains the orderId
+                const orderId = orderResult.orderId;
 
                 const paymentData = {
                     orderId,
@@ -123,7 +123,6 @@ const Checkout = () => {
                 });
 
                 if (paymentResponse.ok) {
-                    localStorage.removeItem('cart');
                     const paymentResult = await paymentResponse.json();
                     window.location.href = paymentResult.paymentUrl;
                 } else {
@@ -156,7 +155,7 @@ const Checkout = () => {
 
     return (
         <Layout style={{ minHeight: "100vh" }}>
-            <Content style={{ padding: '50px',paddingTop: '0px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Content style={{ padding: '50px',paddingTop: '0px',paddingBottom: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Row gutter={24} style={{ width: '100%' }}>
                     <Col span={16}>
                         <Card title="Checkout">
@@ -220,7 +219,7 @@ const Checkout = () => {
                                         }}>
                                             <div style={{ marginRight: '15px' }}>
                                                 <img
-                                                    src={`https://deploy-be-b176a8ceb318.herokuapp.com/product/load-image/${item.image1}.jpg`}
+                                                    src={item.image1}
                                                     alt="product"
                                                     style={{
                                                         width: '50px',

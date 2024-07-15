@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import ProductModel from "../../models/ProductModel";
-import {SpinnerLoading} from "../Utils/SpinnerLoading";
-import {StarsReview} from "../Utils/StarsReview";
+import { SpinnerLoading } from "../Utils/SpinnerLoading";
 import DiamondTable from "./DiamondAndShellTable/DiamondTable";
 import ShellTable from "./DiamondAndShellTable/ShellTable";
 import SizeModel from "../../models/SizeModel";
 import Carousel from "react-multi-carousel";
-import {SimilarItems} from "./component/SimilarItems";
+import { SimilarItems } from "./component/SimilarItems";
+import {Button, message, Modal} from "antd";
 
 export const ProductCheckoutPage = () => {
     const [suggest, setSuggest] = useState<ProductModel[]>([]);
@@ -18,6 +18,22 @@ export const ProductCheckoutPage = () => {
     const [selectedSize, setSelectedSize] = useState<SizeModel>();
     const [sizeError, setSizeError] = useState<string | null>(null);
     const [outOfStock, setOutOfStock] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [imageUrl, setImageUrl] = useState<string | undefined>();
+
+    const showModal = (url: string | undefined) => {
+        setImageUrl(url);
+        setVisible(true);
+        console.log(url);
+    };
+
+    const handleOk = () => {
+        setVisible(false);
+    };
+
+    const handleCancel = () => {
+        setVisible(false);
+    };
 
     const token = localStorage.getItem("token");
     const headers = {
@@ -52,6 +68,8 @@ export const ProductCheckoutPage = () => {
                 categoryId: responseJson.categoryId,
                 diamondId: responseJson.diamondId,
                 shellId: responseJson.shellId,
+                certificateImage: responseJson.certificateImage,
+                warrantyImage: responseJson.warrantyImage,
             };
 
             const baseUrl2: string = "https://deploy-be-b176a8ceb318.herokuapp.com/home";
@@ -77,7 +95,9 @@ export const ProductCheckoutPage = () => {
                     image4: responseData[key].image4,
                     categoryId: responseData[key].categoryId,
                     diamondId: responseData[key].diamondId,
-                    shellId: responseData[key].shellId
+                    shellId: responseData[key].shellId,
+                    certificateImage: responseData[key].certificateImage,
+                    warrantyImage: responseData[key].warrantyImage,
                 });
             }
 
@@ -149,6 +169,7 @@ export const ProductCheckoutPage = () => {
             };
             cart.push(product);
             localStorage.setItem("cart", JSON.stringify(cart));
+            message.success('Add to cart successfully')
         } else {
             let cart = JSON.parse(localStorage.getItem("cart")!);
             let product = {
@@ -161,6 +182,7 @@ export const ProductCheckoutPage = () => {
             const event = new CustomEvent('cartUpdated');
             window.dispatchEvent(event);
         }
+        message.success('Added to cart successfully');
     };
 
     if (isLoading) {
@@ -188,6 +210,7 @@ export const ProductCheckoutPage = () => {
         console.log(selectedSize)
     };
 
+
     const responsive = {
         superLargeDesktop: {
             breakpoint: {max: 4000, min: 3000},
@@ -206,7 +229,7 @@ export const ProductCheckoutPage = () => {
             items: 1
         }
     }
-    console.log(product)
+
     return (
         <div style={{marginTop: "200px", marginBottom: "80px"}} className="container">
             <div className="container d-none d-lg-block w-1000">
@@ -287,8 +310,6 @@ export const ProductCheckoutPage = () => {
                                 Price: ${product?.price}
                             </p>
                             <p>{product?.description}</p>
-                            <p>Stock Quantity: {product?.stockQuantity}</p>
-                            <StarsReview rating={2.5} size={20}/>
                             <div className="form-outline mt-3" style={{display: 'flex', alignItems: 'center'}}>
                                 <label className="form-label" htmlFor="typeNumber">Select Quantity:</label>
                                 <input
@@ -301,11 +322,27 @@ export const ProductCheckoutPage = () => {
                                     onChange={(e) => setQuantity(e.target.value as unknown as number)}
                                 />
                             </div>
+
+                            <Button
+                                onClick={() => showModal(product?.certificateImage)}
+                                style={{marginRight: '10px'}}
+                            >
+                                <img style={{width: 50}}
+                                     src={'https://www.gia.edu/assets/img/global-header/desktop/gia-logo.svg'}/>
+                            </Button>
+
                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                 <DiamondTable product={product}/>
                                 <ShellTable product={product}/>
                             </div>
-                            <select style={{width: '200px', outline: 'none', boxShadow: 'none'}} className="form-select"
+                            <a
+                                onClick={() => showModal('https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Fz5624916933804_dcdb067c2dd16407a4cf0a91cecce6f6.jpg?alt=media&token=7007668e-e495-4692-93d8-d698a6ac01ab')}
+                                style={{cursor: 'pointer', color: 'black', textDecoration: 'underline', marginBottom: '10px'}}
+                            >
+                                Size Guide
+                            </a>
+                            <select style={{width: '200px', outline: 'none', boxShadow: 'none'}}
+                                    className="form-select"
                                     aria-label="Default select example"
                                     onChange={handleSizeSelect}>
                                 <option selected>Choose size...</option>
@@ -318,12 +355,13 @@ export const ProductCheckoutPage = () => {
                             {sizeError && <p style={{color: 'red'}}>{sizeError}</p>}
 
                             {
-                                outOfStock ? <button
-                                        style={{borderRadius: '0'}}
-                                        className="btn btn-danger mt-3 w-100"
+                                outOfStock ?
+                                    <h1
+                                        style={{borderRadius: '0', backgroundColor: 'red', textAlign: 'center'}}
+                                        className=" text-white mt-3 w-100"
                                     >
                                         OUT OF STOCK
-                                    </button>
+                                    </h1>
                                     :
                                     <button
                                         style={{borderRadius: '0'}}
@@ -333,8 +371,15 @@ export const ProductCheckoutPage = () => {
                                         ADD TO CART
                                     </button>
                             }
-
-
+                            <Modal
+                                title="Image"
+                                visible={visible}
+                                onOk={handleOk}
+                                onCancel={handleCancel}
+                                width={800}
+                            >
+                                <img src={imageUrl} alt="Example" style={{width: '100%'}}/>
+                            </Modal>
                         </div>
                     </div>
                 </div>

@@ -94,6 +94,22 @@ public class OrderService implements OrderServiceImp {
     }
 
     @Override
+    public boolean setOrderStatusCancel(int orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+        if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.CANCELED)) {
+            try {
+                order.setStatus(OrderStatus.CANCELED);
+                orderRepository.save(order);
+                return true;
+            } catch (Exception e) {
+                throw new IllegalStateException("cannot save");
+            }
+        } else {
+            throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.PAYMENT + " is not allowed.");
+        }
+    }
+
+    @Override
     public OrderStatus getOrderStatus(Integer orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
         return order.getStatus();

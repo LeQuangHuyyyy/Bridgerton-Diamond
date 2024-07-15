@@ -65,6 +65,25 @@ public class DiamondService implements DiamondServiceImp {
     }
 
     @Override
+    public List<DiamondDTO> getAllDiamondWithoutDTO() {
+        List<Diamond> diamonds = diamondsRepository.findDiamondWithoutProduct();
+
+        List<DiamondDTO> diamondDTOS = new ArrayList<>();
+        for (Diamond d : diamonds) {
+            DiamondDTO diamondDTO = new DiamondDTO();
+            diamondDTO.setCut(d.getCut());
+            diamondDTO.setPrice(d.getPrice());
+            diamondDTO.setClarity(d.getClarity());
+            diamondDTO.setDiamondId(d.getDiamondId());
+            diamondDTO.setCarat(d.getCarat());
+            diamondDTO.setColor(d.getColor());
+            diamondDTO.setStatus(d.isStatus());
+            diamondDTOS.add(diamondDTO);
+        }
+        return diamondDTOS;
+    }
+
+    @Override
     public DiamondDTO updateDiamond(DiamondDTO diamondDTO) {
         Diamond diamond = diamondsRepository.findById(diamondDTO.getDiamondId()).orElseThrow(() -> new NoSuchElementException("Cannot found diamond with id: " + diamondDTO.getDiamondId()));
         diamond.setCut(diamondDTO.getCut());
@@ -182,5 +201,18 @@ public class DiamondService implements DiamondServiceImp {
 
         diamondDTO.setStatus(diamond.isStatus());
         return diamondDTO;
+    }
+
+    @Transactional
+    @Override
+    public boolean setProductForDiamond(int diamondId, Products products) {
+        Diamond diamond = diamondsRepository.findById(diamondId).orElseThrow(() -> new IllegalArgumentException("cannot find diamond"));
+        try {
+            diamond.setProduct(products);
+            diamondsRepository.save(diamond);
+            return true;
+        } catch (Exception e) {
+        }
+        return false;
     }
 }

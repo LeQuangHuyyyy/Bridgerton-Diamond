@@ -1,18 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import OrderDetailModel from "../../../models/OrderDetailModel";
-import {SpinnerLoading} from "../../Utils/SpinnerLoading";
-import {Avatar, Card, Descriptions, Form, List, Row, Col, Input, Image} from "antd";
+import {Avatar, Card, Descriptions, Form, List, Row, Col, Input, Spin, Image} from "antd";
 import {ShoppingCartOutlined, UserOutlined, MailOutlined, PhoneOutlined} from "@ant-design/icons";
-import './OrderDetail.css';
+import './MyOrderDetail.css';
 import {Link} from "react-router-dom";
+import OrderDetailModel from "../../models/OrderDetailModel";
 
 const token = localStorage.getItem("token");
 const headers = {
     'Authorization': `Bearer ${token}`
 }
 
-const OrderDetail: React.FC = (props) => {
+const MyOrderDetail: React.FC = (props) => {
     const [details, setDetails] = useState<OrderDetailModel>();
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
@@ -45,7 +44,7 @@ const OrderDetail: React.FC = (props) => {
                 totalProductInOrder: responseJson.data.totalProductInOrder,
                 phoneNumber: responseJson.data.phoneNumber,
                 saleStaff: responseJson.data.saleStaff,
-                saleId: responseJson.data.saleId
+                saleId: responseJson.data.saleId,
             };
             setDetails(loadedDetail);
             console.log(loadedDetail);
@@ -68,7 +67,7 @@ const OrderDetail: React.FC = (props) => {
 
     if (isLoading) {
         return (
-            <SpinnerLoading/>
+            <Spin/>
         )
     }
     const getStatusColor = (status: any) => {
@@ -119,54 +118,53 @@ const OrderDetail: React.FC = (props) => {
     };
 
     return (
-        <div style={{ padding: 24 }}>
-            <h1 style={{textAlign: 'center', marginBottom: '19px'}} className="custom-heading">Order Details: {details?.orderId}</h1>
+        <div style={{ padding: 24, paddingTop: 0 }}>
             <Row gutter={16} style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between' }}>
-                    <Col span={6}>
-                        <Card style={{backgroundColor: '#D1E7DD', borderRadius: '8px', border: '1px solid #A3CFBB'}}>
-                            <div className="info-container">
-                                <ShoppingCartOutlined className="order-icon"/>
-                                <div className="info">
-                                    <div className="order-title">Order Created at</div>
-                                    <div className="order-content">{details?.orderDate}</div>
-                                </div>
+                <Col span={6}>
+                    <Card style={{backgroundColor: '#D1E7DD', borderRadius: '8px', border: '1px solid #A3CFBB'}}>
+                        <div className="info-container">
+                            <ShoppingCartOutlined className="order-icon"/>
+                            <div className="info">
+                                <div className="order-title">Order Created at</div>
+                                <div className="order-content">{details?.orderDate.substring(0,10)}</div>
                             </div>
-                        </Card>
-                    </Col>
+                        </div>
+                    </Card>
+                </Col>
                 <Col span={6}>
                     <Card style={{backgroundColor: '#F8D7DA', borderRadius: '8px', border: '1px solid #F1AEB5'}}>
-                            <div className="info-container">
-                                <UserOutlined className='name-icon'/>
-                                <div className="info">
-                                    <div className="name-title">Name</div>
-                                    <div className="name-content">{details?.userName}</div>
-                                </div>
+                        <div className="info-container">
+                            <UserOutlined className='name-icon'/>
+                            <div className="info">
+                                <div className="name-title">Name</div>
+                                <div className="name-content">{details?.userName}</div>
                             </div>
+                        </div>
                     </Card>
-            </Col>
-            <Col span={6}>
-                <Card style={{ backgroundColor: '#FFF3CD', borderRadius: '8px', border: '1px solid #FFE69C'}}>
-                            <div className="info-container">
-                                <MailOutlined className="email-icon"/>
-                                <div className="info">
-                                    <div className="email-title">Email</div>
-                                    <div style={{color: '#664D03'}} className="email-content">{details?.email}</div>
-                                </div>
+                </Col>
+                <Col span={6}>
+                    <Card style={{ backgroundColor: '#FFF3CD', borderRadius: '8px', border: '1px solid #FFE69C'}}>
+                        <div className="info-container">
+                            <MailOutlined className="email-icon"/>
+                            <div className="info">
+                                <div className="email-title">Email</div>
+                                <div style={{color: '#664D03'}} className="email-content">{details?.email}</div>
                             </div>
-                </Card>
-                    </Col>
-                    <Col span={6}>
-                        <Card style={{ backgroundColor: '#CFF4FC', borderRadius: '8px', border: '1px solid #9EEAF9'}}>
-                            <div className="info-container">
-                                <PhoneOutlined className="contact-icon" />
-                                <div className="info">
-                                    <div className="contact-title">Contact No</div>
-                                    <div className="contact-content">202-906-12354</div>
-                                </div>
+                        </div>
+                    </Card>
+                </Col>
+                <Col span={6}>
+                    <Card style={{ backgroundColor: '#CFF4FC', borderRadius: '8px', border: '1px solid #9EEAF9'}}>
+                        <div className="info-container">
+                            <PhoneOutlined className="contact-icon" />
+                            <div className="info">
+                                <div className="contact-title">Contact No</div>
+                                <div className="contact-content">{details?.phoneNumber}</div>
                             </div>
-                        </Card>
+                        </div>
+                    </Card>
 
-                    </Col>
+                </Col>
             </Row>
             <Row gutter={20}>
                 <Col span={14}>
@@ -201,19 +199,18 @@ const OrderDetail: React.FC = (props) => {
                                 ${details?.totalAmount}
                             </Descriptions.Item>
                             <Descriptions.Item label="Shipping Cost" style={{ fontSize: '16px' }}>
-                                Free Shipping
+                                Free
                             </Descriptions.Item>
-                            {/*<Descriptions.Item label="Discount" style={{ fontSize: '16px' }}>*/}
-                            {/*    -$0*/}
-                            {/*</Descriptions.Item>*/}
-                            {/*<Descriptions.Item label="Tax" style={{ fontSize: '16px' }}>*/}
-                            {/*    $18%*/}
-                            {/*</Descriptions.Item>*/}
+                            <Descriptions.Item label="Discount" style={{ fontSize: '16px' }}>
+                                -$0
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Tax (18%)" style={{ fontSize: '16px' }}>
+                                $18%
+                            </Descriptions.Item>
                             <Descriptions.Item label="Total" style={{ fontWeight: 'bold', fontSize: '20px', color: 'red' }}>
                                 ${details?.totalAmount.toFixed(2)}
                             </Descriptions.Item>
                         </Descriptions>
-
                     </Card>
                 </Col>
                 <Col span={10}>
@@ -223,13 +220,13 @@ const OrderDetail: React.FC = (props) => {
                                 {details?.orderId}
                             </Form.Item>
                             <Form.Item label="Order Status:">
-                                <Input value={details?.status} disabled style={{ width: '18%', textAlign: 'center', ...getStatusColor(details?.status) }} />
+                                <Input value={details?.status} disabled style={{ width: '23%', textAlign: 'center', ...getStatusColor(details?.status) }} />
                             </Form.Item>
                             <Form.Item label="Quantity:">
                                 {details?.totalProductInOrder}
                             </Form.Item>
                             <Form.Item>
-                                <Link to={"/salestaff"} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#3AA6B9'}} className="text-white">Back to list</Link>
+                                <Link to={"/myorders"} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#3AA6B9'}} className="text-white">Back to list</Link>
                             </Form.Item>
                         </Form>
                     </Card>
@@ -240,4 +237,4 @@ const OrderDetail: React.FC = (props) => {
 };
 
 
-export default OrderDetail;
+export default MyOrderDetail;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {jwtDecode} from "jwt-decode";
 import './SideBar.css';
-import {Button, Layout, Menu} from 'antd';
+import { Layout, Menu} from 'antd';
 import {
     DashboardOutlined,
     GiftOutlined,
@@ -43,7 +43,7 @@ const logOut = () => {
                 </div>
                 <Menu theme={"light"} mode="inline">
                     <Menu.Item key="1" icon={<DashboardOutlined />}>
-                        <NavLink to="/dashboard" style={{ textDecoration: 'none', fontSize: '18px' }}>Dashboard</NavLink>
+                        <NavLink to="/dashboard" style={{ textDecoration: 'none', fontSize: '18px'}}>Dashboard</NavLink>
                     </Menu.Item>
                     <Menu.Item key="2" icon={<GiftOutlined />}>
                         <NavLink to="/promotion" style={{ textDecoration: 'none', fontSize: '18px' }}>Promotion</NavLink>
@@ -62,7 +62,7 @@ const logOut = () => {
             <Layout style={{ marginLeft: 250 }}>
                 <Header style={{ background: '#fff', padding: 0 }} >
                     <div style={{ float: 'right', marginRight: '30px' }}>
-                        <h4 style={{fontSize: '20px', marginTop: '20px'}} className='custom-heading'>Welcome, {userName}</h4>
+                        <h4 style={{fontSize: '20px', marginTop: '20px'}} className='custom-heading'>Welcome back, {userName}!!</h4>
                     </div>
                 </Header>
                 <Content style={{ margin: '24px 16px 0' }}>
