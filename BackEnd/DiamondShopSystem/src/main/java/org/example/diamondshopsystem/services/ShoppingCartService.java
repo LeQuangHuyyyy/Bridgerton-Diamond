@@ -60,6 +60,8 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
 
     @Autowired
     private DiamondsRepository diamondsRepository;
+    @Autowired
+    private PromotionRepository promotionRepository;
 
     @Override
     public synchronized void addProduct(Products product, int quantity, Integer sizeId) {
@@ -261,7 +263,7 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
     @Override
     public Order creteOrder(OrderRequest orderRequest) {
         Order order = new Order();
-        User user = userRepository.findById(orderRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("who is this, cannot load user  ???"));
+        User user = userRepository.findById(orderRequest.getUserId()).orElseThrow(() -> new IllegalArgumentException("who is this, cannot load user ???"));
         DiscountCodes discountCodes = discountCodeRepository.findByCode(orderRequest.getDiscountCode());
 
         order.setOrderDate(new Date());
@@ -306,14 +308,20 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
     @Transactional
     @Override
     public double totalPriceWithDiscountCode(String discountCode, double totalAmount) {
+        double price = totalAmount;
         DiscountCodes discountCodes = discountCodeRepository.findByCode(discountCode);
+        Date now = new Date();
         if (discountCodes == null) {
-            return totalAmount;
+            return price;
         } else {
-            DiscountCodes resetQuantity = discountCodeRepository.findById(discountCodes.getCodeId()).get();
-            resetQuantity.setCodeQuantity(resetQuantity.getCodeQuantity() - 1);
-            discountCodeRepository.save(resetQuantity);
-            return totalAmount - (totalAmount * discountCodes.getDiscountPercentTage() / 100);
+            Promotions promotions = promotionRepository.findById(discountCodes.getPromotion().getPromotionId()).get();
+            if (promotions.getPromotionEndDate().before(now)) {
+                DiscountCodes resetQuantity = discountCodeRepository.findById(discountCodes.getCodeId()).get();
+                resetQuantity.setCodeQuantity(resetQuantity.getCodeQuantity() - 1);
+                discountCodeRepository.save(resetQuantity);
+                price = price - (totalAmount * discountCodes.getDiscountPercentTage() / 100);
+            }
         }
+        return price;
     }
 }

@@ -2,20 +2,21 @@ package org.example.diamondshopsystem.services.imp;
 
 import org.example.diamondshopsystem.dto.PromotionDTO;
 import org.example.diamondshopsystem.entities.Promotions;
+import org.example.diamondshopsystem.payload.requests.DiscountCodeRequest;
 
 import java.util.Date;
 import java.util.List;
 
 public interface PromotionServiceImp {
-    List<PromotionDTO> getAllPromotions();
+    List<DiscountCodeRequest> getAllPromotions();
 
     Promotions getPromotionById(int id);
 
     PromotionDTO getPromotionDTOById(int id);
 
-    PromotionDTO createPromotion(PromotionDTO promotionDTO );
+    PromotionDTO createPromotion(DiscountCodeRequest discountCodeRequest, String authHeader);
 
-    PromotionDTO updatePromotion(PromotionDTO promotionDTO);
+    PromotionDTO updatePromotion(DiscountCodeRequest discountCodeRequest);
 
     List<PromotionDTO> getPromotionsByDateRange(Date startDate, Date endDate);
 
@@ -23,5 +24,5 @@ public interface PromotionServiceImp {
 
     List<PromotionDTO> getPromotionByDateRangeAndName(String name, Date sdate, Date edate);
 
-    void deletePromotion(int id);
+    void deletePromotion();
 }

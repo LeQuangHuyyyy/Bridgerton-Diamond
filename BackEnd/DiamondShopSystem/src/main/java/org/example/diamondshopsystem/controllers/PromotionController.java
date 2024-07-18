@@ -2,6 +2,7 @@ package org.example.diamondshopsystem.controllers;
 
 import org.example.diamondshopsystem.dto.PromotionDTO;
 import org.example.diamondshopsystem.payload.ResponseData;
+import org.example.diamondshopsystem.payload.requests.DiscountCodeRequest;
 import org.example.diamondshopsystem.services.imp.PromotionServiceImp;
 import org.example.diamondshopsystem.services.imp.UserServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +25,16 @@ public class PromotionController {
     PromotionServiceImp promotionServiceImp;
 
     @GetMapping("get-all")
-    public ResponseEntity<List<PromotionDTO>> getAllPromotion() {
-        List<PromotionDTO> promotionDTOList = promotionServiceImp.getAllPromotions();
-        return new ResponseEntity<>(promotionDTOList, HttpStatus.OK);
+    public ResponseEntity<?> getAllPromotion() {
+        List<DiscountCodeRequest> discountCodeRequestList = promotionServiceImp.getAllPromotions();
+        return new ResponseEntity<>(discountCodeRequestList, HttpStatus.OK);
     }
 
 
     @GetMapping("/search")
-    public ResponseEntity<List<PromotionDTO>> getPromotion(@RequestParam(required = false) String name, @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date sDate, @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date eDate) {
+    public ResponseEntity<?> getPromotion(@RequestParam(required = false) String name, @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date sDate, @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date eDate) {
 
-        List<PromotionDTO> promotionDTOList;
+        List<?> promotionDTOList;
 
         if (name != null && sDate != null && eDate != null) {
             promotionDTOList = promotionServiceImp.getPromotionByDateRangeAndName(name, sDate, eDate);
@@ -50,9 +51,8 @@ public class PromotionController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<PromotionDTO> createPromotion(@RequestBody PromotionDTO promotionDTO ) {
-        PromotionDTO promotionDTO1 = promotionServiceImp.createPromotion(promotionDTO);
-
+    public ResponseEntity<PromotionDTO> createPromotion(@RequestBody DiscountCodeRequest discountCodeRequest, @RequestHeader("Authorization") String authHeader) {
+        PromotionDTO promotionDTO1 = promotionServiceImp.createPromotion(discountCodeRequest, authHeader);
         if (promotionDTO1 != null) {
             return new ResponseEntity<>(promotionDTO1, HttpStatus.CREATED);
         } else {
@@ -61,27 +61,13 @@ public class PromotionController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<PromotionDTO> updatePromotion(@RequestBody PromotionDTO promotionDTO) {
-        PromotionDTO promotionDTO1 = promotionServiceImp.updatePromotion(promotionDTO);
+    public ResponseEntity<PromotionDTO> updatePromotion(@RequestBody DiscountCodeRequest discountCodeRequest) {
+        PromotionDTO promotionDTO1 = promotionServiceImp.updatePromotion(discountCodeRequest);
         if (promotionDTO1 == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(promotionDTO1, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseData> deletePromotion(@PathVariable int id) {
-        ResponseData responseData = new ResponseData();
-        try {
-            promotionServiceImp.deletePromotion(id);
-            responseData.setStatus(204);
-            responseData.setDescription("Successfully deleted Promotion");
-            return new ResponseEntity<>(responseData, HttpStatus.OK);
-        } catch (Exception e) {
-            responseData.setStatus(404);
-            responseData.setSuccess(false);
-            responseData.setDescription("Can not found Promotion with the given Id");
-            return new ResponseEntity<>(responseData, HttpStatus.OK);
-        }
-    }
+
 }

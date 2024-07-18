@@ -40,7 +40,7 @@ public class Promotions {
     private User manager;
 
 
-    @OneToMany(mappedBy = "promotion", fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToMany(mappedBy = "promotion", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
     private List<DiscountCodes> discountCodes;
 

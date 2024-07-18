@@ -14,9 +14,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @RestController
 @RequestMapping("/home")
@@ -30,6 +33,9 @@ public class HomeController {
     ProductService productService;
     @Autowired
     private CategoryService categoryService;
+
+
+
 
     @GetMapping("/collection")
     public ResponseEntity<Page<ProductDTO>> getProductByCollection(@RequestParam String collection,

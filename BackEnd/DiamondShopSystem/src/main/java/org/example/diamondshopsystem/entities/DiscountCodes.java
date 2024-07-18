@@ -34,7 +34,7 @@ public class DiscountCodes {
     @Column(name = "code_quantity")
     private int codeQuantity;
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "promotion_id")
     @JsonBackReference
     private Promotions promotion;
