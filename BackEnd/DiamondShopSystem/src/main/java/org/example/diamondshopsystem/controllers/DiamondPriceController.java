@@ -30,7 +30,7 @@ public class DiamondPriceController {
     private DiamondServiceImp diamondServiceImp;
 
     @GetMapping("/get-all")
-    public ResponseEntity<?> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<?> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "100") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<DiamondPriceDTO> diamondPriceDTOS = diamondPriceServiceImp.getAllDiamondPrices(pageable);
 

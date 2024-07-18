@@ -2,11 +2,13 @@ package org.example.diamondshopsystem.services;
 
 import org.example.diamondshopsystem.dto.DiamondDTO;
 import org.example.diamondshopsystem.dto.ProductDTO;
+import org.example.diamondshopsystem.entities.Category;
 import org.example.diamondshopsystem.entities.Diamond;
 import org.example.diamondshopsystem.entities.Products;
 import org.example.diamondshopsystem.entities.Shell;
 
 import org.example.diamondshopsystem.payload.requests.ProductRequest;
+import org.example.diamondshopsystem.repositories.CategoryRepository;
 import org.example.diamondshopsystem.repositories.DiamondsRepository;
 import org.example.diamondshopsystem.repositories.ProductRepository;
 import org.example.diamondshopsystem.repositories.ShellRepository;
@@ -38,7 +40,8 @@ public class ProductService implements ProductServiceImp {
     @Autowired
     ProductMapper productMapper;
 
-
+    @Autowired
+    CategoryRepository categoryRepository;
 
 
     @Override
@@ -60,10 +63,49 @@ public class ProductService implements ProductServiceImp {
     @Transactional
     @Override
     public boolean addProduct(ProductRequest productRequest) {
-        Products products = productMapper.mapProductDTOToProduct(productRequest);
-        Products saveProduct = productRepository.save(products);
-        return true;
+        Products products = new Products();
+        products.setProductName(productRequest.getProductName());
+        products.setStockQuantity(1);
+        products.setCollection(productRequest.getCollection());
+        products.setDescription(productRequest.getDescription());
+        products.setImage1(productRequest.getImage1());
+        products.setImage2(productRequest.getImage2());
+        products.setImage3(productRequest.getImage3());
+        products.setImage4(productRequest.getImage4());
+        products.setWarrantiesYear(2);
+
+        Diamond diamond = diamondsRepository.findById(productRequest.getDiamondId()).orElseThrow(() -> new IllegalArgumentException("This diamond not found"));
+
+        Map<String, String> cutToWarrantyImage = Map.of("Round", "https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Fwarranty.jpg?alt=media&token=e7740f7a-13ce-4dec-bc15-37f0469a5ab0", "Heart", "https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Fwarranty.jpg?alt=media&token=e7740f7a-13ce-4dec-bc15-37f0469a5ab0", "Oval", "https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Fwarranty.jpg?alt=media&token=e7740f7a-13ce-4dec-bc15-37f0469a5ab0");
+
+        if (cutToWarrantyImage.containsKey(diamond.getCut())) {
+            products.setImageWarranties(cutToWarrantyImage.get(diamond.getCut()));
+        }
+
+        products.setImageCertificate("https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2F21B31C3E-B419-46FC-8A1B-F4AC6EF284B9.jpg?alt=media&token=17f3129e-3c67-41cc-83ce-35b8b5b8732f");
+        products.setStatus(true);
+
+        Category category = categoryRepository.findById(productRequest.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("Cannot found category"));
+        products.setCategory(category);
+
+        Shell shell = shellRepository.findById(productRequest.getShellId()).orElseThrow(() -> new IllegalArgumentException("Cannot found shell"));
+        products.setShell(shell);
+        products.setDiamonds(Set.of(diamond));
+
+        double tax = (diamond.getPrice() + shell.getShellPrice()) * 10 / 100;
+        double price = diamond.getPrice() + shell.getShellPrice() + tax + 50;
+        products.setPrice(price);
+
+        try {
+            productRepository.saveAndFlush(products);
+            Diamond setDiamond = diamondsRepository.findById(productRequest.getDiamondId()).get();
+            setDiamond.setProduct(products);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
+
 
     @Override
     public ProductDTO updateProduct(ProductDTO productDTO) {
@@ -72,15 +114,11 @@ public class ProductService implements ProductServiceImp {
             Products existingProduct = productOptional.get();
             productMapper.mapProductDTOToProduct(productDTO, existingProduct);
 
-            //update price
-            //get first diamond
             Iterator<DiamondDTO> iterator = productDTO.getDiamonds().iterator();
 
-            // Kiểm tra xem hash set có phần tử không
             DiamondDTO firstDiamond = null;
 
             if (iterator.hasNext()) {
-                // Lấy phần tử đầu tiên
                 firstDiamond = iterator.next();
             } else {
                 firstDiamond.setPrice(0);

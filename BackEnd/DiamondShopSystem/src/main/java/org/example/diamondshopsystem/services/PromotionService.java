@@ -177,8 +177,10 @@ public class PromotionService implements PromotionServiceImp {
             Date now = new Date();
             if (p.getPromotionEndDate().after(now)) {
                 for (Order o : orderList) {
-                    if (o.getDiscountCode().getPromotion().getPromotionId() != p.getPromotionId()) {
-                        promotionRepository.delete(p);
+                    if (o.getDiscountCode() != null) {
+                        if (o.getDiscountCode().getPromotion().getPromotionId() != p.getPromotionId()) {
+                            promotionRepository.delete(p);
+                        }
                     }
                 }
             }

@@ -51,14 +51,8 @@ public class DiamondService implements DiamondServiceImp {
         diamond.setClarity(diamondDTO.getClarity());
         diamond.setCarat(diamondDTO.getCarat());
 
-        diamond.setPrice(diamondPriceRepository.findByCaratAndCutAndColorAndClarity(diamondDTO.getCarat(), diamondDTO.getCut(), diamondDTO.getColor(), diamondDTO.getClarity()).getPrice());
+        diamond.setPrice(diamondDTO.getPrice());
         diamond.setCertification(diamondDTO.getCertification());
-
-//        Products products = productRepository.findById(diamondDTO.getProductId())
-//                .orElseThrow(() -> new NoSuchElementException("Can not found product id with:" + diamondDTO.getProductId()));
-//
-//        products = entityManager.merge(products);
-//        diamond.setProduct(products);
         diamond.setStatus(true);
 
         diamondsRepository.save(diamond);
