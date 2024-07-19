@@ -174,7 +174,9 @@ public class ProductService implements ProductServiceImp {
         double shellPrice = 0.0;
 
 
-        diamondPrice = diamondsRepository.findFirstAvailableDiamondByProductId(product.getProductId()).getPrice();
+        if (product != null) {
+            diamondPrice = diamondsRepository.findFirstAvailableDiamondByProductId(product.getProductId()).getPrice();
+        }
 
         if (product.getShellId() != 0) {
             Shell shell = shellRepository.findById(product.getShellId()).orElseThrow(() -> new NoSuchElementException("Cannot find shell with shell id: " + product.getShellId()));

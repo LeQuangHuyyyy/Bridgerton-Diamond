@@ -92,4 +92,14 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.FOUND).header("Location", errorUrl).build();
         }
     }
+
+    @PostMapping("refund")
+    public ResponseEntity<?> refundPayment(@RequestBody PaymentRequest paymentRequest, HttpServletRequest request) {
+        try {
+            PaymentDTO.VNPayResponse vnPayResponse = paymentService.refundPayment(paymentRequest, request);
+            return ResponseEntity.ok(vnPayResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while processing the refund");
+        }
+    }
 }

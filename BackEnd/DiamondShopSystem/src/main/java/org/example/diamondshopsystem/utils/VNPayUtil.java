@@ -8,6 +8,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -70,5 +71,18 @@ public class VNPayUtil {
                                 URLEncoder.encode(entry.getValue()
                                         , StandardCharsets.US_ASCII))
                 .collect(Collectors.joining("&"));
+    }
+    public static Map<String, String> parseResponse(String responseBody) {
+        Map<String, String> responseParams = new HashMap<>();
+        String[] pairs = responseBody.split("&");
+        for (String pair : pairs) {
+            int idx = pair.indexOf("=");
+            if (idx > 0 && idx < pair.length() - 1) {
+                String key = pair.substring(0, idx);
+                String value = pair.substring(idx + 1);
+                responseParams.put(key, value);
+            }
+        }
+        return responseParams;
     }
 }

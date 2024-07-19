@@ -7,19 +7,24 @@ import lombok.RequiredArgsConstructor;
 import org.example.diamondshopsystem.Security.Config.VNPAYConfig;
 import org.example.diamondshopsystem.dto.PaymentDTO;
 import org.example.diamondshopsystem.entities.Order;
+import org.example.diamondshopsystem.entities.OrderStatus;
 import org.example.diamondshopsystem.entities.Payments;
+import org.example.diamondshopsystem.payload.requests.PaymentRequest;
 import org.example.diamondshopsystem.repositories.OrderRepository;
 import org.example.diamondshopsystem.repositories.PaymentRepository;
 import org.example.diamondshopsystem.services.imp.PaymentServiceImp;
+import org.example.diamondshopsystem.services.imp.ProductServiceImp;
 import org.example.diamondshopsystem.utils.VNPayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import kong.unirest.Unirest;
+import kong.unirest.HttpResponse;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -35,10 +40,12 @@ public class PaymentService implements PaymentServiceImp {
 
     @Autowired
     OrderRepository orderRepository;
-
+    @Autowired
+    ProductServiceImp productServiceImp;
     @PersistenceContext
     private EntityManager entityManager;
-
+    @Autowired
+    private OrderService orderService;
 
 
     @Override
@@ -58,9 +65,47 @@ public class PaymentService implements PaymentServiceImp {
 
         queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
         String paymentUrl = vnpayConfig.getVnp_PayUrl() + "?" + queryUrl;
-        return PaymentDTO.VNPayResponse.builder().code("ok").message("success")
-                .paymentUrl(paymentUrl).build();
+        return PaymentDTO.VNPayResponse.builder().code("ok").message("success").paymentUrl(paymentUrl).build();
     }
+
+    @Transactional
+    public PaymentDTO.VNPayResponse refundPayment(PaymentRequest paymentRequest, HttpServletRequest request) {
+        try {
+            BigDecimal totalPrice = orderService.findPriceByOrderId(paymentRequest.getOrderId());
+            totalPrice = totalPrice.multiply(new BigDecimal(100));
+
+            Map<String, String> params = vnpayConfig.getVNPayConfig();
+            params.put("vnp_BankCode", paymentRequest.getBankCode());
+            params.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
+            params.put("vnp_Command", "refund");
+            params.put("vnp_Amount", totalPrice.toBigInteger().toString());
+            params.put("vnp_TxnRef", paymentRequest.getOrderId().toString());
+            params.put("vnp_OrderInfo", "Refund Order ID: " + paymentRequest.getOrderId());
+
+            String hashData = VNPayUtil.getPaymentURL(params, false);
+            String vnpSecureHash = VNPayUtil.hmacSHA512(vnpayConfig.getSecretKey(), hashData);
+            String queryUrl = VNPayUtil.getPaymentURL(params, true) + "&vnp_SecureHash=" + vnpSecureHash;
+
+            String refundUrl = vnpayConfig.getVnp_PayUrl() + "?" + queryUrl;
+            HttpResponse<String> response = Unirest.get(refundUrl).asString();
+
+            if (response.getStatus() == 200) {
+                Map<String, String> responseParams = VNPayUtil.parseResponse(response.getBody());
+                String responseCode = responseParams.get("vnp_ResponseCode");
+                if ("00".equals(responseCode)) {
+                    return PaymentDTO.VNPayResponse.builder().code("00").message("Refund successful").paymentUrl(refundUrl).build();
+                } else {
+                    System.out.println(responseCode);
+                    return PaymentDTO.VNPayResponse.builder().code(responseCode).message("Refund failed: " + responseParams.get("vnp_ResponseMsg")).paymentUrl(refundUrl).build();
+                }
+            } else {
+                return PaymentDTO.VNPayResponse.builder().code(String.valueOf(response.getStatus())).message("HTTP error during refund: " + response.getBody()).build();
+            }
+        } catch (Exception e) {
+            return PaymentDTO.VNPayResponse.builder().code("99").message("Exception during refund: " + e.getMessage()).build();
+        }
+    }
+
 
     @Override
     @Transactional
@@ -73,8 +118,7 @@ public class PaymentService implements PaymentServiceImp {
         payment.setPaymentTime(paymentDTO.getPaymentTime());
 
         // Retrieve the order from the database using orderId
-        Order order = orderRepository.findById(paymentDTO.getOrderId())
-                .orElseThrow(() -> new IllegalArgumentException("Order does not exist in the database."));
+        Order order = orderRepository.findById(paymentDTO.getOrderId()).orElseThrow(() -> new IllegalArgumentException("Order does not exist in the database."));
         // Ensure order is managed by the entity manager
         order = entityManager.merge(order);
 
@@ -87,8 +131,7 @@ public class PaymentService implements PaymentServiceImp {
     @Override
     public Boolean verifyVNPayCallback(Map<String, String[]> parameterMap) {
         // Extract necessary parameters from the callback request
-        Map<String, String> params = parameterMap.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()[0]));
+        Map<String, String> params = parameterMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()[0]));
 
         String vnpSecureHash = params.get("vnp_SecureHash");
         params.remove("vnp_SecureHash");
@@ -110,4 +153,6 @@ public class PaymentService implements PaymentServiceImp {
         paymentDTO.setOrderId(Integer.parseInt(parameterMap.get("vnp_OrderInfo")[0].split("Order ID: ")[1]));
         return paymentDTO;
     }
+
+
 }
