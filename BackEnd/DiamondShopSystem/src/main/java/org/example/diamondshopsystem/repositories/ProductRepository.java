@@ -24,7 +24,7 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
 
     Page<Products> findAllByCategoryCategoryId(Integer categoryId, Pageable pageable);
 
-    @Query("SELECT p FROM Products p WHERE  p.stockQuantity > 0 ")
+    @Query("SELECT p FROM Products p WHERE  p.stockQuantity != 0 ")
     Page<Products> findAllProduct(Pageable pageable);
 
     @Query("SELECT p FROM Products p WHERE p.category.categoryName = :#{#categoryName}")

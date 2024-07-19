@@ -116,7 +116,9 @@ public class DiamondService implements DiamondServiceImp {
         List<Diamond> diamonds = diamondsRepository.findAll();
         List<DiamondDTO> diamondDTOs = new ArrayList<>();
         for (Diamond diamond : diamonds) {
-            diamondDTOs.add(mapDiamondToDTO(diamond));
+            if (diamond.isStatus()) {
+                diamondDTOs.add(mapDiamondToDTO(diamond));
+            }
         }
         return diamondDTOs;
     }

@@ -175,7 +175,7 @@ public class PromotionService implements PromotionServiceImp {
         List<Order> orderList = orderRepository.findAll();
         for (Promotions p : promotionsList) {
             Date now = new Date();
-            if (p.getPromotionEndDate().after(now)) {
+            if (p.getPromotionEndDate().before(now)) {
                 for (Order o : orderList) {
                     if (o.getDiscountCode() != null) {
                         if (o.getDiscountCode().getPromotion().getPromotionId() != p.getPromotionId()) {

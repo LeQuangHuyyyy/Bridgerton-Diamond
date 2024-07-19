@@ -11,7 +11,9 @@ import org.example.diamondshopsystem.payload.ResponseObject;
 import org.example.diamondshopsystem.payload.requests.PaymentRequest;
 import org.example.diamondshopsystem.services.OrderService;
 import org.example.diamondshopsystem.services.PaymentService;
+import org.example.diamondshopsystem.services.ProductService;
 import org.example.diamondshopsystem.services.ShoppingCartService;
+import org.example.diamondshopsystem.services.imp.ProductServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +39,9 @@ public class PaymentController {
 
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    ProductServiceImp productServiceImp;
 
     @PostMapping
     public ResponseEntity<?> payment(@RequestBody PaymentRequest paymentRequest, HttpServletRequest request) {
@@ -65,12 +70,13 @@ public class PaymentController {
 
                     String orderInfo = parameterMap.get("vnp_OrderInfo")[0];
                     int orderId = Integer.parseInt(orderInfo.split("Order ID: ")[1]);
-
+                    productServiceImp.updateQuantityPay(orderId);
                     OrderStatus currentStatus = orderService.getOrderStatus(orderId);
                     if (!OrderStatus.PAYMENT.equals(currentStatus)) {
                         orderService.setOrderStatus(orderId);
                     }
                     paymentService.savePayment(paymentDTO);
+
 
                     redirectUrl = "https://bridgerton.vercel.app/ordersuccess";
                 } else {
@@ -82,6 +88,7 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.FOUND).header("Location", redirectUrl).build();
         } catch (Exception e) {
             String errorUrl = "http://localhost:3000/ordersuccess";
+            System.out.println("lỗi");
             return ResponseEntity.status(HttpStatus.FOUND).header("Location", errorUrl).build();
         }
     }

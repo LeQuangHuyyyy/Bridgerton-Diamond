@@ -81,16 +81,6 @@ public class OrderService implements OrderServiceImp {
         } else {
             throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.PAYMENT + " is not allowed.");
         }
-        for (OrderDetails od : order.getOrderDetails()) {
-            System.out.println(od.getId());
-            Products p = productRepository.findById(od.getProduct().getProductId()).orElseThrow(() -> new IllegalArgumentException("Product not found with ID: " + od.getProduct().getProductId()));
-            int stockQuantity = p.getStockQuantity();
-            int quantitySold = od.getQuantity();
-            System.out.println(stockQuantity - quantitySold);
-
-            p.setStockQuantity(stockQuantity - quantitySold);
-            productRepository.save(p);
-        }
     }
 
     @Override

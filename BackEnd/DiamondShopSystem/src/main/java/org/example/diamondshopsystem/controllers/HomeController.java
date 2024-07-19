@@ -35,7 +35,13 @@ public class HomeController {
     private CategoryService categoryService;
 
 
-
+    @GetMapping
+    public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "8") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductDTO> productsPage = productService.getAllProduct(pageable);
+        return ResponseEntity.ok(productsPage);
+    }
 
     @GetMapping("/collection")
     public ResponseEntity<Page<ProductDTO>> getProductByCollection(@RequestParam String collection,
@@ -77,13 +83,6 @@ public class HomeController {
         return new ResponseEntity<>(productsByCategoryId, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<ProductDTO>> getAllProducts(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "8") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductDTO> productsPage = productService.getAllProduct(pageable);
-        return ResponseEntity.ok(productsPage);
-    }
 
     @GetMapping("/categories")
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {

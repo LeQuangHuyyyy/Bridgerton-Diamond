@@ -26,13 +26,13 @@ import java.util.*;
 public class ShoppingCartService implements ShoppingCartServiceImp {
 
     @Autowired
-    private ProductRepository productRepository;
+    ProductRepository productRepository;
 
     @Autowired
-    private OrderRepository orderRepository;
+    OrderRepository orderRepository;
 
     @Autowired
-    private OrderDetailRepository orderDetailRepository;
+    OrderDetailRepository orderDetailRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -50,7 +50,7 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
     DiscountCodeRepository discountCodeRepository;
 
     @Autowired
-    private WarrantiesServiceImp warrantiesServiceImp;
+    WarrantiesServiceImp warrantiesServiceImp;
 
     private final Map<Products, Integer> cart = new HashMap<>();
 
@@ -59,9 +59,9 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
     private BigDecimal totalPrice = BigDecimal.ZERO;
 
     @Autowired
-    private DiamondsRepository diamondsRepository;
+    DiamondsRepository diamondsRepository;
     @Autowired
-    private PromotionRepository promotionRepository;
+    PromotionRepository promotionRepository;
 
     @Override
     public synchronized void addProduct(Products product, int quantity, Integer sizeId) {
@@ -309,19 +309,24 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
     @Override
     public double totalPriceWithDiscountCode(String discountCode, double totalAmount) {
         double price = totalAmount;
+
         DiscountCodes discountCodes = discountCodeRepository.findByCode(discountCode);
-        Date now = new Date();
-        if (discountCodes == null) {
+        if (discountCodes == null || discountCodes.getCodeQuantity() <= 0) {
             return price;
-        } else {
-            Promotions promotions = promotionRepository.findById(discountCodes.getPromotion().getPromotionId()).get();
-            if (promotions.getPromotionEndDate().before(now)) {
-                DiscountCodes resetQuantity = discountCodeRepository.findById(discountCodes.getCodeId()).get();
-                resetQuantity.setCodeQuantity(resetQuantity.getCodeQuantity() - 1);
-                discountCodeRepository.save(resetQuantity);
-                price = price - (totalAmount * discountCodes.getDiscountPercentTage() / 100);
-            }
         }
+
+        Promotions promotion = promotionRepository.findById(discountCodes.getPromotion().getPromotionId()).orElseThrow(() -> new RuntimeException("Promotion not found"));
+
+        Date now = new Date();
+        if (promotion.getPromotionEndDate().after(now)) {
+            System.out.println(promotion.getPromotionEndDate());
+            DiscountCodes check = discountCodeRepository.findByCode(discountCode);
+            DiscountCodes setDiscountCode = discountCodeRepository.findById(check.getCodeId()).orElseThrow(() -> new IllegalArgumentException("đ có discount"));
+            setDiscountCode.setCodeQuantity(discountCodes.getCodeQuantity() - 1);
+            discountCodeRepository.save(setDiscountCode);
+            price = price - (totalAmount * discountCodes.getDiscountPercentTage() / 100);
+        }
+
         return price;
     }
 }

@@ -57,4 +57,6 @@ public interface ProductServiceImp {
     void updateProductQuantity(int id);
 
     void updateProductDiamondSet();
+
+    void updateQuantityPay(int orderId);
 }

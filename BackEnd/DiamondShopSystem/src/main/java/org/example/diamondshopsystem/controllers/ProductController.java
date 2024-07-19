@@ -32,10 +32,7 @@ public class ProductController {
 
     @Autowired
     FileService fileService;
-    @Autowired
-    private DiamondService diamondService;
-    @Autowired
-    private ProductRepository productRepository;
+
 
     @PostMapping("/saveFile")
     public ResponseEntity<ResponseData> uploadFile(@RequestParam MultipartFile[] files) {
@@ -114,11 +111,11 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable int id) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteProduct(@RequestParam int id) {
         ResponseData responseData = new ResponseData();
         if (productService.deleteProduct(id)) {
-            responseData.setDescription("delete oke nhá ");
+            responseData.setDescription("delete oke nhá");
         } else {
             responseData.setDescription("delete sai gòi, bị gì gòi á");
         }

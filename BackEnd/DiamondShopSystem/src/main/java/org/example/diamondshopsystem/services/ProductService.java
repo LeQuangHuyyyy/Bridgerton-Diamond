@@ -2,16 +2,10 @@ package org.example.diamondshopsystem.services;
 
 import org.example.diamondshopsystem.dto.DiamondDTO;
 import org.example.diamondshopsystem.dto.ProductDTO;
-import org.example.diamondshopsystem.entities.Category;
-import org.example.diamondshopsystem.entities.Diamond;
-import org.example.diamondshopsystem.entities.Products;
-import org.example.diamondshopsystem.entities.Shell;
+import org.example.diamondshopsystem.entities.*;
 
 import org.example.diamondshopsystem.payload.requests.ProductRequest;
-import org.example.diamondshopsystem.repositories.CategoryRepository;
-import org.example.diamondshopsystem.repositories.DiamondsRepository;
-import org.example.diamondshopsystem.repositories.ProductRepository;
-import org.example.diamondshopsystem.repositories.ShellRepository;
+import org.example.diamondshopsystem.repositories.*;
 import org.example.diamondshopsystem.services.Map.ProductMapper;
 import org.example.diamondshopsystem.services.exeptions.ProductNotFoundException;
 import org.example.diamondshopsystem.services.imp.ProductServiceImp;
@@ -42,6 +36,9 @@ public class ProductService implements ProductServiceImp {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    OrderRepository orderRepository;
 
 
     @Override
@@ -138,7 +135,7 @@ public class ProductService implements ProductServiceImp {
     public boolean deleteProduct(int id) {
         Products products = productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("cannot find product"));
         try {
-            products.setStatus(false);
+            products.setStockQuantity(0);
             productRepository.save(products);
             return true;
         } catch (Exception ignored) {
@@ -191,7 +188,6 @@ public class ProductService implements ProductServiceImp {
     @Override
     public Page<ProductDTO> getAllProduct(Pageable pageable) {
         List<Products> products = productRepository.findAll();
-//        resetAllStockQuantity();
         for (Products p : products) {
             p.setPrice(calculateTotalPrice(p.getProductId()));
             productRepository.save(p);
@@ -331,5 +327,24 @@ public class ProductService implements ProductServiceImp {
             product.setPrice(totalPrice);
             productRepository.save(product);
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateQuantityPay(int orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("cannot find order"));
+        List<OrderDetails> orderDetails = order.getOrderDetails();
+        for (OrderDetails od : orderDetails) {
+            Products p = od.getProduct();
+            Products setQuantity = productRepository.findById(p.getProductId()).orElseThrow(() -> new IllegalArgumentException("cannot get product!!!"));
+            setQuantity.setStockQuantity(0);
+            productRepository.save(setQuantity);
+            for (Diamond d : od.getProduct().getDiamonds()) {
+                Diamond diamond = diamondsRepository.findById(d.getDiamondId()).orElseThrow(() -> new IllegalArgumentException("no diamond found"));
+                diamond.setStatus(false);
+                diamondsRepository.save(diamond);
+            }
+        }
+
     }
 }
