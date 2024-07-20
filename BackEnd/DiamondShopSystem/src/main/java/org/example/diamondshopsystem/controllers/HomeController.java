@@ -123,8 +123,8 @@ public class HomeController {
     }
 
     @GetMapping("/search-by-name")
-    public ResponseEntity<Page<ProductDTO>> getProductsByNameKeyword(
-            @RequestParam String keyword,
+    public ResponseEntity<?> getProductsByNameKeyword(
+            @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);

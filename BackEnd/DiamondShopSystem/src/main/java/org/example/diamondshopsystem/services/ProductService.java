@@ -173,9 +173,8 @@ public class ProductService implements ProductServiceImp {
         double diamondPrice = 0.0;
         double shellPrice = 0.0;
 
-
-        if (product != null) {
-            diamondPrice = diamondsRepository.findFirstAvailableDiamondByProductId(product.getProductId()).getPrice();
+        for (DiamondDTO d : product.getDiamonds()) {
+            diamondPrice += d.getPrice();
         }
 
         if (product.getShellId() != 0) {

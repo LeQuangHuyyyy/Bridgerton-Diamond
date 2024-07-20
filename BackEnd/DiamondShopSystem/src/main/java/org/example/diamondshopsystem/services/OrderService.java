@@ -160,8 +160,7 @@ public class OrderService implements OrderServiceImp {
         return orderDTOList;
     }
 
-
-    private boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
+    public boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
         return switch (currentStatus) {
             case PENDING -> newStatus == OrderStatus.PAYMENT || newStatus == OrderStatus.CANCELED;
             case PAYMENT -> newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.CANCELED;

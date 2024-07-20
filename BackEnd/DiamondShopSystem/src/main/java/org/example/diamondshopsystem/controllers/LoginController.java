@@ -48,7 +48,6 @@ public class LoginController {
     public ResponseEntity<?> signin(@RequestParam String email, @RequestParam String password) throws MessagingException {
         ResponseData responseData = new ResponseData();
         User user = loginServiceImp.checkLogin(email, password);
-
         if (user != null) {
             UserDTO userDTO = userMapper.mapUserToDTO(user);
             String token = jwtUtil.generateToken(userDTO);

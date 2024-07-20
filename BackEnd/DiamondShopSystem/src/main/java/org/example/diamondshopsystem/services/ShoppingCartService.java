@@ -321,9 +321,6 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
         if (promotion.getPromotionEndDate().after(now)) {
             System.out.println(promotion.getPromotionEndDate());
             DiscountCodes check = discountCodeRepository.findByCode(discountCode);
-            DiscountCodes setDiscountCode = discountCodeRepository.findById(check.getCodeId()).orElseThrow(() -> new IllegalArgumentException("đ có discount"));
-            setDiscountCode.setCodeQuantity(discountCodes.getCodeQuantity() - 1);
-            discountCodeRepository.save(setDiscountCode);
             price = price - (totalAmount * discountCodes.getDiscountPercentTage() / 100);
         }
 

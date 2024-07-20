@@ -12,6 +12,7 @@ import org.example.diamondshopsystem.entities.Payments;
 import org.example.diamondshopsystem.payload.requests.PaymentRequest;
 import org.example.diamondshopsystem.repositories.OrderRepository;
 import org.example.diamondshopsystem.repositories.PaymentRepository;
+import org.example.diamondshopsystem.services.imp.OrderServiceImp;
 import org.example.diamondshopsystem.services.imp.PaymentServiceImp;
 import org.example.diamondshopsystem.services.imp.ProductServiceImp;
 import org.example.diamondshopsystem.utils.VNPayUtil;
@@ -24,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -45,7 +45,10 @@ public class PaymentService implements PaymentServiceImp {
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired
-    private OrderService orderService;
+    OrderService orderService;
+
+    @Autowired
+    OrderServiceImp orderServiceImp;
 
 
     @Override
@@ -105,6 +108,7 @@ public class PaymentService implements PaymentServiceImp {
             return PaymentDTO.VNPayResponse.builder().code("99").message("Exception during refund: " + e.getMessage()).build();
         }
     }
+
 
 
     @Override

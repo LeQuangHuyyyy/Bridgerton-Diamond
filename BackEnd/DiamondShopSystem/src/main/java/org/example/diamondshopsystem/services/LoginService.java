@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class LoginService implements LoginServiceImp {
     @Autowired
@@ -20,31 +21,31 @@ public class LoginService implements LoginServiceImp {
     PasswordEncoder passwordEncoder;
 
     @Override
-     public List<UserDTO> getAllUser(){
-         List<User> listUser =userRepository.findAll();
-         List<UserDTO> userDTOList = new ArrayList<>();
-         for (User user : listUser) {
-             UserDTO userDTO = new UserDTO();
-             userDTO.setUserid(user.getUserid());
-             userDTO.setName(user.getName());
-             userDTO.setPassword(user.getPassword());
-             userDTO.setPhoneNumber(user.getPhoneNumber());
-             userDTO.setEmail(user.getEmail());
-             userDTO.setAddress(user.getAddress());
-             userDTO.setAccumulatedPoints(user.getAccumulatedPoints());
-             userDTO.setRole(user.getRole());
-             userDTO.setStatus(user.isStatus());
-             System.out.println(user.getName());
-             userDTOList.add(userDTO);
-         }
-         return userDTOList;
-     }
+    public List<UserDTO> getAllUser() {
+        List<User> listUser = userRepository.findAll();
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for (User user : listUser) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserid(user.getUserid());
+            userDTO.setName(user.getName());
+            userDTO.setPassword(user.getPassword());
+            userDTO.setPhoneNumber(user.getPhoneNumber());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setAddress(user.getAddress());
+            userDTO.setAccumulatedPoints(user.getAccumulatedPoints());
+            userDTO.setRole(user.getRole());
+            userDTO.setStatus(user.isStatus());
+            System.out.println(user.getName());
+            userDTOList.add(userDTO);
+        }
+        return userDTOList;
+    }
 
     @Override
     public User checkLogin(String email, String password) {
 
         User user = userRepository.findByEmail(email);
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+        if (user != null && passwordEncoder.matches(password, user.getPassword()) && user.isStatus()) {
             return user;
         }
         return null;

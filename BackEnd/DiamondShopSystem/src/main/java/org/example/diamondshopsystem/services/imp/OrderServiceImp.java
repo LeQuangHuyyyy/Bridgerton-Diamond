@@ -54,4 +54,5 @@ public interface OrderServiceImp {
 
     List<OrderDetails> getDetailByOrderId(int orderId);
 
+
 }

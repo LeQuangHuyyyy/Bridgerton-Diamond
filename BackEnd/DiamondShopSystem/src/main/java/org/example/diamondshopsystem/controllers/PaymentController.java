@@ -5,10 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.dto.PaymentDTO;
 import org.example.diamondshopsystem.dto.UserDTO;
+import org.example.diamondshopsystem.entities.DiscountCodes;
+import org.example.diamondshopsystem.entities.Order;
 import org.example.diamondshopsystem.entities.OrderStatus;
 import org.example.diamondshopsystem.entities.Payments;
 import org.example.diamondshopsystem.payload.ResponseObject;
 import org.example.diamondshopsystem.payload.requests.PaymentRequest;
+import org.example.diamondshopsystem.repositories.DiscountCodeRepository;
+import org.example.diamondshopsystem.repositories.OrderRepository;
 import org.example.diamondshopsystem.services.OrderService;
 import org.example.diamondshopsystem.services.PaymentService;
 import org.example.diamondshopsystem.services.ProductService;
@@ -42,6 +46,10 @@ public class PaymentController {
 
     @Autowired
     ProductServiceImp productServiceImp;
+    @Autowired
+    private DiscountCodeRepository discountCodeRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @PostMapping
     public ResponseEntity<?> payment(@RequestBody PaymentRequest paymentRequest, HttpServletRequest request) {
@@ -49,7 +57,20 @@ public class PaymentController {
         if (bankCode == null || bankCode.isEmpty()) {
             return ResponseEntity.badRequest().body("Bank code is required.");
         }
+
         Integer orderId = paymentRequest.getOrderId();
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("cannot find order"));
+        if (order.getDiscountCode() != null) {
+            DiscountCodes d = order.getDiscountCode();
+            DiscountCodes setDiscountCode = discountCodeRepository.findById(d.getCodeId()).orElseThrow(() -> new IllegalArgumentException("đ có discount"));
+            setDiscountCode.setCodeQuantity(setDiscountCode.getCodeQuantity() - 1);
+            discountCodeRepository.save(setDiscountCode);
+
+            double price = shoppingCartService.totalPriceWithDiscountCode(setDiscountCode.getCode(), order.getOrderTotalAmount());
+            order.setOrderTotalAmount(price);
+            orderRepository.save(order);
+        }
+
         BigDecimal totalPrice = orderService.findPriceByOrderId(orderId);
         PaymentDTO.VNPayResponse vnPayResponse = paymentService.createVnPayPayment(totalPrice, bankCode, paymentRequest.getOrderId(), request);
         return ResponseEntity.ok(vnPayResponse);

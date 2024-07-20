@@ -48,7 +48,8 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
 
     Page<Products> findAllByOrderByStockQuantityDesc(Pageable pageable);
 
-    Page<Products> findByProductNameContainingIgnoreCase(String keyword, Pageable pageable);
+    @Query("SELECT p FROM Products p WHERE p.productName like %:keyword% AND p.stockQuantity != 0")
+    Page<Products> findByProductNameContainingIgnoreCase(@Param("keyword") String keyword, Pageable pageable);
 
     @Query("SELECT p FROM Products p WHERE p.price BETWEEN :minPrice AND :maxPrice ORDER BY p.price ASC")
     Page<Products> findByPriceBetweenOrderByPriceAsc(@Param("minPrice") double minPrice, @Param("maxPrice") double maxPrice, Pageable pageable);
