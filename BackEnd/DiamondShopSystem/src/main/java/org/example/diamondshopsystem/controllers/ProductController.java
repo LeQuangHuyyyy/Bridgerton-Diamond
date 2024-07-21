@@ -104,11 +104,16 @@ public class ProductController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable int id, @RequestBody ProductDTO product) {
-        product.setProductId(id);
-        ProductDTO updatedProduct = productService.updateProduct(product);
-        return ResponseEntity.ok(updatedProduct);
+    @PutMapping("/update")
+    public ResponseEntity<?> updateProduct(@RequestBody ProductRequest productRequest) {
+        ResponseData responseData = new ResponseData();
+        if (productService.updateProduct(productRequest)) {
+            responseData.setDescription("update ok nhá!");
+            return new ResponseEntity<>(responseData, HttpStatus.OK);
+        } else {
+            responseData.setDescription("update fail!!");
+            return new ResponseEntity<>(responseData, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/delete")

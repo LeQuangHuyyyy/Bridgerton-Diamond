@@ -17,7 +17,7 @@ public interface ProductServiceImp {
 
     boolean addProduct(ProductRequest product);
 
-    ProductDTO updateProduct(ProductDTO product);
+    boolean updateProduct(ProductRequest product);
 
     boolean deleteProduct(int id);
 

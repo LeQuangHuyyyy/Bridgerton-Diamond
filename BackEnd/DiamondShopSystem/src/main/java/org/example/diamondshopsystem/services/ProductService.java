@@ -12,7 +12,6 @@ import org.example.diamondshopsystem.services.imp.ProductServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,33 +102,58 @@ public class ProductService implements ProductServiceImp {
         }
     }
 
-
+    @Transactional
     @Override
-    public ProductDTO updateProduct(ProductDTO productDTO) {
-        Optional<Products> productOptional = productRepository.findById(productDTO.getProductId());
-        if (productOptional.isPresent()) {
-            Products existingProduct = productOptional.get();
-            productMapper.mapProductDTOToProduct(productDTO, existingProduct);
+    public boolean updateProduct(ProductRequest productRequest) {
+        try {
+            Products products = productRepository.findById(productRequest.getProductId()).orElseThrow(() -> new IllegalArgumentException("Cannot find product!!!"));
 
-            Iterator<DiamondDTO> iterator = productDTO.getDiamonds().iterator();
-
-            DiamondDTO firstDiamond = null;
-
-            if (iterator.hasNext()) {
-                firstDiamond = iterator.next();
-            } else {
-                firstDiamond.setPrice(0);
+            Set<Diamond> diamonds = products.getDiamonds();
+            for (Diamond d : diamonds) {
+                Diamond diamond = diamondsRepository.findById(d.getDiamondId()).orElseThrow(() -> new IllegalArgumentException("Cannot find Diamond in product"));
+                diamond.setProduct(null);
+                diamondsRepository.saveAndFlush(diamond);
             }
 
-            updateProductPrice(diamondsRepository.findById(firstDiamond.getDiamondId()).orElseThrow(() -> new NoSuchElementException("")));
-            updateProductPrice(existingProduct.getShell());
+            products.setProductName(productRequest.getProductName());
+            products.setPrice(productRequest.getPrice());
+            products.setCollection(productRequest.getCollection());
+            products.setDescription(productRequest.getDescription());
+            products.setImage1(productRequest.getImage1());
+            products.setImage2(productRequest.getImage2());
+            products.setImage3(productRequest.getImage3());
+            products.setImage4(productRequest.getImage4());
+            products.setImageWarranties(productRequest.getWarrantyImage());
+            products.setImageCertificate(productRequest.getCertificateImage());
 
-            Products updatedProduct = productRepository.save(existingProduct);
-            return productMapper.mapProductToDTO(updatedProduct);
-        } else {
-            throw new ProductNotFoundException("Product not found with id: " + productDTO.getProductId());
+            Shell shell = shellRepository.findById(productRequest.getShellId()).orElseThrow(() -> new IllegalArgumentException("Cannot find shell"));
+            products.setShell(shell);
+
+            Category category = categoryRepository.findById(productRequest.getCategoryId()).orElseThrow(() -> new IllegalArgumentException("Cannot find category"));
+            products.setCategory(category);
+
+            Set<Diamond> updatedDiamonds = new HashSet<>();
+            Diamond newDiamond = diamondsRepository.findById(productRequest.getDiamondId()).orElseThrow(() -> new IllegalArgumentException("Cannot find any diamond"));
+            updatedDiamonds.add(newDiamond);
+
+            double tax = (newDiamond.getPrice() + shell.getShellPrice()) * 10 / 100;
+            double price = newDiamond.getPrice() + shell.getShellPrice() + tax + 50;
+            products.setPrice(price);
+
+            products.setDiamonds(updatedDiamonds);
+
+            productRepository.save(products);
+
+            newDiamond.setProduct(products);
+            diamondsRepository.save(newDiamond);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
+
 
     @Override
     public boolean deleteProduct(int id) {
