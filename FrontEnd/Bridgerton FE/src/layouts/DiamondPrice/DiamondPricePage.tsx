@@ -16,27 +16,30 @@ export const DiamondPricePage = () => {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const url: string = 'https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond-price/get-all';
-            const response = await fetch(url, {headers: headers});
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
-            }
-            const responseData = await response.json();
+            const url = 'https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond-price/get-all';
+            try {
+                const response = await fetch(url, {headers: headers});
+                if (!response.ok) {
+                    throw new Error('Something went wrong!');
+                }
+                const responseData = await response.json();
+                const loadedDiamond = [];
 
-            const loadedDiamond: DiamondPriceModel[] = [];
-
-            for (const key in responseData) {
-                loadedDiamond.push({
-                    diamondId: responseData[key].diamondId,
-                    cut: responseData[key].cut,
-                    carat: responseData[key].carat,
-                    color: responseData[key].color,
-                    clarity: responseData[key].clarity,
-                    price: responseData[key].price
-                });
+                for (const key in responseData.content) {
+                    loadedDiamond.push({
+                        diamondId: responseData.content[key].diamondId,
+                        cut: responseData.content[key].cut,
+                        carat: responseData.content[key].carat,
+                        color: responseData.content[key].color,
+                        clarity: responseData.content[key].clarity,
+                        price: responseData.content[key].price
+                    });
+                }
+                setDiamonds(loadedDiamond);
+                setIsLoading(false);
+            } catch (error) {
+                setIsLoading(false);
             }
-            setDiamonds(loadedDiamond);
-            setIsLoading(false);
         };
         fetchProducts().catch((error: any) => {
             setIsLoading(false);
@@ -44,6 +47,8 @@ export const DiamondPricePage = () => {
         })
         window.scrollTo(0, 0);
     }, []);
+
+
     if (isLoading) {
         return (
             <SpinnerLoading/>

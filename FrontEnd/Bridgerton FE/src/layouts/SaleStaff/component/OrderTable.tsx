@@ -5,7 +5,6 @@ import {useHistory} from 'react-router-dom';
 import OrderModel from "../../../models/OrderModel"
 import DiamondModel from "../../../models/DiamondModel";
 
-const {Search} = Input;
 const token = localStorage.getItem('token')
 const headers = {
     'Authorization': `Bearer ${token}`
@@ -13,7 +12,6 @@ const headers = {
 
 const OrderTable: React.FC = () => {
     const [orders, setOrders] = useState<OrderModel[]>([]);
-    const [diamonds, setDiamonds] = useState<DiamondModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
 
@@ -190,9 +188,7 @@ const OrderTable: React.FC = () => {
                         <Button onClick={(event) => handleConfirm(event, record.orderId)}>
                             CONFIRM
                         </Button>
-                        {/*<Button>*/}
-                        {/*    EDIT*/}
-                        {/*</Button>*/}
+                        CANCEL
                     </Space>
                 ) : null
             ),

@@ -5,10 +5,13 @@ interface AddPromotionProp {
     onClose: () => void;
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
     formData: {
-        promotionId: string;
-        promotionStartDate: string;
-        promotionEndDate: string;
-        promotionName: string;
+        id: string;
+        name: string;
+        startDate: string;
+        endDate: string;
+        discountPercent: number;
+        quantity: number;
+        code: string;
         managerId: string;
     };
     handleChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void;
@@ -37,8 +40,8 @@ export const AddPromotion: React.FC<AddPromotionProp> = ({isOpen, onClose, onSub
                                     <input
                                         type="text"
                                         id="text"
-                                        name="promotionName"
-                                        value={formData.promotionName}
+                                        name="name"
+                                        value={formData.name}
                                         onChange={handleChange}
                                         className="form-control"
                                         placeholder="Name"
@@ -46,14 +49,15 @@ export const AddPromotion: React.FC<AddPromotionProp> = ({isOpen, onClose, onSub
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="email" className="form-label">Start Date</label>
+                                    <label htmlFor="email" className="form-label">Code</label>
                                     <input
-                                        type="date"
+                                        type="text"
                                         id="text"
-                                        name="promotionStartDate"
-                                        value={formData.promotionStartDate}
+                                        name="code"
+                                        value={formData.code}
                                         onChange={handleChange}
                                         className="form-control"
+                                        placeholder="Code"
                                         required
                                     />
                                 </div>
@@ -62,14 +66,41 @@ export const AddPromotion: React.FC<AddPromotionProp> = ({isOpen, onClose, onSub
                                     <input
                                         type="date"
                                         id="text"
-                                        name="promotionEndDate"
-                                        value={formData.promotionEndDate}
+                                        name="endDate"
+                                        value={formData.endDate}
                                         onChange={handleChange}
                                         className="form-control"
                                         required
                                     />
                                 </div>
+                                <div className="mb-3">
+                                    <label htmlFor="email" className="form-label">Discount Percent</label>
+                                    <input
+                                        type="number"
+                                        id="discountPercent"
+                                        name="discountPercent"
+                                        value={formData.discountPercent}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        placeholder="Discount Percent"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="email" className="form-label">Quantity</label>
+                                    <input
+                                        type="number"
+                                        id="number"
+                                        name="quantity"
+                                        value={formData.quantity}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        placeholder="quantity"
+                                        required
+                                    />
+                                </div>
                             </div>
+
                             <div className="modal-footer">
                                 <button type="submit" className="btn btn-primary">Create</button>
                                 <button type="button" className="btn btn-danger" onClick={onClose}>Close</button>

@@ -9,6 +9,7 @@ const headers = {
     'Authorization': `Bearer ${token}`
 
 }
+
 interface AddProductProps {
     isOpen: boolean;
     onClose: () => void;
@@ -35,7 +36,14 @@ interface AddProductProps {
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit, formData, handleChange, handleFileChange,}) => {
+export const AddProduct: React.FC<AddProductProps> = ({
+                                                          isOpen,
+                                                          onClose,
+                                                          onSubmit,
+                                                          formData,
+                                                          handleChange,
+                                                          handleFileChange,
+                                                      }) => {
     const [diamonds, setDiamonds] = useState<DiamondModel[]>([]);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -46,8 +54,8 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
             const image3URL = formData.image3 instanceof File ? await uploadFile(formData.image3) : formData.image3;
             const image4URL = formData.image4 instanceof File ? await uploadFile(formData.image4) : formData.image4;
 
-            const certificateImage = formData.certificateImage? formData.certificateImage :"asdasdasd";
-            const warrantyImage = formData.certificateImage? formData.warrantyImage :"asdasdasd";
+            const certificateImage = formData.certificateImage ? formData.certificateImage : "asdasdasd";
+            const warrantyImage = formData.certificateImage ? formData.warrantyImage : "asdasdasd";
 
             const productData = new productModel(
                 formData.productId,
@@ -68,7 +76,6 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
             );
 
             onSubmit(e, productData);
-            console.log(productData);
         } catch (error) {
             console.error("Error uploading files:", error);
         }
@@ -139,30 +146,6 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
                                         id="description"
                                         name="description"
                                         value={formData.description}
-                                        onChange={handleChange}
-                                        className="form-control"
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="price" className="form-label">Price</label>
-                                    <input
-                                        type="number"
-                                        id="price"
-                                        name="price"
-                                        value={formData.price}
-                                        onChange={handleChange}
-                                        className="form-control"
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="stockQuantity" className="form-label">Stock Quantity</label>
-                                    <input
-                                        type="number"
-                                        id="stockQuantity"
-                                        name="stockQuantity"
-                                        value={formData.stockQuantity}
                                         onChange={handleChange}
                                         className="form-control"
                                         required

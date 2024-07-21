@@ -100,12 +100,13 @@ export const SearchProductsPage = () => {
     const searchCategoryHandleChange = (value: string) => {
         setCurrentPage(1);
         if (
-            value.toLowerCase() === 'engagement rings' ||
-            value.toLowerCase() === 'wedding bands' ||
-            value.toLowerCase() === 'men diamond ring' ||
-            value.toLowerCase() === 'necklace' ||
-            value.toLowerCase() === 'earrings' ||
-            value.toLowerCase() === 'bracelets'
+            value === 'Engagement Rings' ||
+            value === 'Wedding Bands' ||
+            value === 'Women diamond ring' ||
+            value === 'Men diamond ring' ||
+            value === 'Diamond Necklaces' ||
+            value === 'Diamond Earrings' ||
+            value === 'Diamond Bracelets'
         ) {
             setSearchCategory(value);
             setSearchUrl(`/by-category-sorted-by-price?categoryName=${value}&page=<pageNumber>&size=${productsPerPage}`)
@@ -184,27 +185,27 @@ export const SearchProductsPage = () => {
                                         Wedding Bands
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('Men Diamond Ring')}>
+                                <li onClick={() => searchCategoryHandleChange('Men diamond ring')}>
                                     <a className="dropdown-item">
                                         Men diamond ring
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('Women Diamond Ring')}>
+                                <li onClick={() => searchCategoryHandleChange('Women diamond ring')}>
                                     <a className="dropdown-item">
                                         Women diamond ring
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('Necklace')}>
+                                <li onClick={() => searchCategoryHandleChange('Diamond Necklaces')}>
                                     <a className="dropdown-item">
                                         Necklace
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('Earrings')}>
+                                <li onClick={() => searchCategoryHandleChange('Diamond Earrings')}>
                                     <a className="dropdown-item">
                                         Earrings
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('Bracelets')}>
+                                <li onClick={() => searchCategoryHandleChange('Diamond Bracelets')}>
                                     <a className="dropdown-item">
                                         Bracelets
                                     </a>
@@ -226,7 +227,7 @@ export const SearchProductsPage = () => {
                         </>
                         :
                         <div className='m-5'>
-                            <h3>Can't find what you are looking for?</h3>
+                            <h3>No results found</h3>
                         </div>
                     }
                     {totalPages > 1 &&

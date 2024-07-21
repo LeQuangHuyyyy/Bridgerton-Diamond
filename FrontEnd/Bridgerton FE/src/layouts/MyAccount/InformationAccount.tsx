@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Card, Form, Input, message, Spin} from "antd";
 import UserModel from "../../models/UserModel";
 import {jwtDecode} from "jwt-decode";
+import './InformationAccount.css'
 
 const token = localStorage.getItem('token');
 const headers = {
@@ -95,6 +96,15 @@ export const InformationAccount = () => {
             <Spin/>
         )
     }
+
+    const validateNoWhitespace = (_: any, value: any) => {
+        if (!value || value.trim() !== "") {
+            return Promise.resolve();
+        }
+        return Promise.reject('Input cannot be only whitespace');
+    };
+
+
     return (
         <div>
             <Card title="Account Information">
@@ -113,38 +123,52 @@ export const InformationAccount = () => {
                     <Form.Item
                         label="Name"
                         name="name"
-                        rules={[{required: true, message: 'Please enter your name!'}]}
-                        style={{display: 'flex', justifyContent: 'space-between'}}
+                        rules={[
+                            {required: true, message: 'Please input your name!'},
+                            {min: 1, max: 50, message: 'Name length limit must be in range 1 – 50 characters.'},
+                            {pattern: /^[A-Za-z\s]+$/, message: 'Name only contains alphabetical characters.'},
+                            {validator: validateNoWhitespace}
+                        ]}
+                        className="form-item"
                     >
-                        <Input style={{marginLeft: '40px', width: '500px'}} value={data?.name}/>
+                        <Input value={data?.name}/>
                     </Form.Item>
 
                     <Form.Item
                         label="Email"
                         name="email"
-                        style={{display: 'flex', justifyContent: 'space-between',}}
+                        className="form-item"
                     >
-                       <Input style={{marginLeft: '50px', width: '500px'}} readOnly value={data?.email} />
+                        <div>{data?.email}</div>
                     </Form.Item>
 
                     <Form.Item
                         label="Address"
                         name="address"
-                        rules={[{required: true, message: 'Please enter your address!'}]}
-                        style={{display: 'flex', justifyContent: 'space-between', width: '300px'}}
+                        rules={[
+                            {required: true, message: 'Please input your Address!'},
+                            {validator: validateNoWhitespace}
+                        ]}
+                        className="form-item"
                     >
-                        <Input style={{marginLeft: '28px', width: '500px'}} value={data?.address}/>
+                        <Input value={data?.address}/>
                     </Form.Item>
 
                     <Form.Item
                         label="Phone Number"
                         name="phoneNumber"
-                        style={{display: 'flex', justifyContent: 'space-between', width: '300px'}}
+                        rules={[
+                            {required: true, message: 'Please input your Phone Number!'},
+                            {len: 10, message: 'Phone number length limit must be 10 characters.'},
+                            {pattern: /^[0-9]+$/, message: 'Phone number only contains numeric characters.'},
+                            {validator: validateNoWhitespace}
+                        ]}
+                        className="form-item"
                     >
-                        <Input style={{width: '500px'}} value={data?.phoneNumber}/>
+                        <Input value={data?.phoneNumber}/>
                     </Form.Item>
 
-                    <Form.Item>
+                    <Form.Item className="center-button">
                         <Button type="primary" htmlType="submit">
                             Edit
                         </Button>
@@ -152,5 +176,6 @@ export const InformationAccount = () => {
                 </Form>
             </Card>
         </div>
+
     );
 };

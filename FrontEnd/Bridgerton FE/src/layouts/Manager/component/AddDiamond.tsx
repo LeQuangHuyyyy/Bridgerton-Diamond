@@ -1,4 +1,4 @@
-import React from "react";
+import React, {ChangeEvent} from "react";
 
 interface AddDiamondProp {
     isOpen: boolean;
@@ -14,7 +14,7 @@ interface AddDiamondProp {
         certification: string;
         status: boolean;
     };
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => void;
 };
 
 export const AddDiamond: React.FC<AddDiamondProp> = ({isOpen, onClose, onSubmit, formData, handleChange}) => {
@@ -27,7 +27,7 @@ export const AddDiamond: React.FC<AddDiamondProp> = ({isOpen, onClose, onSubmit,
                 aria-modal="true"
                 role="dialog"
             >
-                <div className="modal-dialog">
+                <div className="modal-dialog " style={{marginTop:'100px'}}>
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title"> New Diamond</h5>
@@ -53,45 +53,64 @@ export const AddDiamond: React.FC<AddDiamondProp> = ({isOpen, onClose, onSubmit,
 
                                         <div className="mb-3">
                                             <label htmlFor="cut" className="form-label">Cut</label>
-                                            <input
-                                                type="text"
+                                            <select
                                                 id="cut"
                                                 name="cut"
                                                 value={formData.cut}
                                                 onChange={handleChange}
                                                 className="form-control"
-                                                placeholder="Cut"
                                                 required
-                                            />
+                                            >
+                                                <option value="" defaultChecked disabled> Cut</option>
+                                                <option value="Heart">Heart</option>
+                                                <option value="Round">Round</option>
+                                                <option value="Oval">Oval</option>
+                                            </select>
                                         </div>
                                     </div>
 
-                                    <div>
+                                    <div className="w-50">
                                         <div className="mb-3">
-                                            <label htmlFor="color" className="form-label">Color</label>
-                                            <input
-                                                type="text"
+                                            <label htmlFor="cut" className="form-label">Color</label>
+                                            <select
                                                 id="color"
                                                 name="color"
                                                 value={formData.color}
                                                 onChange={handleChange}
                                                 className="form-control"
-                                                placeholder="Color"
                                                 required
-                                            />
+                                            >
+                                                <option value="" defaultChecked disabled> Color</option>
+                                                <option value="D">D</option>
+                                                <option value="J">J</option>
+                                                <option value="E">E</option>
+                                                <option value="G">G</option>
+                                                <option value="F">F</option>
+                                                <option value="H">H</option>
+                                                <option value="K">K</option>
+                                            </select>
                                         </div>
+
                                         <div className="mb-3">
                                             <label htmlFor="clarity" className="form-label">Clarity</label>
-                                            <input
-                                                type="text"
+                                            <select
                                                 id="clarity"
                                                 name="clarity"
                                                 value={formData.clarity}
                                                 onChange={handleChange}
                                                 className="form-control"
-                                                placeholder="Clarity"
                                                 required
-                                            />
+                                            >
+                                                <option value="" defaultChecked disabled> Clarity</option>
+                                                <option value="SL2">SL2</option>
+                                                <option value="SL1">SL1</option>
+                                                <option value="VS2">VS2</option>
+                                                <option value="VS1">VS1</option>
+                                                <option value="VVS2">VVS2</option>
+                                                <option value="VVS1">VVS1</option>
+                                                <option value="IF">IF</option>
+                                                <option value="FL">FL</option>
+                                            </select>
                                         </div>
                                     </div>
 

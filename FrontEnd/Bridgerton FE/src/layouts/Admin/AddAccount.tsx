@@ -1,156 +1,170 @@
 import React from 'react';
+import { Modal, Form, Input, Select, Radio, Button } from 'antd';
+
+const { Option } = Select;
 
 interface AddAccountProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+    onSubmit: (values: any) => void;
     formData: {
         name: string;
         password: string;
         phoneNumber: string;
         email: string;
         address: string;
-        role: string
+        role: string;
+        status: string;
     };
     handleChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
-const AddAccount: React.FC<AddAccountProps> = ({isOpen, onClose, onSubmit, formData, handleChange}) => (
-    <div
-        className={`modal ${isOpen ? 'show' : ''} `}
-        style={{display: isOpen ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
-        aria-modal="true"
-        role="dialog"
-    >
-        <div className="modal-dialog">
-            <div className="modal-content">
-                <div className="modal-header">
-                    <h5 className="modal-title">Add New Account</h5>
-                    <button type="button" className="btn-close" onClick={onClose}></button>
-                </div>
-                <form onSubmit={onSubmit}>
-                    <div className="modal-body">
-                        <div className="mb-3">
-                            <label htmlFor="name" className="form-label">Name</label>
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                className="form-control"
-                                placeholder="Name"
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="email" className="form-label">Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                className="form-control"
-                                placeholder="Password"
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="name" className="form-label">Phone Number</label>
-                            <input
-                                type="text"
-                                id="phoneNumber"
-                                name="phoneNumber"
-                                value={formData.phoneNumber}
-                                onChange={handleChange}
-                                className="form-control"
-                                placeholder="Phone Numbe"
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="name" className="form-label">Email</label>
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                className="form-control"
-                                placeholder="Email"
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="name" className="form-label">Address</label>
-                            <input
-                                type="text"
-                                id="address"
-                                name="address"
-                                value={formData.address}
-                                onChange={handleChange}
-                                className="form-control"
-                                placeholder="Address"
-                                required
-                            />
-                        </div>
-                        <div className="col-12 col-sm-6 mb-3 d-flex mb-3 ">
-                            <div className="col-9 me-5">
-                                <label htmlFor="job" className="form-label">Function</label>
-                                <select
-                                    id="job"
-                                    name="role"
-                                    value={formData.role}
-                                    className="form-select"
-                                    onChange={handleChange}
+const AddAccount: React.FC<AddAccountProps> = ({ isOpen, onClose, onSubmit, formData, handleChange }) => {
 
-                                >
-                                    <option value="" selected>SELECT ROLE</option>
-                                    <option value="CUSTOMER">Customer</option>
-                                    <option value="ADMIN">Admin</option>
-                                    <option value="MANAGER">Manager</option>
-                                    <option value="DELIVERY_STAFF">Delivery Staff</option>
-                                    <option value="SALE_STAFF">Sale Staff</option>
-                                </select>
-                            </div>
-                            <div className="col-4">
-                                <label htmlFor="status" className="form-label">Status</label>
-                                <div className="form-check me-4">
-                                    <input
-                                        id="active-radio"
-                                        type="radio"
-                                        value="true"
-                                        name="status"
-                                        onChange={handleChange}
-                                        className="form-check-input"
-                                    />
-                                    <label htmlFor="active-radio" className="form-check-label ms-2">Active</label>
-                                </div>
-                                <div className="form-check me-4">
-                                    <input
-                                        id="suspended-radio"
-                                        type="radio"
-                                        value="false"
-                                        name="status"
-                                        onChange={handleChange}
-                                        className="form-check-input"
-                                    />
-                                    <label htmlFor="suspended-radio" className="form-check-label ms-2">Suspended</label>
-                                </div>
-                            </div>
+    const validateEmail = (_: any, value: any) => {
+        if (!value || /^\S+@\S+\.\S+$/.test(value)) {
+            return Promise.resolve();
+        }
+        return Promise.reject('The email must contain "@" and "."');
+    };
 
-                        </div>
+    const validateNoWhitespace = (_: any, value: any) => {
+        if (!value || value.trim() !== "") {
+            return Promise.resolve();
+        }
+        return Promise.reject('Input cannot be only whitespace');
+    };
 
-                    </div>
-                    <div className="modal-footer">
-                        <button type="submit" className="btn btn-primary">Create</button>
-                        <button type="button" className="btn btn-danger" onClick={onClose}>Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-);
+    const validatePassword = (_: any, value: any) => {
+        if (!value || /^[0-9]{6,}$/.test(value)) {
+            return Promise.resolve();
+        }
+        return Promise.reject('Password must be at least 6 numeric characters.');
+    };
+
+    return (
+        <Modal
+            title="Add New Account"
+            visible={isOpen}
+            onCancel={onClose}
+            footer={null}
+        >
+            <Form
+                layout="vertical"
+                initialValues={formData}
+                onFinish={onSubmit}
+            >
+                <Form.Item
+                    label="Name"
+                    name="name"
+                    rules={[
+                        { required: true, message: 'Please input name!' },
+                        { min: 1, max: 50, message: 'Name length limit must be in range 1 – 50 characters.' },
+                        { pattern: /^[A-Za-z\s]+$/, message: 'Name only contains alphabetical characters.' },
+                        { validator: validateNoWhitespace }
+                    ]}
+                >
+                    <Input
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="Name"
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[
+                        { required: true, message: 'Please input user password!' },
+                        { validator: validatePassword }
+                    ]}
+                >
+                    <Input.Password
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Password"
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="Phone Number"
+                    name="phoneNumber"
+                    rules={[
+                        { required: true, message: 'Please input user phone number!' },
+                        { len: 10, message: 'Phone number length limit must be 10 characters.' },
+                        { pattern: /^[0-9]+$/, message: 'Phone number only contains numeric characters.' },
+                        { validator: validateNoWhitespace }
+                    ]}
+                >
+                    <Input
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                        placeholder="Phone Number"
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[
+                        { required: true, message: 'Please input user email!' },
+                        { validator: validateEmail }
+                    ]}
+                >
+                    <Input
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Email"
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="Address"
+                    name="address"
+                    rules={[
+                        { required: true, message: 'Please input user address!' },
+                        { validator: validateNoWhitespace }
+                    ]}
+                >
+                    <Input
+                        value={formData.address}
+                        onChange={handleChange}
+                        placeholder="Address"
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="Function"
+                    name="role"
+                    rules={[{ required: true, message: 'Please select a role!' }]}
+                >
+                    <Select
+                        value={formData.role}
+                        onChange={(value) => handleChange({ target: { name: 'role', value } } as React.ChangeEvent<HTMLSelectElement>)}
+                        placeholder="Select Role"
+                    >
+                        <Option value="CUSTOMER">Customer</Option>
+                        <Option value="ADMIN">Admin</Option>
+                        <Option value="MANAGER">Manager</Option>
+                        <Option value="DELIVERY_STAFF">Delivery Staff</Option>
+                        <Option value="SALE_STAFF">Sale Staff</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                    label="Status"
+                    name="status"
+                >
+                    <Radio.Group
+                        value={formData.status}
+                        onChange={handleChange as any}
+                    >
+                        <Radio value='true'>Active</Radio>
+                        <Radio value='false'>Suspended</Radio>
+                    </Radio.Group>
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit">Create</Button>
+                    <Button type="default" onClick={onClose} style={{ marginLeft: '10px' }}>Close</Button>
+                </Form.Item>
+            </Form>
+        </Modal>
+    );
+};
 
 export default AddAccount;

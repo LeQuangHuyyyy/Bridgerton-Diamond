@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {jwtDecode} from 'jwt-decode';
-import { AddPromotion } from './component/AddPromotion';
-import { UpdatePromotion } from './component/UpdatePromotion';
-import { Table, Button} from 'antd';
+import {AddPromotion} from './component/AddPromotion';
+import {UpdatePromotion} from './component/UpdatePromotion';
+import {Table, Button, message} from 'antd';
 
 
 const headers = localStorage.getItem('token');
 
 interface PromotionData {
-    promotionId: string;
-    promotionStartDate: string;
-    promotionEndDate: string;
-    promotionName: string;
+    id: string;
+    name: string;
+    startDate: string;
+    endDate: string;
+    discountPercent: number;
+    quantity: number;
+    code: string;
     managerId: string;
 }
 
@@ -20,20 +23,26 @@ export const Promotion: React.FC = () => {
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [formData, setFormData] = useState<PromotionData>({
-        promotionId: '',
-        promotionStartDate: '',
-        promotionEndDate: '',
-        promotionName: '',
-        managerId: '',
+        id: '',
+        name: '',
+        startDate: '',
+        endDate: '',
+        discountPercent: 0,
+        quantity: 0,
+        code: '',
+        managerId: ''
     });
 
     const toggleAddModal = () => {
         setFormData({
-            promotionId: '',
-            promotionStartDate: '',
-            promotionEndDate: '',
-            promotionName: '',
-            managerId: '',
+            id: '',
+            name: '',
+            startDate: '',
+            endDate: '',
+            discountPercent: 0,
+            quantity: 0,
+            code: '',
+            managerId: ''
         });
         setIsAddingNew(!isAddingNew);
     };
@@ -65,7 +74,7 @@ export const Promotion: React.FC = () => {
                 const data = jwtDecode(headers) as {
                     id: string;
                 };
-                setFormData({ ...formData, managerId: data.id });
+                setFormData({...formData, managerId: data.id});
             }
         } catch (error) {
             console.error('Error fetching promotions: ', error);
@@ -73,8 +82,8 @@ export const Promotion: React.FC = () => {
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -93,9 +102,11 @@ export const Promotion: React.FC = () => {
                 fetchPromotions();
             } else {
                 console.error('Failed to create promotion');
+                message.success('Promotion created successfully');
             }
         } catch (error) {
             console.error('Error creating promotion: ', error);
+            message.error('Fail to created promotion');
         }
     };
 
@@ -113,19 +124,23 @@ export const Promotion: React.FC = () => {
             if (response.ok) {
                 setIsUpdating(false);
                 fetchPromotions();
+                message.success('Promotion updated successfully');
             } else {
                 console.error('Failed to update promotion');
+                message.error('Failed to update promotion');
             }
         } catch (error) {
             console.error('Error updating promotion: ', error);
+            message.error('Failed to update promotion');
         }
     };
 
     const handleEdit = (promotionId: string) => {
-        const promotionToEdit = dataSource.find(promotion => promotion.promotionId === promotionId);
+        const promotionToEdit = dataSource.find(promotion => promotion.id === promotionId);
         if (promotionToEdit) {
             setFormData(promotionToEdit);
             setIsUpdating(true);
+            console.log(promotionToEdit)
         }
     };
 
@@ -150,40 +165,62 @@ export const Promotion: React.FC = () => {
     const columns = [
         {
             title: 'Promotion Id',
-            dataIndex: 'promotionId',
-            key: 'promotionId',
+            dataIndex: 'id',
+            key: 'id',
         },
         {
             title: 'Promotion Name',
-            dataIndex: 'promotionName',
-            key: 'promotionName',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Discount Code',
+            dataIndex: 'code',
+            key: 'code',
         },
         {
             title: 'Start Date',
-            dataIndex: 'promotionStartDate',
-            key: 'promotionStartDate',
+            dataIndex: 'startDate',
+            key: 'startDate',
             render: (text: string) => text.substring(0, 10),
         },
         {
             title: 'End Date',
-            dataIndex: 'promotionEndDate',
-            key: 'promotionEndDate',
+            dataIndex: 'endDate',
+            key: 'endDate',
             render: (text: string) => text.substring(0, 10),
+        },
+        {
+            title: 'Discount',
+            dataIndex: 'discountPercent',
+            key: 'discountPercent',
+            render: (text: number) => `${text}%`,
+        },
+        {
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            key: 'quantity',
+        },
+        {
+            title: 'ManagerId',
+            dataIndex: 'managerId',
+            key: 'managerId',
         },
         {
             title: 'Actions',
             key: 'actions',
-            render: (text: string, record: PromotionData) => (
+            render: (record: PromotionData) => (
                 <>
-                    <Button onClick={() => handleEdit(record.promotionId)} type="primary" className="me-2">
+                    <Button onClick={() => handleEdit(record.id)} type="primary" className="me-2">
                         Edit
                     </Button>
-                    <Button onClick={() => handleDelete(record.promotionId)}>
+                    <Button onClick={() => handleDelete(record.id)}>
                         Delete
                     </Button>
                 </>
             ),
         },
+
     ];
 
     return (
@@ -194,21 +231,21 @@ export const Promotion: React.FC = () => {
                     New Promotion
                 </Button>
             </div>
-            <Table dataSource={dataSource} columns={columns} rowKey="promotionId" />
-                <AddPromotion
-                    isOpen={isAddingNew}
-                    onClose={toggleAddModal}
-                    onSubmit={handleSubmit}
-                    formData={formData}
-                    handleChange={handleChange}
-                />
-                <UpdatePromotion
-                    isOpen={isUpdating}
-                    onClose={toggleUpdateModal}
-                    onSubmit={handleUpdate}
-                    formData={formData}
-                    handleChange={handleChange}
-                />
+            <Table dataSource={dataSource} columns={columns} rowKey="promotionId"/>
+            <AddPromotion
+                isOpen={isAddingNew}
+                onClose={toggleAddModal}
+                onSubmit={handleSubmit}
+                formData={formData}
+                handleChange={handleChange}
+            />
+            <UpdatePromotion
+                isOpen={isUpdating}
+                onClose={toggleUpdateModal}
+                onSubmit={handleUpdate}
+                formData={formData}
+                handleChange={handleChange}
+            />
         </div>
     );
 };

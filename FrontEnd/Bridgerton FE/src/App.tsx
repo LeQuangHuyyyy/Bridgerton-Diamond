@@ -13,7 +13,7 @@ import {ResetPassword} from "./Auth/ResetPassword";
 import {DiamondPricePage} from "./layouts/DiamondPrice/DiamondPricePage";
 import Checkout from "./layouts/CartPage/components/Checkout";
 import {SearchProductsPage} from "./layouts/SearchProductsPage/SearchProductsPage";
-import {Table} from "./layouts/Admin/Table";
+import {AccountTable} from "./layouts/Admin/AccountTable";
 import {jwtDecode} from "jwt-decode";
 import ContactUs from "./layouts/ContactUs/ContactUs";
 import {SaleStaffPage} from "./layouts/SaleStaff/SaleStaffPage";
@@ -31,19 +31,20 @@ import MyOrders from "./layouts/MyAccount/MyOrders";
 import ChangePassword from "./layouts/MyAccount/ChangePassword";
 import MyOrderDetail from "./layouts/MyAccount/MyOrderDetail";
 import OrderDeliveryDetail from "./layouts/DeliveryStaff/OrderDeliveryDetail";
+import {DiamondEducation} from "./layouts/HomePage/component/DiamondEducation";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
 
     useEffect(() => {
-        const data = localStorage.getItem('token');
+const data = localStorage.getItem('token');
+    if (data) {
+        const decodedToken = jwtDecode(data) as { role: string };
+        setToken(decodedToken.role);
 
-        if (data) {
-            const decodedToken = jwtDecode(data) as { role: string };
-            setToken(decodedToken.role);
-        } else {
-            setToken(undefined);
-        }
+    } else {
+        setToken(undefined);
+    }
     }, []);
 
     return (
@@ -53,7 +54,9 @@ export const App = () => {
                     {token === undefined && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
-                            <Redirect from='/' to='/home' exact/>
+                            <Route path='/diamond-education'>
+                            <DiamondEducation/>
+                        </Route>
                             <Route path='/' exact>
                                 <HomePage/>
                             </Route>
@@ -97,6 +100,10 @@ export const App = () => {
                     {token === 'CUSTOMER' && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
+
+                            <Route path='/diamond-education'>
+                                <DiamondEducation/>
+                            </Route>
                             <Route path='/' exact>
                                 <HomePage/>
                             </Route>
@@ -164,16 +171,14 @@ export const App = () => {
                     }
                     {token === 'ADMIN' && (
                         <>
-                            <Redirect from='/' to='/admin' exact/>
                             <Route path='/admin'>
-                                <Table/>
+                                <AccountTable/>
                             </Route>
                         </>
                     )}
                     {token === 'MANAGER' && (
                         <>
                             <SideBar>
-                            <Redirect from='/' to='/product' exact/>
                             <Route path='/promotion'>
                                 <Promotion/>
                             </Route>
