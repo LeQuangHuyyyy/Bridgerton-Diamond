@@ -46,7 +46,7 @@ export const ProductCheckoutPage = () => {
 
     useEffect(() => {
         const fetchProduct = async () => {
-            window.scrollTo(0,0)
+            window.scrollTo(0, 0)
             const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/product/${productId}`;
             const url: string = `${baseUrl}?page=0&size=10`;
             const response = await fetch(url);
@@ -167,7 +167,6 @@ export const ProductCheckoutPage = () => {
             };
             cart.push(product);
             localStorage.setItem("cart", JSON.stringify(cart));
-            message.success('Add to cart successfully')
         } else {
             let cart = JSON.parse(localStorage.getItem("cart")!);
             let product = {
