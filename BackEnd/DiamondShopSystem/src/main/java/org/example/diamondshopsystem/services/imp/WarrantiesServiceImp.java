@@ -1,7 +1,9 @@
 package org.example.diamondshopsystem.services.imp;
 
+import org.example.diamondshopsystem.dto.WarrantyDTO;
+
 public interface WarrantiesServiceImp {
 
-    void createWarranties(int productId, int orderId);
-    
+    WarrantyDTO createWarranties(int productId, int orderId);
+
 }

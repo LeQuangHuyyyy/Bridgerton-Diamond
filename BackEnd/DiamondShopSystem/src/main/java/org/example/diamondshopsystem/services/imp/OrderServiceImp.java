@@ -1,5 +1,6 @@
 package org.example.diamondshopsystem.services.imp;
 
+import jakarta.mail.MessagingException;
 import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.dto.PaymentDTO;
 import org.example.diamondshopsystem.entities.Order;
@@ -53,6 +54,8 @@ public interface OrderServiceImp {
     List<OrderDTO> getOrderByUserId(int userId);
 
     List<OrderDetails> getDetailByOrderId(int orderId);
+
+    boolean setOrderFromDeliveryToReceived(int orderId, String email) throws MessagingException;
 
 
 }

@@ -1,7 +1,6 @@
 package org.example.diamondshopsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,7 +17,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-
 public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,22 +32,22 @@ public class Products {
     @Column(name = "stock_quantity")
     private int stockQuantity;
 
-    @Column(name = "[collection]")
+    @Column(name = "collection")
     private String collection;
 
-    @Column(name = "[description]", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "[image_1]")
+    @Column(name = "image_1")
     private String image1;
 
-    @Column(name = "[image_2]")
+    @Column(name = "image_2")
     private String image2;
 
-    @Column(name = "[image_3]")
+    @Column(name = "image_3")
     private String image3;
 
-    @Column(name = "[image_4]")
+    @Column(name = "image_4")
     private String image4;
 
     @Column(name = "warranties_year")
@@ -80,8 +77,8 @@ public class Products {
     private Set<Diamond> diamonds = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JsonBackReference
     @JoinColumn(name = "warranties_id")
+    @JsonBackReference
     private Warranties warranties;
 
     @Override
@@ -100,5 +97,4 @@ public class Products {
     public int hashCode() {
         return Objects.hash(productId);
     }
-
 }

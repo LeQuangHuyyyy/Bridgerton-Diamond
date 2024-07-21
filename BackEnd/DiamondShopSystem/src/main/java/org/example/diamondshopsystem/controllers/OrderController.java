@@ -1,5 +1,6 @@
 package org.example.diamondshopsystem.controllers;
 
+import jakarta.mail.MessagingException;
 import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.dto.OrderDetailDTO;
 import org.example.diamondshopsystem.entities.OrderStatus;
@@ -9,12 +10,14 @@ import org.example.diamondshopsystem.repositories.OrderRepository;
 import org.example.diamondshopsystem.services.ShoppingCartService;
 import org.example.diamondshopsystem.services.imp.OrderDetailsServiceImp;
 import org.example.diamondshopsystem.services.imp.OrderServiceImp;
+import org.example.diamondshopsystem.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +37,8 @@ public class OrderController {
 
     @Autowired
     OrderDetailsServiceImp orderDetailsService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     @GetMapping
@@ -60,6 +65,24 @@ public class OrderController {
         } else {
             responseData.setDescription("Order detail not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseData);
+        }
+    }
+
+    @PostMapping("/setOrderToReceived")
+    public ResponseEntity<?> setOrderToReceived(@RequestParam int orderId, @RequestHeader("Authorization") String header) throws MessagingException {
+        String email = "";
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+
+            if (jwtUtil.verifyToken(token)) {
+                email = jwtUtil.getUsernameFromToken(token);
+            }
+        }
+
+        if (orderServiceImp.setOrderFromDeliveryToReceived(orderId, email)) {
+            return ResponseEntity.ok("oke nhá");
+        } else {
+            return ResponseEntity.badRequest().body("haizz làm lại đi ");
         }
     }
 

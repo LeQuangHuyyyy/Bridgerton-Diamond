@@ -2,7 +2,9 @@ package org.example.diamondshopsystem.services;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.example.diamondshopsystem.dto.DiamondDTO;
 import org.example.diamondshopsystem.dto.UserDTO;
+import org.example.diamondshopsystem.dto.WarrantyDTO;
 import org.example.diamondshopsystem.entities.Role;
 import org.example.diamondshopsystem.entities.User;
 import org.example.diamondshopsystem.payload.requests.SignupRequest;
@@ -13,11 +15,11 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.io.IOException;
 
 @Service
 public class RegistrationService {
@@ -105,6 +107,41 @@ public class RegistrationService {
         mailSender.send(message);
     }
 
+    public void sendWarrantiesToEmail(String email, WarrantyDTO warrantyDTO) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setTo(email);
+        helper.setSubject("Warranties From Bridgerton Diamond");
+
+        String htmlTemplate = readHtmlTemplate("warranties.html");
+
+        htmlTemplate = htmlTemplate.replace("${warrantiesCode}", String.valueOf(warrantyDTO.getWarrantyCode()))
+                .replace("${warrantyStartDate}", warrantyDTO.getWarrantyStartDate().toString().substring(0, 10))
+                .replace("${warrantyExpirationDate}", warrantyDTO.getWarrantyExpirationDate().toString().substring(0, 10))
+                .replace("${orderId}", String.valueOf(warrantyDTO.getOrderId()))
+                .replace("${productId}", String.valueOf(warrantyDTO.getProductId()))
+                .replace("${productName}", warrantyDTO.getProductName());
+
+        if (warrantyDTO.getDiamondDto() != null && !warrantyDTO.getDiamondDto().isEmpty()) {
+            DiamondDTO diamond = warrantyDTO.getDiamondDto().get(0);
+            htmlTemplate = htmlTemplate.replace("${carat}", String.valueOf(diamond.getCarat()))
+                    .replace("${price}", String.valueOf(diamond.getPrice()))
+                    .replace("${cut}", diamond.getCut())
+                    .replace("${color}", diamond.getColor())
+                    .replace("${clarity}", diamond.getClarity());
+        } else {
+            htmlTemplate = htmlTemplate.replace("${carat}", "")
+                    .replace("${price}", "")
+                    .replace("${cut}", "")
+                    .replace("${color}", "")
+                    .replace("${clarity}", "");
+        }
+
+        helper.setText(htmlTemplate, true);
+        mailSender.send(message);
+    }
+
+
     public void sendVerificationCodeToEmail(String email, String verificationCode) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -112,13 +149,11 @@ public class RegistrationService {
         helper.setTo(email);
         helper.setSubject("Verification Code");
 
-        // Load the HTML template
         String htmlTemplate = readHtmlTemplate("sendEmail.html");
 
-        // Replace the verification code placeholder with the actual code
         String emailContent = htmlTemplate.replace("${verificationCode}", verificationCode);
 
-        helper.setText(emailContent, true); // true for HTML content
+        helper.setText(emailContent, true);
 
         mailSender.send(message);
     }

@@ -77,7 +77,7 @@ public class Order {
 
     @OneToMany(
             mappedBy = "order", fetch = FetchType.LAZY,
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
+            cascade = CascadeType.ALL
     )
     @JsonBackReference
     private List<Warranties> warranties;

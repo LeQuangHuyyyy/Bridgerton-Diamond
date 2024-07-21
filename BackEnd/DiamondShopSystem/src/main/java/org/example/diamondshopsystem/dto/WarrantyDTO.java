@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,11 +16,19 @@ import java.util.Date;
 
 public class WarrantyDTO {
 
-    private int warrantiesId;
+    private int warrantyId;
+    private String warrantyCode;
 
     private Date warrantyStartDate;
 
     private Date warrantyExpirationDate;
 
-    private String warrantyType;
+    private int orderId;
+
+    private int productId;
+
+    private String productName;
+
+    List<DiamondDTO> diamondDto;
+
 }

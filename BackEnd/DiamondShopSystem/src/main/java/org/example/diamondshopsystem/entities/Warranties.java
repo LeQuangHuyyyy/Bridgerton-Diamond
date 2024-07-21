@@ -15,13 +15,14 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
-
 public class Warranties {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "warranty_id")
     private int warrantiesId;
+
+    @Column(name = "warranty_Code")
+    private String warrantyCode;
 
     @Column(name = "warranty_start_date")
     private Date warrantyStartDate;
@@ -30,11 +31,11 @@ public class Warranties {
     private Date warrantyExpirationDate;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "[order]")
+    @JoinColumn(name = "order_id")
     @JsonBackReference
     private Order order;
 
-    @OneToOne(mappedBy = "warranties", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "warranties", cascade = CascadeType.ALL)
     @JsonBackReference
     private Products product;
 }

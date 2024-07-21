@@ -113,13 +113,6 @@ public class OrderMapper {
         return feedbackDTO;
     }
 
-    private WarrantyDTO mapWarrantyToWarrantyDTO(Warranties warranty) {
-        WarrantyDTO warrantyDTO = new WarrantyDTO();
-        warrantyDTO.setWarrantiesId(warranty.getWarrantiesId());
-        warrantyDTO.setWarrantyStartDate(warranty.getWarrantyStartDate());
-        warrantyDTO.setWarrantyExpirationDate(warranty.getWarrantyExpirationDate());
-        return warrantyDTO;
-    }
 
     private InvoiceDTO mapInvoiceToInvoiceDTO(Invoice invoice) {
         InvoiceDTO invoiceDTO = new InvoiceDTO();

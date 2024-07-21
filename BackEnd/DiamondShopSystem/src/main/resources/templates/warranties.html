@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warranties</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .header h1 {
+            color: #333;
+            display: flex;
+            margin-left: 60px;
+        }
+
+        .logo {
+            position: absolute;
+            left: 3%;
+            top: 80%;
+            transform: translateY(-50%);
+            width: 70px;
+            height: auto;
+            background-color: #333;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .details {
+            margin-bottom: 20px;
+        }
+
+        .details h3 {
+            color: #555;
+            margin-top: 50px;
+        }
+
+        .details p {
+            color: #777;
+        }
+
+        .diamond-details {
+            margin-bottom: 20px;
+        }
+
+        .diamond-details h3 {
+            color: #555;
+        }
+
+        .diamond-details p {
+            color: #777;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .footer p {
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Flogo192.png?alt=media&token=6ad8a64f-1293-4f19-9c0c-bac60da45228"
+             alt="Logo" class="logo">
+        <h2>Bridgerton Diamond Warranties</h2>
+    </div>
+    <div style="display: flex;justify-content: space-around;align-items: center">
+        <div class="details">
+            <h3>Warranty Details</h3>
+            <p><strong>Warranty Code:</strong> ${warrantiesCode}</p>
+            <p><strong>Start Date:</strong> ${warrantyStartDate}</p>
+            <p><strong>Expiration Date:</strong> ${warrantyExpirationDate}</p>
+            <p><strong>Order ID:</strong> ${orderId}</p>
+            <p><strong>Product ID:</strong> ${productId}</p>
+            <p><strong>Product Name:</strong> ${productName}</p>
+        </div>
+        <div class="diamond-details">
+            <h3>Diamond Details</h3>
+            <p><strong>Carat:</strong> ${carat}</p>
+            <p><strong>Price:</strong> ${price}</p>
+            <p><strong>Cut:</strong> ${cut}</p>
+            <p><strong>Color:</strong> ${color}</p>
+            <p><strong>Clarity:</strong> ${clarity}</p>
+        </div>
+    </div>
+
+
+    <div class="footer">
+        <p>Thank you for choosing Bridgerton Diamond.</p>
+    </div>
+</div>
+</body>
+</html>

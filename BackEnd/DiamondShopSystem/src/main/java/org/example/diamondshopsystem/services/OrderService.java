@@ -1,6 +1,8 @@
 package org.example.diamondshopsystem.services;
 
+import jakarta.mail.MessagingException;
 import org.example.diamondshopsystem.dto.OrderDTO;
+import org.example.diamondshopsystem.dto.WarrantyDTO;
 import org.example.diamondshopsystem.entities.*;
 
 import org.example.diamondshopsystem.payload.requests.DiamondCategory;
@@ -9,6 +11,7 @@ import org.example.diamondshopsystem.payload.requests.ProductCategory;
 import org.example.diamondshopsystem.repositories.*;
 import org.example.diamondshopsystem.services.Map.OrderMapper;
 import org.example.diamondshopsystem.services.imp.OrderServiceImp;
+import org.example.diamondshopsystem.services.imp.WarrantiesServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -36,12 +39,20 @@ public class OrderService implements OrderServiceImp {
     @Autowired
     private OrderMapper orderMapper;
 
+    @Autowired
+    WarrantiesServiceImp warrantiesServiceImp;
 
     @Autowired
-    private UserRepository userRepository;
-    private ProductRepository productRepository;
+    RegistrationService registrationService;
+
     @Autowired
-    private OrderDetailRepository orderDetailRepository;
+    UserRepository userRepository;
+
+    @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
+    OrderDetailRepository orderDetailRepository;
 
     @Override
     public Page<OrderDTO> getAllOrder(Pageable pageable) {
@@ -147,6 +158,29 @@ public class OrderService implements OrderServiceImp {
     }
 
     @Override
+    public boolean setOrderFromDeliveryToReceived(int orderId, String email) throws MessagingException {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+        User deliveryStaff = userRepository.findByEmail(email);
+        if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.RECEIVED)) {
+            order.setStatus(OrderStatus.RECEIVED);
+            order.setDelivery(deliveryStaff);
+            try {
+                orderRepository.saveAndFlush(order);
+            } catch (DataIntegrityViolationException e) {
+                throw new IllegalStateException("Cannot update order status. The new status is not allowed.", e);
+            }
+            List<OrderDetails> orderDetailsList = orderDetailRepository.findByOrderId(order.getOrderId());
+            for (OrderDetails od : orderDetailsList) {
+                WarrantyDTO sendEmail = warrantiesServiceImp.createWarranties(od.getProduct().getProductId(), order.getOrderId());
+                registrationService.sendWarrantiesToEmail(order.getCustomer().getEmail(), sendEmail);
+            }
+            return true;
+        } else {
+            throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.RECEIVED + " is not allowed.");
+        }
+    }
+
+    @Override
     public List<OrderDTO> searchByKeyWord(String keyword, OrderStatus status) {
         List<Order> orders = orderRepository.findByKeyword(keyword, status);
         if (orders.isEmpty()) {
@@ -159,6 +193,7 @@ public class OrderService implements OrderServiceImp {
         }
         return orderDTOList;
     }
+
 
     public boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
         return switch (currentStatus) {

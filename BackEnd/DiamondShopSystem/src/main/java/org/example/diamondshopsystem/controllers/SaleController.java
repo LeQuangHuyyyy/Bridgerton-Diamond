@@ -53,7 +53,7 @@ public class SaleController {
     }
 
     @PostMapping("/setOrderToDelivery/{orderId}")
-    public ResponseEntity<?> setOrderToDelivery(@PathVariable Integer orderId, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<?> setOrderToDelivery(@PathVariable int orderId, @RequestHeader("Authorization") String authHeader) {
         String email = "";
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
