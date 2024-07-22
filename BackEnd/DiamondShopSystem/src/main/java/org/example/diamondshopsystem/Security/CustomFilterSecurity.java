@@ -34,6 +34,7 @@ public class CustomFilterSecurity {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/home/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/home/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/sizes/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/manage/diamond/pro/**").permitAll()

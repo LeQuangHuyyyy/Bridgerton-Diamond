@@ -35,11 +35,12 @@ public class HomeController {
 
     @Autowired
     ProductService productService;
+
     @Autowired
-    private CategoryService categoryService;
-    private RegistrationService registrationService;
+    CategoryService categoryService;
+    
     @Autowired
-    private JwtUtil jwtUtil;
+    RegistrationService registrationService;
 
 
     @GetMapping
@@ -139,15 +140,8 @@ public class HomeController {
     }
 
     @PostMapping("/contact")
-    public ResponseEntity<?> contactUser(@RequestHeader("Authorization") String auth, @RequestBody ContactRequest contactRequest) throws MessagingException {
-        if (auth != null && auth.startsWith("Bearer ")) {
-            String token = auth.substring(7);
-            if (jwtUtil.verifyToken(token)) {
-                String email = jwtUtil.getUsernameFromToken(token);
-                registrationService.sendContactToManager(contactRequest, email);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> contactUser(@RequestBody ContactRequest contactRequest) throws MessagingException {
+        registrationService.sendContactToManager(contactRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

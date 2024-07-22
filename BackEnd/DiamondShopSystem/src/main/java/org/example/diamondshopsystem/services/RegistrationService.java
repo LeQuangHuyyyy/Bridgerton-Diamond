@@ -129,18 +129,31 @@ public class RegistrationService {
         mailSender.send(message);
     }
 
-    public void sendContactToManager(ContactRequest contactRequest, String email) throws MessagingException {
+    public void sendContactToManager(ContactRequest contactRequest) throws MessagingException {
+        if (contactRequest == null) {
+            throw new IllegalArgumentException("ContactRequest must not be null");
+        }
+
+        if (contactRequest.getEmail() == null || contactRequest.getName() == null || contactRequest.getMessage() == null) {
+            throw new IllegalArgumentException("ContactRequest fields must not be null");
+        }
+
         MimeMessage message = mailSender.createMimeMessage();
+
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
         helper.setTo("lequanghuy45159@gmail.com");
+
         helper.setSubject(contactRequest.getSubject());
 
-        String htmlTemplate = readHtmlTemplate("....html");
-        htmlTemplate = htmlTemplate.replace("${email}", contactRequest.getEmail())
-                .replace("${name}", contactRequest.getName())
-                .replace("${message}", contactRequest.getMessage());
+        String htmlTemplate = readHtmlTemplate("contactFromCustomer.html");
+
+        htmlTemplate = htmlTemplate.replace("${email}", contactRequest.getEmail());
+        htmlTemplate = htmlTemplate.replace("${name}", contactRequest.getName());
+        htmlTemplate = htmlTemplate.replace("${message}", contactRequest.getMessage());
 
         helper.setText(htmlTemplate, true);
+
         mailSender.send(message);
     }
 
