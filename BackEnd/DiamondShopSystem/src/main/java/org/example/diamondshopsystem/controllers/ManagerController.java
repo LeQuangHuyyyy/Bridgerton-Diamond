@@ -77,7 +77,6 @@ public class ManagerController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
-
     @GetMapping("/getProfit")
     public ResponseEntity<?> getProfit() {
         ResponseData responseData = new ResponseData();

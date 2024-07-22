@@ -1,20 +1,17 @@
 import React, {useEffect, useState} from "react";
 import uploadFile from '../../../firebase/uploadFile';
 import ProductModel from "../../../models/ProductModel";
-import productModel from "../../../models/ProductModel";
 import DiamondModel from "../../../models/DiamondModel"; // Path to your uploadFile function
 
 const token = localStorage.getItem('token');
 const headers = {
     'Authorization': `Bearer ${token}`
-
 }
 
 interface AddProductProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (e: React.FormEvent, product: ProductModel) => void;
-
     formData: {
         productId: number;
         collection: string;
@@ -29,22 +26,42 @@ interface AddProductProps {
         categoryId: number;
         diamondId: number;
         shellId: number;
-        warrantyImage: string,
-        certificateImage: string,
+        warrantyImage: string;
+        certificateImage: string;
     };
     handleChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLTextAreaElement>) => void;
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const AddProduct: React.FC<AddProductProps> = ({
-                                                          isOpen,
-                                                          onClose,
-                                                          onSubmit,
-                                                          formData,
-                                                          handleChange,
-                                                          handleFileChange,
-                                                      }) => {
+export const UpdateProduct: React.FC<AddProductProps> = ({
+                                                             isOpen,
+                                                             onClose,
+                                                             onSubmit,
+                                                             formData,
+                                                             handleChange,
+                                                             handleFileChange,
+                                                         }) => {
     const [diamonds, setDiamonds] = useState<DiamondModel[]>([]);
+    const [image1, setImage1] = useState<string>('');
+    const [image2, setImage2] = useState<string>('');
+    const [image3, setImage3] = useState<string>('');
+    const [image4, setImage4] = useState<string>('');
+
+    useEffect(() => {
+        if (formData.image1) {
+            setImage1(typeof formData.image1 === 'string' ? formData.image1 : URL.createObjectURL(formData.image1));
+        }
+        if (formData.image2) {
+            setImage2(typeof formData.image2 === 'string' ? formData.image2 : URL.createObjectURL(formData.image2));
+        }
+        if (formData.image3) {
+            setImage3(typeof formData.image3 === 'string' ? formData.image3 : URL.createObjectURL(formData.image3));
+        }
+        if (formData.image4) {
+            setImage4(typeof formData.image4 === 'string' ? formData.image4 : URL.createObjectURL(formData.image4));
+        }
+    }, [formData.image1, formData.image2, formData.image3, formData.image4]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -54,10 +71,10 @@ export const AddProduct: React.FC<AddProductProps> = ({
             const image3URL = formData.image3 instanceof File ? await uploadFile(formData.image3) : formData.image3;
             const image4URL = formData.image4 instanceof File ? await uploadFile(formData.image4) : formData.image4;
 
-            const certificateImage = formData.certificateImage ? formData.certificateImage : "asdasdasd";
-            const warrantyImage = formData.certificateImage ? formData.warrantyImage : "asdasdasd";
+            const certificateImage = formData.certificateImage ? formData.certificateImage : "defaultCertificateImage";
+            const warrantyImage = formData.warrantyImage ? formData.warrantyImage : "defaultWarrantyImage";
 
-            const productData = new productModel(
+            const productData = new ProductModel(
                 formData.productId,
                 formData.productName,
                 formData.price,
@@ -82,10 +99,9 @@ export const AddProduct: React.FC<AddProductProps> = ({
     };
 
     useEffect(() => {
-        const fetchOrders = async () => {
+        const fetchDiamonds = async () => {
             const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/diamond";
-            const url: string = `${baseUrl}`;
-            const response = await fetch(url, {headers: headers});
+            const response = await fetch(baseUrl, {headers: headers});
             if (!response.ok) {
                 throw new Error('Something went wrong!');
             }
@@ -107,10 +123,11 @@ export const AddProduct: React.FC<AddProductProps> = ({
             }
             setDiamonds(loadedDiamonds);
         };
-        fetchOrders().catch((error: any) => {
+        fetchDiamonds().catch((error: any) => {
             console.log(error);
-        })
+        });
     }, []);
+
     return (
         <div
             className={`modal ${isOpen ? 'show' : ''}`}
@@ -121,7 +138,7 @@ export const AddProduct: React.FC<AddProductProps> = ({
             <div className="modal-dialog" style={{maxWidth: '100%'}}>
                 <div className="modal-content" style={{maxWidth: '80%', marginLeft: '11%'}}>
                     <div className="modal-header">
-                        <h5 className="modal-title">Add New Product</h5>
+                        <h5 className="modal-title">Update Product</h5>
                         <button type="button" className="btn-close" onClick={onClose}></button>
                     </div>
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -218,46 +235,70 @@ export const AddProduct: React.FC<AddProductProps> = ({
                                         <option value="24">Halo</option>
                                     </select>
                                 </div>
-                                <div className="mb-3">
-                                    <label htmlFor="image1" className="form-label">Image 1</label>
-                                    <input
-                                        type="file"
-                                        id="image1"
-                                        name="image1"
-                                        className="form-control"
-                                        onChange={handleFileChange}
-                                    />
+                                <div className="mb-3 d-flex justify-content-around">
+                                    <div>
+                                        <img src={image1} alt="Image 1" className="img-thumbnail" style={{width: 100}}/>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="image1" className="form-label">Image 1</label>
+                                        <input style={{width: 400}}
+                                               type="file"
+                                               id="image1"
+                                               name="image1"
+                                               className="form-control"
+                                               onChange={handleFileChange}
+                                        />
+                                    </div>
+
                                 </div>
-                                <div className="mb-3">
-                                    <label htmlFor="image2" className="form-label">Image 2</label>
-                                    <input
-                                        type="file"
-                                        id="image2"
-                                        name="image2"
-                                        className="form-control"
-                                        onChange={handleFileChange}
-                                    />
+                                <div className="mb-3 d-flex justify-content-around">
+                                    <div>
+                                        <img src={image2} alt="Image 1" className="img-thumbnail" style={{width: 100}}/>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="image2" className="form-label">Image 2</label>
+                                        <input style={{width: 400}}
+                                               type="file"
+                                               id="image2"
+                                               name="image2"
+                                               className="form-control"
+                                               onChange={handleFileChange}
+                                        />
+                                    </div>
+
                                 </div>
-                                <div className="mb-3">
-                                    <label htmlFor="image3" className="form-label">Image 3</label>
-                                    <input
-                                        type="file"
-                                        id="image3"
-                                        name="image3"
-                                        className="form-control"
-                                        onChange={handleFileChange}
-                                    />
+                                <div className="mb-3 d-flex justify-content-around">
+                                    <div>
+                                        <img src={image3} alt="Image 1" className="img-thumbnail" style={{width: 100}}/>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="image3" className="form-label">Image 3</label>
+                                        <input style={{width: 400}}
+                                               type="file"
+                                               id="image3"
+                                               name="image3"
+                                               className="form-control"
+                                               onChange={handleFileChange}
+                                        />
+                                    </div>
+
                                 </div>
-                                <div className="mb-3">
-                                    <label htmlFor="image4" className="form-label">Image 4</label>
-                                    <input
-                                        type="file"
-                                        id="image4"
-                                        name="image4"
-                                        className="form-control"
-                                        onChange={handleFileChange}
-                                    />
+                                <div className="mb-3 d-flex justify-content-around">
+                                    <div>
+                                        <img src={image4} alt="Image 1" className="img-thumbnail" style={{width: 100}}/>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="image4" className="form-label">Image 4</label>
+                                        <input style={{width: 400}}
+                                               type="file"
+                                               id="image4"
+                                               name="image4"
+                                               className="form-control"
+                                               onChange={handleFileChange}
+                                        />
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                         <div className="modal-footer">

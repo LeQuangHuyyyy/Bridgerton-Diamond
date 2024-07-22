@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import ProductModel from "../../models/ProductModel";
-import { SpinnerLoading } from "../Utils/SpinnerLoading";
+import {SpinnerLoading} from "../Utils/SpinnerLoading";
 import DiamondTable from "./DiamondAndShellTable/DiamondTable";
 import ShellTable from "./DiamondAndShellTable/ShellTable";
 import SizeModel from "../../models/SizeModel";
 import Carousel from "react-multi-carousel";
-import { SimilarItems } from "./component/SimilarItems";
+import {SimilarItems} from "./component/SimilarItems";
 import {Button, message, Modal} from "antd";
 
 export const ProductCheckoutPage = () => {
@@ -46,13 +46,14 @@ export const ProductCheckoutPage = () => {
 
     useEffect(() => {
         const fetchProduct = async () => {
+            window.scrollTo(0, 0)
             const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/product/${productId}`;
             const url: string = `${baseUrl}?page=0&size=10`;
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error("Something went wrong!");
             }
-
+            console.log(baseUrl)
             const responseJson = await response.json();
             const loadedProduct: ProductModel = {
                 productId: responseJson.productId,
@@ -101,7 +102,6 @@ export const ProductCheckoutPage = () => {
                 });
             }
 
-
             setSuggest(loadedProducts);
             setIsLoading(false);
             setProduct(loadedProduct);
@@ -118,42 +118,40 @@ export const ProductCheckoutPage = () => {
             setHttpError(error.message);
             console.log(error);
         });
-    }, []);
+    }, [productId]);
 
 
     useEffect(() => {
-
-        const fetchSize = async () => {
-            if (!product || !product.categoryId) return;
-            const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/sizes/${product?.categoryId}`;
-            const url: string = `${baseUrl}`;
-            const response = await fetch(url, {headers: headers});
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
-            }
-
-            const responseJson = await response.json();
-            const loadedSize: SizeModel[] = [];
-
-            for (const key in responseJson) {
-                loadedSize.push({
-                    sizeId: responseJson[key].sizeId,
-                    valueSize: responseJson[key].valueSize,
-                    categoryId: responseJson[key].categoryId
-                });
-            }
-
-            setSize(loadedSize);
-            console.log(responseJson);
-            setIsLoading(false);
-        };
-        fetchSize().catch((error: any) => {
-            setIsLoading(false);
-            setHttpError(error.message);
-            console.log(error);
-        })
+        fetchSize();
     }, [product]);
+    const fetchSize = async () => {
+        if (!product || !product.categoryId) return;
+        const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/sizes/${product?.categoryId}`;
+        const url: string = `${baseUrl}`;
+        const response = await fetch(url, {headers: headers});
+        if (!response.ok) {
+            throw new Error('Something went wrong!');
+        }
 
+        const responseJson = await response.json();
+        const loadedSize: SizeModel[] = [];
+
+        for (const key in responseJson) {
+            loadedSize.push({
+                sizeId: responseJson[key].sizeId,
+                valueSize: responseJson[key].valueSize,
+                categoryId: responseJson[key].categoryId
+            });
+        }
+
+        setSize(loadedSize);
+        setIsLoading(false);
+    };
+    fetchSize().catch((error: any) => {
+        setIsLoading(false);
+        setHttpError(error.message);
+        console.log(error);
+    })
     const addToCartHandler = async () => {
         if (!selectedSize) {
             setSizeError('Please select a size.');
@@ -169,7 +167,6 @@ export const ProductCheckoutPage = () => {
             };
             cart.push(product);
             localStorage.setItem("cart", JSON.stringify(cart));
-            message.success('Add to cart successfully')
         } else {
             let cart = JSON.parse(localStorage.getItem("cart")!);
             let product = {
@@ -310,19 +307,6 @@ export const ProductCheckoutPage = () => {
                                 Price: ${product?.price}
                             </p>
                             <p>{product?.description}</p>
-                            <div className="form-outline mt-3" style={{display: 'flex', alignItems: 'center'}}>
-                                <label className="form-label" htmlFor="typeNumber">Select Quantity:</label>
-                                <input
-                                    style={{width: '70px', marginLeft: '10px', outline: 'none', boxShadow: 'none'}}
-                                    type="number"
-                                    id="typeNumber"
-                                    className="form-control"
-                                    min="1"
-                                    value={quantity}
-                                    onChange={(e) => setQuantity(e.target.value as unknown as number)}
-                                />
-                            </div>
-
                             <Button
                                 onClick={() => showModal(product?.certificateImage)}
                                 style={{marginRight: '10px'}}
@@ -337,7 +321,12 @@ export const ProductCheckoutPage = () => {
                             </div>
                             <a
                                 onClick={() => showModal('https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Fz5624916933804_dcdb067c2dd16407a4cf0a91cecce6f6.jpg?alt=media&token=7007668e-e495-4692-93d8-d698a6ac01ab')}
-                                style={{cursor: 'pointer', color: 'black', textDecoration: 'underline', marginBottom: '10px'}}
+                                style={{
+                                    cursor: 'pointer',
+                                    color: 'black',
+                                    textDecoration: 'underline',
+                                    marginBottom: '10px'
+                                }}
                             >
                                 Size Guide
                             </a>

@@ -12,20 +12,24 @@ import org.example.diamondshopsystem.repositories.WarrantiesRepository;
 import org.example.diamondshopsystem.services.imp.WarrantiesServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
 public class WarrantiesService implements WarrantiesServiceImp {
     @Autowired
-    private WarrantiesRepository warrantiesRepository;
+    WarrantiesRepository warrantiesRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    ProductRepository productRepository;
 
     @Autowired
-    private OrderRepository orderRepository;
+    OrderRepository orderRepository;
 
+    @Transactional
     public WarrantyDTO createWarranties(int productId, int orderId) {
         String code = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
         code = "W_" + code;
@@ -34,30 +38,45 @@ public class WarrantiesService implements WarrantiesServiceImp {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Cannot find order with this id"));
 
         Date orderDate = order.getOrderDate();
-        int daysToAdd = (int) (products.getWarrantiesYear() * 365.25);
+        int dayToAdd = (int) products.getWarrantiesYear() * 365;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(orderDate);
-        calendar.add(Calendar.DAY_OF_YEAR, daysToAdd);
+        calendar.add(Calendar.DAY_OF_YEAR, dayToAdd);
+
         Date warrantyExpirationDate = calendar.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDateString = sdf.format(warrantyExpirationDate);
 
-        Warranties warranties = new Warranties();
-
-        warranties.setWarrantyCode(code);
-        warranties.setWarrantyStartDate(orderDate);
-        warranties.setWarrantyExpirationDate(warrantyExpirationDate);
-        warranties.setOrder(order);
-        warranties.setProduct(products);
+        Date parsedDate;
         try {
-            warrantiesRepository.saveAndFlush(warranties);
-        } catch (Exception ignored) {
-
+            parsedDate = sdf.parse(formattedDateString);
+        } catch (ParseException e) {
+            throw new RuntimeException("Failed to parse warranty expiration date", e);
         }
 
+        Warranties warranties = new Warranties();
+        warranties.setWarrantyCode(code);
+        warranties.setWarrantyStartDate(orderDate);
+        warranties.setWarrantyExpirationDate(parsedDate);
+        warranties.setOrder(order);
+        warranties.setProduct(products);
+
+        try {
+            warrantiesRepository.saveAndFlush(warranties);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Order setOrder = orderRepository.findById(orderId).get();
+        Products setProduct = productRepository.findById(productId).get();
+        setOrder.setWarranties(warranties);
+        setProduct.setWarranties(warranties);
+        orderRepository.save(setOrder);
+        productRepository.save(setProduct);
+
         WarrantyDTO warrantyDTO = new WarrantyDTO();
-        warrantyDTO.setWarrantyId(warranties.getWarrantiesId());
         warrantyDTO.setWarrantyCode(code);
         warrantyDTO.setWarrantyStartDate(orderDate);
-        warrantyDTO.setWarrantyExpirationDate(warrantyExpirationDate);
+        warrantyDTO.setWarrantyExpirationDate(parsedDate);
         warrantyDTO.setOrderId(orderId);
         warrantyDTO.setProductId(productId);
         warrantyDTO.setProductName(products.getProductName());
@@ -78,5 +97,4 @@ public class WarrantiesService implements WarrantiesServiceImp {
 
         return warrantyDTO;
     }
-
 }

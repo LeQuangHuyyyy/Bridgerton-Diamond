@@ -370,6 +370,5 @@ public class ProductService implements ProductServiceImp {
                 diamondsRepository.save(diamond);
             }
         }
-
     }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warranties</title>
+    <title>Contact</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container {
@@ -20,6 +20,7 @@
             text-align: center;
             display: flex;
             justify-content: start;
+            margin-bottom: 20px;
         }
 
         .header h1 {
@@ -40,9 +41,6 @@
             margin-left: 20px;
         }
 
-        .details {
-            margin-bottom: 20px;
-        }
 
         .details h3 {
             color: #555;
@@ -53,22 +51,12 @@
             color: #777;
         }
 
-        .diamond-details {
-            margin-left: 150px;
-            margin-top: 30px;
-        }
-
         .diamond-details h3 {
             color: #555;
         }
 
         .diamond-details p {
             color: #777;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 20px;
         }
 
         .footer p {
@@ -81,31 +69,14 @@
     <div class="header">
         <img src="https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Flogo192.png?alt=media&token=6ad8a64f-1293-4f19-9c0c-bac60da45228"
              alt="Logo" class="logo">
-        <h2>Bridgerton Diamond Warranties</h2>
+        <h2>Bridgerton Diamond</h2>
     </div>
-    <div style="display: flex;justify-content: space-around;align-items: center; height:400px">
-        <div class="details">
-            <h3>Warranty Details</h3>
-            <p><strong>Warranty Code:</strong> ${warrantiesCode}</p>
-            <p><strong>Start Date:</strong> ${warrantyStartDate}</p>
-            <p><strong>Expiration Date:</strong> ${warrantyExpirationDate}</p>
-            <p><strong>Order ID:</strong> ${orderId}</p>
-            <p><strong>Product ID:</strong> ${productId}</p>
-            <p style="max-width:400px"><strong>Product Name:</strong> ${productName}</p>
-        </div>
-        <div class="diamond-details">
-            <h3>Diamond Details</h3>
-            <p><strong>Carat:</strong> ${carat}</p>
-            <p><strong>Price:</strong> ${price}</p>
-            <p><strong>Cut:</strong> ${cut}</p>
-            <p><strong>Color:</strong> ${color}</p>
-            <p><strong>Clarity:</strong> ${clarity}</p>
-        </div>
-    </div>
-
-
-    <div class="footer">
-        <p>Thank you for choosing Bridgerton Diamond.</p>
+    <div>
+        <p><strong> Customer's Email:</strong> ${email}</p>
+        <p><strong>Customer's Name:</strong> ${name}</p>
+        <p><strong>Message from customer : </br></strong>
+            ${message}
+        </p>
     </div>
 </div>
 </body>

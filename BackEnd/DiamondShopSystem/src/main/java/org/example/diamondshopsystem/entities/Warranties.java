@@ -1,6 +1,7 @@
 package org.example.diamondshopsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class Warranties {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "warranty_id")
@@ -30,12 +32,11 @@ public class Warranties {
     @Column(name = "warranty_expiration_date")
     private Date warrantyExpirationDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id")
-    @JsonBackReference
+    @OneToOne(mappedBy = "warranties", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private Order order;
 
-    @OneToOne(mappedBy = "warranties", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "warranties", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JsonBackReference
     private Products product;
 }

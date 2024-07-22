@@ -18,13 +18,7 @@ interface UpdatePromotionProps {
     handleChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
-export const UpdatePromotion: React.FC<UpdatePromotionProps> = ({
-                                                                    isOpen,
-                                                                    onClose,
-                                                                    onSubmit,
-                                                                    formData,
-                                                                    handleChange
-                                                                }) => {
+export const UpdatePromotion: React.FC<UpdatePromotionProps> = ({isOpen, onClose, onSubmit, formData, handleChange}) => {
 
     return (
         <>

@@ -2,19 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {jwtDecode} from 'jwt-decode';
 import {AddPromotion} from './component/AddPromotion';
 import {UpdatePromotion} from './component/UpdatePromotion';
-import {Table, Button} from 'antd';
+import {Table, Button, message} from 'antd';
 
 
 const headers = localStorage.getItem('token');
-
-/*
-* private String name;
-    private Date startDate;
-    private Date endDate;
-    private String code;
-    private int discountPercent;
-    private int quantity;
-* */
 
 interface PromotionData {
     id: string;
@@ -108,12 +99,15 @@ export const Promotion: React.FC = () => {
             });
             if (response.ok) {
                 setIsAddingNew(false);
+                message.success("Create New Promotion successfully")
                 fetchPromotions();
             } else {
                 console.error('Failed to create promotion');
+                message.success('Promotion created fail');
             }
         } catch (error) {
             console.error('Error creating promotion: ', error);
+            message.error('Fail to created promotion');
         }
     };
 
@@ -131,11 +125,14 @@ export const Promotion: React.FC = () => {
             if (response.ok) {
                 setIsUpdating(false);
                 fetchPromotions();
+                message.success('Promotion updated successfully');
             } else {
                 console.error('Failed to update promotion');
+                message.error('Failed to update promotion');
             }
         } catch (error) {
             console.error('Error updating promotion: ', error);
+            message.error('Failed to update promotion');
         }
     };
 
@@ -178,6 +175,11 @@ export const Promotion: React.FC = () => {
             key: 'name',
         },
         {
+            title: 'Discount Code',
+            dataIndex: 'code',
+            key: 'code',
+        },
+        {
             title: 'Start Date',
             dataIndex: 'startDate',
             key: 'startDate',
@@ -188,6 +190,12 @@ export const Promotion: React.FC = () => {
             dataIndex: 'endDate',
             key: 'endDate',
             render: (text: string) => text.substring(0, 10),
+        },
+        {
+            title: 'Discount',
+            dataIndex: 'discountPercent',
+            key: 'discountPercent',
+            render: (text: number) => `${text}%`,
         },
         {
             title: 'Quantity',
@@ -202,7 +210,7 @@ export const Promotion: React.FC = () => {
         {
             title: 'Actions',
             key: 'actions',
-            render: (text: string, record: PromotionData) => (
+            render: (record: PromotionData) => (
                 <>
                     <Button onClick={() => handleEdit(record.id)} type="primary" className="me-2">
                         Edit

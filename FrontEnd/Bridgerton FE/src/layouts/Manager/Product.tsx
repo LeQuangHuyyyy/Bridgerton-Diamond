@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from "react";
-import ProductModel from "../../models/ProductModel";
 import {SpinnerLoading} from "../Utils/SpinnerLoading";
 import {AddProduct} from "./component/AddProduct";
-import {Button, Image, message, Table} from "antd";
-import productModel from "../../models/ProductModel";
+import {UpdateProduct} from "./component/UpdateProduct";
+import {Button, Image, message, Table, Pagination} from "antd";
+import ProductModel from "../../models/ProductModel";
+
 
 interface ProductData {
     productId: number;
@@ -64,72 +65,68 @@ export const Product = () => {
         warrantyImage: ''
     });
 
-
     const headers = localStorage.getItem('token');
 
     useEffect(() => {
-        fetchProducts ();
-    }, [currentPage, searchUrl]);
-
-    const fetchProducts = async () => {
-        const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/home";
-        let url: string = '';
-        if (searchUrl === '') {
-            url = `${baseUrl}/search-by-name?keyword=${search}`;
-        } else {
-            url = baseUrl;
-        }
-
-        try {
-            const response = await fetch(url, {
-                headers: {
-                    'Authorization': `Bearer ${headers}`
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
+        const fetchProducts = async () => {
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/home";
+            let url: string = '';
+            if (searchUrl === '') {
+                url = `${baseUrl}/search-by-name?keyword=${search}&page=${currentPage - 1}`;
+            } else {
+                url = `${baseUrl}${searchUrl}&page=${currentPage - 1}`;
             }
 
-            const responseJson = await response.json();
-            const responseData = responseJson.content;
-            setTotalAmountOfProducts(responseJson.totalElements)
-            setTotalPages(responseJson.totalPages);
-
-            const loadedProducts: ProductModel[] = [];
-
-            for (const key in responseData) {
-                loadedProducts.push({
-                    productId: responseData[key].productId,
-                    productName: responseData[key].productName,
-                    price: responseData[key].price,
-                    stockQuantity: responseData[key].stockQuantity,
-                    collection: responseData[key].collection,
-                    description: responseData[key].description,
-                    image1: responseData[key].image1,
-                    image2: responseData[key].image2,
-                    image3: responseData[key].image3,
-                    image4: responseData[key].image4,
-                    categoryId: responseData[key].categoryId,
-                    diamondId: responseData[key].diamondId,
-                    shellId: responseData[key].shellId,
-                    certificateImage: responseData[key].certificateImage,
-                    warrantyImage: responseData[key].warrantyImage,
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${headers}`
+                    }
                 });
+
+                if (!response.ok) {
+                    throw new Error('Something went wrong!');
+                }
+
+                const responseJson = await response.json();
+                const responseData = responseJson.content;
+                setTotalAmountOfProducts(responseJson.totalElements);
+                setTotalPages(responseJson.totalPages);
+                console.log(responseData)
+                const loadedProducts: ProductModel[] = [];
+
+                for (const key in responseData) {
+                    loadedProducts.push({
+                        productId: responseData[key].productId,
+                        productName: responseData[key].productName,
+                        price: responseData[key].price,
+                        stockQuantity: responseData[key].stockQuantity,
+                        collection: responseData[key].collection,
+                        description: responseData[key].description,
+                        image1: responseData[key].image1,
+                        image2: responseData[key].image2,
+                        image3: responseData[key].image3,
+                        image4: responseData[key].image4,
+                        categoryId: responseData[key].categoryId,
+                        diamondId: responseData[key].diamondId,
+                        shellId: responseData[key].shellId,
+                        certificateImage: responseData[key].certificateImage,
+                        warrantyImage: responseData[key].warrantyImage,
+                    });
+                }
+                setProducts(loadedProducts);
+                setIsLoading(false);
+            } catch (error: any) {
+                setIsLoading(true);
+                message.error('Failed to fetch products');
             }
-            setProducts(loadedProducts);
+        };
+
+        fetchProducts().catch((error: any) => {
             setIsLoading(false);
-        } catch (error: any) {
-            setIsLoading(true);
-            message.error('Failed to fetch products');
-        }
-    };
-
-    fetchProducts().catch((error: any) => {
-        setIsLoading(false);
-        setHttpError(error.message);
-    });
-
+            setHttpError(error.message);
+        });
+    }, [currentPage, searchUrl]);
 
 
     if (isLoading) {
@@ -166,52 +163,40 @@ export const Product = () => {
         });
         setIsAddingNew(!isAddingNew);
     }
-
-    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const {name, files} = e.target;
-    //     if (files && files.length > 0) {
-    //         const fileName = files[0].name;
-    //         console.log(name + ':    ' + files[0].name)
-    //         setFormData((prevFormData) => ({
-    //             ...prevFormData,
-    //             [name]: files[0],
-    //         }));
-    //
-    //         switch (name) {
-    //             case 'image1':
-    //                 setImage1(fileName);
-    //                 break;
-    //             case 'image2':
-    //                 setImage2(fileName);
-    //                 break;
-    //             case 'image3':
-    //                 setImage3(fileName);
-    //                 break;
-    //             case 'image4':
-    //                 setImage4(fileName);
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    //     }
-    // };
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, files} = e.target;
-        if (files && files[0]) {
-            setFormData({
-                ...formData,
-                [name]: files[0]
-            });
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    const toggleUpdateModal = () => {
+        setFormData({
+            productId: 0,
+            collection: '',
+            description: '',
+            image1: '',
+            image2: '',
+            image3: '',
+            image4: '',
+            price: 0,
+            productName: '',
+            stockQuantity: 0,
+            categoryId: 0,
+            diamondId: 0,
+            shellId: 0,
+            certificateImage: '',
+            warrantyImage: ''
+        });
+        setIsUpdating(false)
+    }
+    const handleToEdit = (e: React.FormEvent, record: ProductModel) => {
+        const productToEdit = products.find(product => product.productId === record.productId);
+        if (productToEdit) {
+            setFormData(productToEdit);
+            setIsUpdating(!isUpdating);
         }
-    };
 
-    const handleSubmit = async (e: React.FormEvent, product: productModel) => {
+    }
+    const handleUpdate = async (e: React.FormEvent, product: ProductModel) => {
         e.preventDefault();
-        console.log('product: ', product)
         try {
             const requestBody = {
-                productId: '',
+                productId: product.productId,
                 collection: product.collection,
                 description: product.description,
                 image1: product.image1,
@@ -225,6 +210,64 @@ export const Product = () => {
                 shellId: product.shellId,
                 certificateImage: product.certificateImage,
                 warrantyImage: product.warrantyImage,
+                diamondId: product.diamondId
+            }
+
+            const createProduct = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/product/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${headers}`
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (createProduct.ok) {
+                setIsAddingNew(false);
+                message.success('Product update successfully');
+                setIsUpdating(false)
+            } else {
+                message.error('Failed to update product');
+                console.log(requestBody)
+                setIsUpdating(false)
+            }
+
+
+        } catch (error) {
+            console.error('Error update product: ', error);
+        }
+    };
+
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, files} = e.target;
+        if (files && files[0]) {
+            setFormData({
+                ...formData,
+                [name]: files[0]
+            });
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent, product: ProductModel) => {
+        e.preventDefault();
+        try {
+            const requestBody = {
+                productId: 0,
+                collection: product.collection,
+                description: product.description,
+                image1: product.image1,
+                image2: product.image2,
+                image3: product.image3,
+                image4: product.image4,
+                price: product.price,
+                productName: product.productName,
+                stockQuantity: product.stockQuantity,
+                categoryId: product.categoryId,
+                shellId: product.shellId,
+                certificateImage: product.certificateImage,
+                warrantyImage: product.warrantyImage,
+                diamondId: product.diamondId
             }
 
             const createProduct = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/product/add', {
@@ -235,11 +278,13 @@ export const Product = () => {
                 },
                 body: JSON.stringify(requestBody)
             });
+
             if (createProduct.ok) {
                 setIsAddingNew(false);
                 message.success('Product created successfully');
             } else {
                 message.error('Failed to create product');
+                console.log(requestBody)
             }
 
         } catch (error) {
@@ -260,17 +305,18 @@ export const Product = () => {
     const searchCategoryHandleChange = (value: string) => {
         setCurrentPage(1);
         if (
-            value.toLowerCase() === 'engagement rings' ||
-            value.toLowerCase() === 'wedding bands' ||
-            value.toLowerCase() === 'men diamond ring' ||
-            value.toLowerCase() === 'necklaces' ||
-            value.toLowerCase() === 'earrings' ||
-            value.toLowerCase() === 'bracelets'
+            value === 'Engagement Rings' ||
+            value === 'Wedding Bands' ||
+            value === 'Women diamond ring' ||
+            value === 'Men diamond ring' ||
+            value === 'Diamond Necklaces' ||
+            value === 'Diamond Earrings' ||
+            value === 'Diamond Bracelets'
         ) {
             setSearchCategory(value);
             setSearchUrl(`/by-category-sorted-by-price?categoryName=${value}`)
         } else {
-            setSearchCategory('All Category');
+            setSearchCategory('All category');
             setSearchUrl(``);
         }
     }
@@ -283,30 +329,31 @@ export const Product = () => {
         }));
     };
 
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
 
-
-
-    // const handleUpdate = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     try {
-    //         const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/promotion/update ', {
-    //             method: 'PUT',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${headers}`
-    //             },
-    //             body: JSON.stringify(formData)
-    //         });
-    //         if (response.ok) {
-    //             setIsUpdating(false);
-    //         } else {
-    //             console.error('Failed to update promotion');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error update promotion: ', error);
-    //     }
-    // };
-
+    const handleDelete = async (record: ProductModel) => {
+        console.log("Product ID: ", record.productId);
+        if (record) {
+            const body = {
+                id: record.productId
+            }
+            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/product/delete?id=${record.productId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${headers}`
+                },
+            });
+            if (response.ok) {
+                message.success('Product deleted successfully')
+                setProducts(products.filter(product => product.productId !== record.productId));
+            } else {
+                message.error('Fail to delete product')
+            }
+        }
+    };
 
     const columns = [
         {
@@ -339,7 +386,7 @@ export const Product = () => {
             dataIndex: 'description',
             key: 'description',
             render: (text: string) => (
-                <span style={{textAlign: 'center'}}>${text}</span>
+                <span style={{textAlign: 'center'}}>{text}</span>
             ),
         },
         {
@@ -354,15 +401,21 @@ export const Product = () => {
             title: 'Actions',
             key: 'actions',
             render: (text: string, record: ProductModel) => (
-                <Button type="primary" danger>
-                    Delete
-                </Button>
+                <>
+                    <Button type="primary" onClick={() => handleDelete(record)} danger>
+                        Delete
+                    </Button>
+                    <Button type="primary" onClick={(event) => handleToEdit(event, record)} danger>
+                        Update
+                    </Button>
+                </>
+
+
             ),
         },
     ];
     return (
         <div>
-
             <div className='container'>
                 <div className="mb-4 d-flex justify-content-between align-items-center">
                     <h2 className="text-dark">Product</h2>
@@ -372,13 +425,19 @@ export const Product = () => {
                 </div>
                 <div className='row mt-5 ms-4'>
                     <div style={{width: '300px'}} className='col-6'>
-                        <div className='d-flex'>
-                            <input className='form-control me-2 w-auto' type='search'
-                                   placeholder='Search' aria-labelledby='Search'
-                                   onChange={e => setSearch(e.target.value)}/>
-                            <button className='btn btn-outline-dark' onClick={() => searchHandleChange()}>Search
+                        <div
+                            className='d-flex'>
+                            <input
+                                style={{borderRadius: '0', marginTop: 0}}
+                                className='form-control me-2 w-auto' type='search'
+                                placeholder='Search' aria-labelledby='Search'
+                                onChange={e => setSearch(e.target.value)}/>
+                            <button
+                                style={{borderRadius: '0', height: '38px'}}
+                                className='btn btn-outline-dark' onClick={() => searchHandleChange()}>Search
                             </button>
                         </div>
+
                     </div>
                     <div className='col-4'>
                         <div className='dropdown'>
@@ -388,7 +447,7 @@ export const Product = () => {
                                 {searchCategory}
                             </button>
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li onClick={() => searchCategoryHandleChange('All')}>
+                                <li onClick={() => searchCategoryHandleChange('All category')}>
                                     <a className="dropdown-item">
                                         All category
                                     </a>
@@ -397,32 +456,32 @@ export const Product = () => {
                                     <a className="dropdown-item">
                                         Engagement Rings </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('wedding bands')}>
+                                <li onClick={() => searchCategoryHandleChange('Wedding Bands')}>
                                     <a className="dropdown-item">
                                         Wedding Bands
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('men diamond ring')}>
+                                <li onClick={() => searchCategoryHandleChange('Men diamond ring')}>
                                     <a className="dropdown-item">
                                         Men diamond ring
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('women diamond ring')}>
+                                <li onClick={() => searchCategoryHandleChange('Women diamond ring')}>
                                     <a className="dropdown-item">
                                         Women diamond ring
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('necklaces')}>
+                                <li onClick={() => searchCategoryHandleChange('Diamond Necklaces')}>
                                     <a className="dropdown-item">
                                         Necklaces
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('earrings')}>
+                                <li onClick={() => searchCategoryHandleChange('Diamond Earrings')}>
                                     <a className="dropdown-item">
                                         Earrings
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('bracelets')}>
+                                <li onClick={() => searchCategoryHandleChange('Diamond Bracelets')}>
                                     <a className="dropdown-item">
                                         Bracelets
                                     </a>
@@ -430,9 +489,21 @@ export const Product = () => {
                             </ul>
                         </div>
                     </div>
+
                     {totalAmountOfProducts > 0 ?
                         <>
-                            <Table dataSource={products} columns={columns} rowKey="productId"/>
+                            <Table className="mt-5" dataSource={products} columns={columns} rowKey="productId"
+
+                                   pagination={false}/>
+                            <Pagination
+                                current={currentPage}
+                                total={totalAmountOfProducts}
+                                pageSize={10}
+                                onChange={handlePageChange}
+                                showSizeChanger={false}
+
+                                style={{textAlign: 'end', marginTop: '20px'}}
+                            />
                         </>
                         :
                         <div className='m-5'>
@@ -447,10 +518,16 @@ export const Product = () => {
                         handleChange={handleChange}
                         handleFileChange={handleFileChange}
                     />
+                    <UpdateProduct
+                        isOpen={isUpdating}
+                        onClose={toggleUpdateModal}
+                        onSubmit={handleUpdate}
+                        formData={formData}
+                        handleChange={handleChange}
+                        handleFileChange={handleFileChange}
+                    />
                 </div>
             </div>
         </div>
-
-
     );
 }

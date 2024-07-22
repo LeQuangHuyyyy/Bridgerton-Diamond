@@ -11,13 +11,16 @@ export const CartPage = () => {
     const [httpError, setHttpError] = useState(null);
     const [updateFlag, setUpdateFlag] = useState(false);
 
-
     useEffect(() => {
-        const fetchProducts = async () => {
+        fetchProducts();
+        window.scrollTo(0, 0);
+    }, [updateFlag]);
+
+    const fetchProducts = async () => {
+        try {
             const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/cart/cart";
 
             const addProductRequests = localStorage.getItem("cart");
-            console.log(addProductRequests);
             const response = await fetch(baseUrl, {
                 method: 'POST',
                 headers: {
@@ -34,7 +37,6 @@ export const CartPage = () => {
             const responseJson = await response.json();
             const responseData = responseJson.data.content;
 
-            console.log(responseData);
             const loadedProducts: CartModel[] = [];
 
             for (const key in responseData) {
@@ -51,14 +53,11 @@ export const CartPage = () => {
             }
             setProducts(loadedProducts);
             setIsLoading(false);
-        };
-        fetchProducts().catch((error: any) => {
+        } catch (error: any) {
             setIsLoading(false);
             setHttpError(error.message);
-        })
-        window.scrollTo(0, 0);
-    }, [updateFlag]);
-
+        }
+    };
     if (isLoading) {
         return (
             <SpinnerLoading/>
@@ -110,7 +109,9 @@ export const CartPage = () => {
                         <thead>
                         <tr>
                             <td colSpan={6}>
-                                <button style={{backgroundColor: '#001529'}} className="text-white" onClick={handleGoBack}>Continue Shopping</button>
+                                <button style={{backgroundColor: '#001529'}} className="text-white"
+                                        onClick={handleGoBack}>Continue Shopping
+                                </button>
                             </td>
                         </tr>
                         <tr className='text-center'>
@@ -124,7 +125,8 @@ export const CartPage = () => {
                         </thead>
                         <tbody>
                         {products.map((product) => (
-                            <CartProduct product={product} key={product.productId + product.size} onRemoveProduct={removeProduct}/>
+                            <CartProduct product={product} key={product.productId + product.size}
+                                         onRemoveProduct={removeProduct}/>
                         ))}
                         <tr>
                             <td colSpan={5} style={{color: 'green'}} className="text-right"><strong>Total

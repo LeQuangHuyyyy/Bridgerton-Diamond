@@ -1,5 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {Modal, Form, Input, Select, Switch, Button} from 'antd';
 
 interface UpdateAccountProps {
     isOpen: boolean;
@@ -14,159 +15,144 @@ interface UpdateAccountProps {
         status: string;
     };
     handleChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void;
+    handleStatusChange: (checked: boolean) => void;
 }
 
-const UpdateAccount: React.FC<UpdateAccountProps> = ({isOpen, onClose, onSubmit, formData, handleChange}) => {
+const {Option} = Select;
+
+const UpdateAccount: React.FC<UpdateAccountProps> = ({
+                                                         isOpen,
+                                                         onClose,
+                                                         onSubmit,
+                                                         formData,
+                                                         handleChange,
+                                                         handleStatusChange
+                                                     }) => {
+    const validateEmail = (_: any, value: any) => {
+        if (!value || /^\S+@\S+\.\S+$/.test(value)) {
+            return Promise.resolve();
+        }
+        return Promise.reject('The email must contain "@" and "."');
+    };
+
+    const validateNoWhitespace = (_: any, value: any) => {
+        if (!value || value.trim() !== "") {
+            return Promise.resolve();
+        }
+        return Promise.reject('Input cannot be only whitespace');
+    };
+
+    const validatePassword = (_: any, value: any) => {
+        if (!value || /^[0-9]{6,}$/.test(value)) {
+            return Promise.resolve();
+        }
+        return Promise.reject('Password must be at least 6 numeric characters.');
+    };
+
     return (
-        <div>
-            {isOpen && (
-                <div
-                    id="updateProductModal"
-                    tabIndex={-1}
-                    aria-hidden="true"
-                    className="modal fade show d-block"
-                    style={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+
+        <Form
+            layout="vertical"
+            initialValues={formData}
+            onFinish={onSubmit}
+        >
+            <Form.Item
+                label="Name"
+                name="name"
+                rules={[
+                    {required: true, message: 'Please input name!'},
+                    {min: 1, max: 50, message: 'Name length limit must be in range 1 – 50 characters.'},
+                    {pattern: /^[A-Za-z\s]+$/, message: 'Name only contains alphabetical characters.'},
+                    {validator: validateNoWhitespace}
+                ]}
+            >
+                <Input
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Name"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Phone Number"
+                name="phoneNumber"
+                rules={[
+                    {required: true, message: 'Please input user phone number!'},
+                    {len: 10, message: 'Phone number length limit must be 10 characters.'},
+                    {pattern: /^[0-9]+$/, message: 'Phone number only contains numeric characters.'},
+                    {validator: validateNoWhitespace}
+                ]}
+            >
+                <Input
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    placeholder="Phone Number"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Email"
+                name="email"
+                rules={[
+                    {required: true, message: 'Please input user email!'},
+                    {validator: validateEmail}
+                ]}
+            >
+                <Input
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Email"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Address"
+                name="address"
+                rules={[
+                    {required: true, message: 'Please input user address!'},
+                    {validator: validateNoWhitespace}
+                ]}
+            >
+                <Input
+                    value={formData.address}
+                    onChange={handleChange}
+                    placeholder="Address"
+                />
+            </Form.Item>
+            <Form.Item
+                label="Function"
+                name="role"
+                rules={[{required: true, message: 'Please select a role!'}]}
+            >
+                <Select
+                    value={formData.role}
+                    onChange={(value) => handleChange({
+                        target: {
+                            name: 'role',
+                            value
+                        }
+                    } as React.ChangeEvent<HTMLSelectElement>)}
+                    placeholder="Select Role"
                 >
-                    <div className="modal-dialog modal-lg modal-dialog-centered">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Update User</h5>
-                                <button
-                                    onClick={onClose}
-                                    type="button"
-                                    className="btn-close"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"
-                                ></button>
-                            </div>
-                            <div className="modal-body">
-                                <form onSubmit={onSubmit}>
-                                    <div className="mb-3">
-                                        <label htmlFor="name" className="form-label">
-                                            Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            id="name"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            placeholder="Erisha"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="email" className="form-label">
-                                            Email
-                                        </label>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            id="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            placeholder="meesha123@gmail.com"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="phone" className="form-label">
-                                            Phone
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="phoneNumber"
-                                            id="phone"
-                                            value={formData.phoneNumber}
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            placeholder="09*******"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="address" className="form-label">
-                                            Address
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="address"
-                                            id="address"
-                                            value={formData.address}
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            placeholder="Ho Chi Minh City"
-                                            required
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="role" className="form-label">
-                                            Role
-                                        </label>
-                                        <select
-                                            id="role"
-                                            name="role"
-                                            value={formData.role}
-                                            className="form-select"
-                                            onChange={handleChange}
-                                        >
-                                            <option value="" disabled>
-                                                Select roles
-                                            </option>
-                                            <option value="CUSTOMER">Customer</option>
-                                            <option value="ADMIN">Admin</option>
-                                            <option value="MANAGER">Manager</option>
-                                            <option value="DELIVERY_STAFF">Delivery Staff</option>
-                                            <option value="SALE_STAFF">Sale Staff</option>
-                                        </select>
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="status" className="form-label">
-                                            Status
-                                        </label>
-                                        <div className="form-check">
-                                            <input
-                                                id="active-radio"
-                                                type="radio"
-                                                value="true"
-                                                name="status"
-                                                checked={formData.status === 'true'}
-                                                onChange={handleChange}
-                                                className="form-check-input"
-                                            />
-                                            <label htmlFor="active-radio" className="form-check-label">
-                                                Active
-                                            </label>
-                                        </div>
-                                        <div className="form-check">
-                                            <input
-                                                id="suspended-radio"
-                                                type="radio"
-                                                value="false"
-                                                name="status"
-                                                checked={formData.status === 'false'}
-                                                onChange={handleChange}
-                                                className="form-check-input"
-                                            />
-                                            <label htmlFor="suspended-radio" className="form-check-label">
-                                                Suspended
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="submit" className="btn btn-primary">
-                                            Update Account
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
+                    <Option value="CUSTOMER">Customer</Option>
+                    <Option value="ADMIN">Admin</Option>
+                    <Option value="MANAGER">Manager</Option>
+                    <Option value="DELIVERY_STAFF">Delivery Staff</Option>
+                    <Option value="SALE_STAFF">Sale Staff</Option>
+                </Select>
+            </Form.Item>
+            <Form.Item label="Status">
+                <Switch
+                    checked={formData.status === 'true'}
+                    onChange={handleStatusChange}
+                    checkedChildren="Active"
+                    unCheckedChildren="Suspended"
+                />
+            </Form.Item>
+            <Form.Item>
+                <Button type="primary" htmlType="submit">Create</Button>
+                <Button type="default" onClick={onClose} style={{marginLeft: '10px'}}>Close</Button>
+            </Form.Item>
+        </Form>
+
     );
 };
 

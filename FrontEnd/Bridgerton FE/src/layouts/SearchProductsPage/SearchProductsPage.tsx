@@ -22,7 +22,6 @@ export const SearchProductsPage = () => {
     }
     useEffect(() => {
         const fetchProducts = async () => {
-            window.scrollTo(0, 0)
             const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/home";
             let url: string = '';
             if (searchUrl === '') {
@@ -101,12 +100,13 @@ export const SearchProductsPage = () => {
     const searchCategoryHandleChange = (value: string) => {
         setCurrentPage(1);
         if (
-            value.toLowerCase() === 'engagement rings' ||
-            value.toLowerCase() === 'wedding bands' ||
-            value.toLowerCase() === 'men diamond ring' ||
-            value.toLowerCase() === 'necklace' ||
-            value.toLowerCase() === 'earrings' ||
-            value.toLowerCase() === 'bracelets'
+            value === 'Engagement Rings' ||
+            value === 'Wedding Bands' ||
+            value === 'Women diamond ring' ||
+            value === 'Men diamond ring' ||
+            value === 'Diamond Necklaces' ||
+            value === 'Diamond Earrings' ||
+            value === 'Diamond Bracelets'
         ) {
             setSearchCategory(value);
             setSearchUrl(`/by-category-sorted-by-price?categoryName=${value}&page=<pageNumber>&size=${productsPerPage}`)
@@ -136,12 +136,10 @@ export const SearchProductsPage = () => {
                     <div
                         style={{backgroundColor: '#F9F9F9'}}
                         className="col-4 col-md-6 container d-flex justify-content-center align-items-center custom-container">
-                        <div style={{marginLeft: '100px', marginRight: '100px'}} className="ml-2">
+                        <div style={{marginLeft: '100px',marginRight: '100px'}} className="ml-2">
                             <h1 className="custom-heading">Le Voyage Recommencé</h1>
-                            <p style={{marginTop: '20px'}} className="custom-paragraph-search">
-                                Our diamonds exemplify exceptional quality and timeless elegance. With brilliant cuts
-                                and flawless clarity, each piece reflects our dedication to perfection. Discover
-                                Bridgerton's refined beauty, where every gem tells a story of elegance and excellence.
+                            <p style={{marginTop:'20px'}} className="custom-paragraph-search">
+                                Our diamonds exemplify exceptional quality and timeless elegance. With brilliant cuts and flawless clarity, each piece reflects our dedication to perfection. Discover Bridgerton's refined beauty, where every gem tells a story of elegance and excellence.
                             </p>
                         </div>
                     </div>
@@ -174,7 +172,7 @@ export const SearchProductsPage = () => {
                             </button>
                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li onClick={() => searchCategoryHandleChange('All')}>
-                                    <a className="dropdown-item">
+                                <a className="dropdown-item">
                                         All category
                                     </a>
                                 </li>
@@ -187,27 +185,27 @@ export const SearchProductsPage = () => {
                                         Wedding Bands
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('Men Diamond Ring')}>
+                                <li onClick={() => searchCategoryHandleChange('Men diamond ring')}>
                                     <a className="dropdown-item">
                                         Men diamond ring
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('Women Diamond Ring')}>
+                                <li onClick={() => searchCategoryHandleChange('Women diamond ring')}>
                                     <a className="dropdown-item">
                                         Women diamond ring
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('Necklace')}>
+                                <li onClick={() => searchCategoryHandleChange('Diamond Necklaces')}>
                                     <a className="dropdown-item">
                                         Necklace
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('Earrings')}>
+                                <li onClick={() => searchCategoryHandleChange('Diamond Earrings')}>
                                     <a className="dropdown-item">
                                         Earrings
                                     </a>
                                 </li>
-                                <li onClick={() => searchCategoryHandleChange('Bracelets')}>
+                                <li onClick={() => searchCategoryHandleChange('Diamond Bracelets')}>
                                     <a className="dropdown-item">
                                         Bracelets
                                     </a>
@@ -229,7 +227,7 @@ export const SearchProductsPage = () => {
                         </>
                         :
                         <div className='m-5'>
-                            <h3>Can't find what you are looking for?</h3>
+                            <h3>No results found</h3>
                         </div>
                     }
                     {totalPages > 1 &&

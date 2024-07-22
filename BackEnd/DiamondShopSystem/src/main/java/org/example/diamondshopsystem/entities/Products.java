@@ -76,7 +76,7 @@ public class Products {
     @JsonBackReference
     private Set<Diamond> diamonds = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinColumn(name = "warranties_id")
     @JsonBackReference
     private Warranties warranties;

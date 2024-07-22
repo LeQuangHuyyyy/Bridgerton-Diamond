@@ -181,7 +181,6 @@ h2 {
 
 .main-color {
     background-color: #001529;
-    margin-top: 100px;
 }
 
 .product--image {
@@ -284,7 +283,7 @@ h2 {
 
 .custom-header {
     position: fixed;
-    top: 90px;
+    top: 78px;
     z-index: 2;
     width: 100%;
     background: #001529;
@@ -295,7 +294,6 @@ h2 {
     align-items: center;
     backdrop-filter: blur(10px);
     transition: transform 0.3s ease, top 0.3s ease;
-
 }
 
 .custom-header.hidden {
@@ -307,13 +305,14 @@ h2 {
     justify-content: center;
     align-items: center;
     color: white;
+    margin-left: 20px;
 }
 
 .nav-link {
     color: white;
     font-size: 16px;
     text-decoration: none;
-    padding: 0 15px;
+    padding: 0 10px;
     transition: color 0.3s ease;
     font-family: 'Petit Formal Script', cursive;
 
@@ -337,9 +336,9 @@ h2 {
 
 .login-link {
     color: white; /* Màu vàng nhạt */
-    font-size: 20px;
+    font-size: 16px;
     text-decoration: none;
-    padding: 0 15px;
+    padding: 0 10px;
     transition: color 0.3s ease;
 }
 

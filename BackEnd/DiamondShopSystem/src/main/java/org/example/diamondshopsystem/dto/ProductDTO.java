@@ -36,6 +36,7 @@ public class ProductDTO {
     private String image3;
 
     private String image4;
+
     private double warrantiesYear;
 
     private String certificateImage;

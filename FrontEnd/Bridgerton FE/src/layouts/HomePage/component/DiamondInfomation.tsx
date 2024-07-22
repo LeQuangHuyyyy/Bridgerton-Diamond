@@ -2,7 +2,7 @@ export const DiamondInformation = () => {
     return (
         <>
             <div className="mt-5 mb-5 text-center">
-                <h2 style={{marginBottom: '40px'}}>QUALITY FACTORS</h2>
+                <h2 style={{marginBottom: '45px', fontFamily: 'Playfair Display', color: '#001529', fontWeight: 'bold', fontSize: '45px'}}>QUALITY FACTORS</h2>
                 <h5 style={{fontFamily: 'Petit Formal Script, cursive', marginBottom: '40px'}}>The human contribution to
                     a diamond’s beauty is a well-executed cut.</h5>
             </div>

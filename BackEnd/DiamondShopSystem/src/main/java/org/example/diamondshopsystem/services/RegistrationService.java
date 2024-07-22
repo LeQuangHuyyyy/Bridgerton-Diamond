@@ -7,6 +7,7 @@ import org.example.diamondshopsystem.dto.UserDTO;
 import org.example.diamondshopsystem.dto.WarrantyDTO;
 import org.example.diamondshopsystem.entities.Role;
 import org.example.diamondshopsystem.entities.User;
+import org.example.diamondshopsystem.payload.requests.ContactRequest;
 import org.example.diamondshopsystem.payload.requests.SignupRequest;
 import org.example.diamondshopsystem.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,27 +116,29 @@ public class RegistrationService {
 
         String htmlTemplate = readHtmlTemplate("warranties.html");
 
-        htmlTemplate = htmlTemplate.replace("${warrantiesCode}", String.valueOf(warrantyDTO.getWarrantyCode()))
-                .replace("${warrantyStartDate}", warrantyDTO.getWarrantyStartDate().toString().substring(0, 10))
-                .replace("${warrantyExpirationDate}", warrantyDTO.getWarrantyExpirationDate().toString().substring(0, 10))
-                .replace("${orderId}", String.valueOf(warrantyDTO.getOrderId()))
-                .replace("${productId}", String.valueOf(warrantyDTO.getProductId()))
-                .replace("${productName}", warrantyDTO.getProductName());
+        htmlTemplate = htmlTemplate.replace("${warrantiesCode}", String.valueOf(warrantyDTO.getWarrantyCode())).replace("${warrantyStartDate}", warrantyDTO.getWarrantyStartDate().toString().substring(0, 10)).replace("${warrantyExpirationDate}", warrantyDTO.getWarrantyExpirationDate().toString().substring(0, 10)).replace("${orderId}", String.valueOf(warrantyDTO.getOrderId())).replace("${productId}", String.valueOf(warrantyDTO.getProductId())).replace("${productName}", warrantyDTO.getProductName());
 
         if (warrantyDTO.getDiamondDto() != null && !warrantyDTO.getDiamondDto().isEmpty()) {
             DiamondDTO diamond = warrantyDTO.getDiamondDto().get(0);
-            htmlTemplate = htmlTemplate.replace("${carat}", String.valueOf(diamond.getCarat()))
-                    .replace("${price}", String.valueOf(diamond.getPrice()))
-                    .replace("${cut}", diamond.getCut())
-                    .replace("${color}", diamond.getColor())
-                    .replace("${clarity}", diamond.getClarity());
+            htmlTemplate = htmlTemplate.replace("${carat}", String.valueOf(diamond.getCarat())).replace("${price}", String.valueOf(diamond.getPrice())).replace("${cut}", diamond.getCut()).replace("${color}", diamond.getColor()).replace("${clarity}", diamond.getClarity());
         } else {
-            htmlTemplate = htmlTemplate.replace("${carat}", "")
-                    .replace("${price}", "")
-                    .replace("${cut}", "")
-                    .replace("${color}", "")
-                    .replace("${clarity}", "");
+            htmlTemplate = htmlTemplate.replace("${carat}", "").replace("${price}", "").replace("${cut}", "").replace("${color}", "").replace("${clarity}", "");
         }
+
+        helper.setText(htmlTemplate, true);
+        mailSender.send(message);
+    }
+
+    public void sendContactToManager(ContactRequest contactRequest, String email) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setTo("lequanghuy45159@gmail.com");
+        helper.setSubject(contactRequest.getSubject());
+
+        String htmlTemplate = readHtmlTemplate("....html");
+        htmlTemplate = htmlTemplate.replace("${email}", contactRequest.getEmail())
+                .replace("${name}", contactRequest.getName())
+                .replace("${message}", contactRequest.getMessage());
 
         helper.setText(htmlTemplate, true);
         mailSender.send(message);

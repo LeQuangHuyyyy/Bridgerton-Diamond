@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Button, Space, Spin, Table, Tag} from 'antd';
+import {Alert, Button, message, Space, Spin, Table, Tag} from 'antd';
 import FooterMapProps from "../ContactUs/component/FooterMapProps";
 import OrderModel from "../../models/OrderModel";
 import {useHistory} from "react-router-dom";
@@ -17,50 +17,51 @@ const DeliveryStaff: React.FC = () => {
     const history = useHistory();
 
     useEffect(() => {
-        const fetchOrders = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/delivery/ViewOrderDelivery";
-            const url: string = `${baseUrl}`;
-            const response = await fetch(url, { headers: headers });
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
-            }
-            const responseJson = await response.json();
-            const responseData = responseJson;
-            const loadedOrders: OrderModel[] = [];
-            for (const key in responseData) {
-                loadedOrders.push({
-                    orderId: responseData[key].orderId,
-                    orderDate:responseData[key].orderDate,
-                    orderTotalAmount: responseData[key].orderTotalAmount,
-                    orderDeliveryAddress: responseData[key].orderDeliveryAddress,
-                    status: responseData[key].status,
-                    discountCode: responseData[key].discountCode,
-                    customerId: responseData[key].customerId,
-                    saleId: responseData[key].saleId,
-                    deliveryId: responseData[key].deliveryId,
-                    orderDetails: responseData[key].orderDetails,
-                    feedbacks: responseData[key].feedbacks,
-                    warranties: responseData[key].warranties,
-                    invoices: responseData[key].invoices,
-                    payments: responseData[key].payments,
-                    phoneNumber:responseData[key].phoneNumber,
-                    username: responseData[key].username
-                });
-            }
-            setOrders(loadedOrders);
-            setIsLoading(false);
-        };
-        fetchOrders().catch((error: any) => {
-            setIsLoading(false);
-            setHttpError(error.message);
-            console.log(error);
-        })
-    }, []);
+        fetchOrders();
 
+    }, []);
+    const fetchOrders = async () => {
+        const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/delivery/ViewOrderDelivery";
+        const url: string = `${baseUrl}`;
+        const response = await fetch(url, {headers: headers});
+        if (!response.ok) {
+            throw new Error('Something went wrong!');
+        }
+        const responseJson = await response.json();
+        const responseData = responseJson;
+        const loadedOrders: OrderModel[] = [];
+        for (const key in responseData) {
+            loadedOrders.push({
+                orderId: responseData[key].orderId,
+                orderDate: responseData[key].orderDate,
+                orderTotalAmount: responseData[key].orderTotalAmount,
+                orderDeliveryAddress: responseData[key].orderDeliveryAddress,
+                status: responseData[key].status,
+                discountCode: responseData[key].discountCode,
+                customerId: responseData[key].customerId,
+                saleId: responseData[key].saleId,
+                deliveryId: responseData[key].deliveryId,
+                orderDetails: responseData[key].orderDetails,
+                feedbacks: responseData[key].feedbacks,
+                warranties: responseData[key].warranties,
+                invoices: responseData[key].invoices,
+                payments: responseData[key].payments,
+                phoneNumber: responseData[key].phoneNumber,
+                username: responseData[key].username
+            });
+        }
+        setOrders(loadedOrders);
+        setIsLoading(false);
+    };
+    fetchOrders().catch((error: any) => {
+        setIsLoading(false);
+        setHttpError(error.message);
+        console.log(error);
+    })
     if (isLoading) {
         return (
             <div className="spinner container m-5 d-flex justify-content-center align-items-center vh-100">
-                <Spin size="large" />
+                <Spin size="large"/>
             </div>
         );
     }
@@ -68,7 +69,7 @@ const DeliveryStaff: React.FC = () => {
     if (httpError) {
         return (
             <div className="container">
-                <Alert message="Error" description={httpError} type="error" showIcon />
+                <Alert message="Error" description={httpError} type="error" showIcon/>
             </div>
         );
     }
@@ -96,17 +97,46 @@ const DeliveryStaff: React.FC = () => {
                 return 'gold';
         }
     };
-    const handleRowClick = (event: any, orderId: number) => {
-        const actionColumn = event.target.closest('.ant-space');
-        if (actionColumn) {
-            return;
+    // const handleRowClick = (event: any, orderId: number) => {
+    //     const actionColumn = event.target.closest('.ant-space');
+    //     if (actionColumn) {
+    //         return;
+    //     }
+    //     navigateToOrderDetails(orderId);
+    // };
+
+    const navigateToOrderDetails = async (e: React.FormEvent, orderId: number) => {
+        e.preventDefault();
+        history.push(`/deliveryDetailOrder/${orderId}`)
+    };
+    const confirmOrderToReceived = async (e: React.FormEvent, orderId: number) => {
+        e.preventDefault();
+        try {
+            console.log(orderId);
+
+            const url = `https://deploy-be-b176a8ceb318.herokuapp.com/order/setOrderToReceived?orderId=${orderId}`;
+
+            const response = await fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...headers
+                },
+                method: "POST",
+            });
+
+            if (response.ok) {
+                message.success("The order has been received successfully");
+                fetchOrders();
+            } else {
+                const errorMessage = await response.text();
+                message.error(`Failed to confirm the order: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error(error);
+            message.error("Failed to confirm the order");
         }
-        navigateToOrderDetails(orderId);
     };
 
-    const navigateToOrderDetails = (orderId: number) => {
-        history.push(`/deliverydetailorder/${orderId}`);
-    };
 
     const columns = [
         {
@@ -156,10 +186,12 @@ const DeliveryStaff: React.FC = () => {
             render: (text: any, record: any) => (
                 <Space size="middle">
                     <Button
-                        icon={<EditOutlined />}
-                        onClick={() => navigateToOrderDetails(record.orderId)}
+                        icon={<EditOutlined/>}
+                        onClick={(event) => navigateToOrderDetails(event, record.orderId)}
                     />
-                    <Button>
+                    <Button
+                        onClick={(event) => confirmOrderToReceived(event, record.orderId)}
+                    >
                         Received
                     </Button>
                 </Space>
@@ -178,11 +210,11 @@ const DeliveryStaff: React.FC = () => {
                 columns={columns}
                 dataSource={orders}
                 rowKey="orderId"
-                onRow={(record) => {
-                    return {
-                        onClick: (event) => handleRowClick(event, record.orderId),
-                    };
-                }}
+                // onRow={(record) => {
+                //     return {
+                //         onClick: (event) => handleRowClick(event, record.orderId),
+                //     };
+                // }}
             />
         </div>
     );

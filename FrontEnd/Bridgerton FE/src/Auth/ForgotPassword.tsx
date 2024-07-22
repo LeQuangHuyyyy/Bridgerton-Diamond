@@ -1,5 +1,6 @@
 import React from "react";
-
+import './Login.css';
+import {message} from "antd";
 export const ForgotPassword = () => {
     const [email, setEmail] = React.useState('');
 
@@ -19,25 +20,17 @@ export const ForgotPassword = () => {
         if (response.ok) {
             localStorage.setItem('email', email);
             window.location.href = '/reset-password'
+        }else{
+            message.error('The email is not registered. Try again!');
         }
     };
 
     return (
         <div className="login-container d-flex justify-content-center align-items-center"
              style={{position: "relative", height: "85vh"}}>
-            <div className="overlay bg-white" style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                zIndex: 1,
-                width: "100%",
-                height: "100%",
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-            }}></div>
-
-            <div className="login-register-container bg-white p-4 shadow-lg rounded-3"
+            <div className="login-register-container"
                  style={{position: "relative", zIndex: 2}}>
-                <form className="bg-white pt-1 pb-4 ps-4 pe-4"
+                <form className="form-container pt-1 pb-4 ps-4 pe-4"
                       style={{height: "200px", width: "370px", position: "relative"}}
                       onSubmit={handleSubmit}>
                     <h2 className="text-center mb-4">Email</h2>

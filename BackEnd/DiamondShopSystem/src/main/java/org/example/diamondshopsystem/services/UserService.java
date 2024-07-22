@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.example.diamondshopsystem.dto.UserDTO;
 import org.example.diamondshopsystem.entities.User;
+import org.example.diamondshopsystem.payload.requests.ContactRequest;
 import org.example.diamondshopsystem.repositories.UserRepository;
 import org.example.diamondshopsystem.services.Map.UserMapper;
 import org.example.diamondshopsystem.services.imp.UserServiceImp;
@@ -62,7 +63,7 @@ public class UserService implements UserServiceImp {
 
     @Transactional
     @Override
-    public UserDTO updateUser(int id, UserDTO userDTO)  {
+    public UserDTO updateUser(int id, UserDTO userDTO) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();

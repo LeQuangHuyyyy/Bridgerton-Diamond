@@ -30,6 +30,7 @@ const MyOrders: React.FC = () => {
 
     useEffect(() => {
         const fetchOrders = async () => {
+            window.scrollTo(0,0)
             if (userId) {
                 const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/order/userOrder?userId=${userId}`;
                 const url: string = `${baseUrl}`;
@@ -239,6 +240,7 @@ const MyOrders: React.FC = () => {
             <Table
                 columns={columns}
                 dataSource={orders}
+                pagination={{pageSize: 10, showSizeChanger: false}}
                 rowKey="orderId"
                 onRow={(record) => {
                     return {

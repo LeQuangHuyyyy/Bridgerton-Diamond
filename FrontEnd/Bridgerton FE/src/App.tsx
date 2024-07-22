@@ -13,7 +13,7 @@ import {ResetPassword} from "./Auth/ResetPassword";
 import {DiamondPricePage} from "./layouts/DiamondPrice/DiamondPricePage";
 import Checkout from "./layouts/CartPage/components/Checkout";
 import {SearchProductsPage} from "./layouts/SearchProductsPage/SearchProductsPage";
-import {Table} from "./layouts/Admin/Table";
+import {AccountTable} from "./layouts/Admin/AccountTable";
 import {jwtDecode} from "jwt-decode";
 import ContactUs from "./layouts/ContactUs/ContactUs";
 import {SaleStaffPage} from "./layouts/SaleStaff/SaleStaffPage";
@@ -31,16 +31,17 @@ import MyOrders from "./layouts/MyAccount/MyOrders";
 import ChangePassword from "./layouts/MyAccount/ChangePassword";
 import MyOrderDetail from "./layouts/MyAccount/MyOrderDetail";
 import OrderDeliveryDetail from "./layouts/DeliveryStaff/OrderDeliveryDetail";
+import {DiamondEducation} from "./layouts/HomePage/component/DiamondEducation";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
 
     useEffect(() => {
         const data = localStorage.getItem('token');
-
         if (data) {
             const decodedToken = jwtDecode(data) as { role: string };
             setToken(decodedToken.role);
+
         } else {
             setToken(undefined);
         }
@@ -49,164 +50,173 @@ export const App = () => {
     return (
         <div className='d-flex flex-column min-vh-100'>
             <Router>
+                <Switch>
+                    {token === undefined && (
+                        <div className='flex-grow-1 w-100'>
+                            <Navbar/>
+                            <Route path='/diamond-education'>
+                                <DiamondEducation/>
+                            </Route>
+                            <Route path='/' exact>
+                                <HomePage/>
+                            </Route>
+                            <Route path='/home'>
+                                <HomePage/>
+                            </Route>
+                            <Route path='/shop'>
+                                <SearchProductsPage/>
+                            </Route>
+                            <Route path='/detail/:productId'>
+                                <ProductCheckoutPage/>
+                            </Route>
+                            <Route path='/price'>
+                                <DiamondPricePage/>
+                            </Route>
+                            <Route path='/cart'>
+                                <CartPage/>
+                            </Route>
+                            <Route path='/contactus'>
+                                <ContactUs/>
+                            </Route>
+                            <Route path='/login'>
+                                <Login/>
+                            </Route>
+                            <Route path='/verify-register'>
+                                <VerifyCode/>
+                            </Route>
+                            <Route path='/forgot-password'>
+                                <ForgotPassword/>
+                            </Route>
+                            <Route path='/reset-password'>
+                                <ResetPassword/>
+                            </Route>
+                            <Route path='/ordersuccess'>
+                                <OrderSuccessPage/>
+                            </Route>
+                            <Footer/>
+                        </div>
+                    )
+                    }
+                    {token === 'CUSTOMER' && (
+                        <div className='flex-grow-1 w-100'>
+                            <Navbar/>
 
-                {token === undefined && (
-                    <div className='flex-grow-1 w-100'>
-                        <Navbar/>
-                        <Route path='/' exact>
-                            <HomePage/>
-                        </Route>
-                        <Route path='/home'>
-                            <HomePage/>
-                        </Route>
-                        <Route path='/shop'>
-                            <SearchProductsPage/>
-                        </Route>
-                        <Route path='/detail/:productId'>
-                            <ProductCheckoutPage/>
-                        </Route>
-                        <Route path='/price'>
-                            <DiamondPricePage/>
-                        </Route>
-                        <Route path='/cart'>
-                            <CartPage/>
-                        </Route>
-                        <Route path='/contactus'>
-                            <ContactUs/>
-                        </Route>
-                        <Route path='/login'>
-                            <Login/>
-                        </Route>
-                        <Route path='/verify-register'>
-                            <VerifyCode/>
-                        </Route>
-                        <Route path='/forgot-password'>
-                            <ForgotPassword/>
-                        </Route>
-                        <Route path='/reset-password'>
-                            <ResetPassword/>
-                        </Route>
-
-                        <Footer/>
-                    </div>
-                )
-                }
-                {token === 'CUSTOMER' && (
-                    <div className='flex-grow-1 w-100'>
-                        <Navbar/>
-                        <Route path='/' exact>
-                            <HomePage/>
-                        </Route>
-                        <Route path='/home'>
-                            <HomePage/>
-                        </Route>
-                        <Route path='/cart'>
-                            <CartPage/>
-                        </Route>
-                        <Route path='/checkout'>
-                            <Checkout/>
-                        </Route>
-                        <Route path='/shop'>
-                            <SearchProductsPage/>
-                        </Route>
-                        <Route path='/detail/:productId'>
-                            <ProductCheckoutPage/>
-                        </Route>
-                        <Route path='/price'>
-                            <DiamondPricePage/>
-                        </Route>
-                        <Route path='/contactus'>
-                            <ContactUs/>
-                        </Route>
-                        <Route path='/login'>
-                            <Login/>
-                        </Route>
-                        <Route path='/verify-register'>
-                            <VerifyCode/>
-                        </Route>
-                        <Route path='/forgot-password'>
-                            <ForgotPassword/>
-                        </Route>
-                        <Route path='/reset-password'>
-                            <ResetPassword/>
-                        </Route>
-                        <Route path='/ordersuccess'>
-                            <OrderSuccessPage/>
-                        </Route>
-
-                        <Route path='/myaccount'>
-                            <Account>
-                                <InformationAccount/>
-                            </Account>
-                        </Route>
-                        <Route path='/myorders'>
-                            <Account>
-                                <MyOrders/>
-                            </Account>
-                        </Route>
-                        <Route path='/myorderdetail/:orderId'>
-                            <Account>
-                                <MyOrderDetail/>
-                            </Account>
-                        </Route>
-                        <Route path='/changepassword'>
-                            <Account>
-                                <ChangePassword/>
-                            </Account>
-                        </Route>
-                        <Footer/>
-                    </div>
-                )
-                }
-                {token === 'ADMIN' && (
-                    <>
-                        <Redirect from='/' to='/admin' exact/>
-                        <Route path='/admin'>
-                            <Table/>
-                        </Route>
-                    </>
-                )}
-                {token === 'MANAGER' && (
-                    <>
-                        <SideBar>
-                            <Redirect from='/' to='/dashboard' exact/>
-                            <Route path='/promotion'>
-                                <Promotion/>
+                            <Route path='/diamond-education'>
+                                <DiamondEducation/>
                             </Route>
-                            <Route path='/dashboard'>
-                                <Dashboard/>
+                            <Route path='/' exact>
+                                <HomePage/>
                             </Route>
-                            <Route path='/product'>
-                                <Product/>
+                            <Route path='/home'>
+                                <HomePage/>
                             </Route>
-                            <Route path='/diamond'>
-                                <Diamond/>
+                            <Route path='/cart'>
+                                <CartPage/>
                             </Route>
-                        </SideBar>
-                    </>
-                )}
-                {token === 'SALE_STAFF' && (
-                    <>
-                        <Redirect from='/' to='/salestaff' exact/>
-                        <Route path='/salestaff'>
-                            <SaleStaffPage/>
-                        </Route>
-                        <Route path='/orderdetail/:orderId'>
-                            <OrderDetail/>
-                        </Route>
-                    </>
-                )}
-                {token === 'DELIVERY_STAFF' && (
-                    <>
-                        <Redirect from='/' to='/deliverystaff' exact/>
-                        <Route path='/deliverystaff'>
-                            <DeliveryStaff/>
-                        </Route>
-                        <Route path='/deliverydetailorder/:orderId'>
-                            <OrderDeliveryDetail/>
-                        </Route>
-                    </>
-                )}
+                            <Route path='/checkout'>
+                                <Checkout/>
+                            </Route>
+                            <Route path='/shop'>
+                                <SearchProductsPage/>
+                            </Route>
+                            <Route path='/detail/:productId'>
+                                <ProductCheckoutPage/>
+                            </Route>
+                            <Route path='/price'>
+                                <DiamondPricePage/>
+                            </Route>
+                            <Route path='/contactus'>
+                                <ContactUs/>
+                            </Route>
+                            <Route path='/login'>
+                                <Login/>
+                            </Route>
+                            <Route path='/verify-register'>
+                                <VerifyCode/>
+                            </Route>
+                            <Route path='/forgot-password'>
+                                <ForgotPassword/>
+                            </Route>
+                            <Route path='/reset-password'>
+                                <ResetPassword/>
+                            </Route>
+                            <Route path='/ordersuccess'>
+                                <OrderSuccessPage/>
+                            </Route>
+                            <Switch>
+                                <Route path='/myaccount'>
+                                    <Account>
+                                        <InformationAccount/>
+                                    </Account>
+                                </Route>
+                                <Route path='/myorders'>
+                                    <Account>
+                                        <MyOrders/>
+                                    </Account>
+                                </Route>
+                                <Route path='/myorderdetail/:orderId'>
+                                    <Account>
+                                        <MyOrderDetail/>
+                                    </Account>
+                                </Route>
+                                <Route path='/changepassword'>
+                                    <Account>
+                                        <ChangePassword/>
+                                    </Account>
+                                </Route>
+                            </Switch>
+                            <Footer/>
+                        </div>
+                    )
+                    }
+                    {token === 'ADMIN' && (
+                        <>
+                            <Route path='/admin'>
+                                <AccountTable/>
+                            </Route>
+                        </>
+                    )}
+                    {token === 'MANAGER' && (
+                        <>
+                            <SideBar>
+                                <Route path='/promotion'>
+                                    <Promotion/>
+                                </Route>
+                                <Route path='/dashboard'>
+                                    <Dashboard/>
+                                </Route>
+                                <Route path='/product'>
+                                    <Product/>
+                                </Route>
+                                <Route path='/diamond'>
+                                    <Diamond/>
+                                </Route>
+                            </SideBar>
+                        </>
+                    )}
+                    {token === 'SALE_STAFF' && (
+                        <>
+                            <Redirect from='/' to='/salestaff' exact/>
+                            <Route path='/salestaff'>
+                                <SaleStaffPage/>
+                            </Route>
+                            <Route path='/orderdetail/:orderId'>
+                                <OrderDetail/>
+                            </Route>
+                        </>
+                    )}
+                    {token === 'DELIVERY_STAFF' && (
+                        <>
+                            <Redirect from='/' to='/deliverystaff' exact/>
+                            <Route path='/deliverystaff'>
+                                <DeliveryStaff/>
+                            </Route>
+                            <Route path='/deliverydetailorder/:orderId'>
+                                <OrderDeliveryDetail/>
+                            </Route>
+                        </>
+                    )}
+                </Switch>
             </Router>
         </div>
     );
