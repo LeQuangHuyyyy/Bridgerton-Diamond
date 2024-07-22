@@ -277,15 +277,13 @@ public class OrderService implements OrderServiceImp {
         return price;
     }
 
-
-    ///CT: price this week -  priceLastWeek / lastweek
     @Override
     public double getProfit() {
         List<Order> orderListLastWeek = orderListLastWeek();
         List<Order> orderThisWeek = orderRepository.findAll();
 
-        double priceLastWeek = 0;
-        double priceThisWeek = 0;
+        BigDecimal priceLastWeek = BigDecimal.ZERO;
+        BigDecimal priceThisWeek = BigDecimal.ZERO;
 
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -294,22 +292,22 @@ public class OrderService implements OrderServiceImp {
         Date startOfThisWeek = calendar.getTime();
 
         for (Order o : orderListLastWeek) {
-            priceLastWeek += o.getOrderTotalAmount();
+            priceLastWeek = priceLastWeek.add(BigDecimal.valueOf(o.getOrderTotalAmount()));
         }
+
         for (Order o : orderThisWeek) {
             if (o.getOrderDate().after(startOfThisWeek) && o.getOrderDate().before(now) && o.getStatus().equals(OrderStatus.PAYMENT)) {
-                priceThisWeek += o.getOrderTotalAmount();
+                priceThisWeek = priceThisWeek.add(BigDecimal.valueOf(o.getOrderTotalAmount()));
             }
         }
 
-        double Profit = 0;
-        Profit = (priceThisWeek - priceLastWeek) / priceLastWeek;
+        if (priceLastWeek.compareTo(BigDecimal.ZERO) == 0) {
+            return 0;
+        }
 
-        DecimalFormat df = new DecimalFormat("#.##");
-        double LatestProduct = Double.parseDouble(df.format(Profit));
+        BigDecimal profit = priceThisWeek.subtract(priceLastWeek).divide(priceLastWeek, 2, BigDecimal.ROUND_HALF_UP);
 
-
-        return LatestProduct * 100;
+        return profit.multiply(BigDecimal.valueOf(100)).doubleValue();
     }
 
 
