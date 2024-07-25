@@ -51,11 +51,11 @@ export const Diamond: React.FC = () => {
 
 
     useEffect(() => {
-        fetchPromotions();
+        fetchDiamond();
     }, []);
 
 
-    const fetchPromotions = async () => {
+    const fetchDiamond = async () => {
         try {
             const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond/get-all', {
                 method: 'GET',
@@ -94,7 +94,7 @@ export const Diamond: React.FC = () => {
             console.log(formData)
             if (response.ok) {
                 setIsAddingNew(false);
-                fetchPromotions()
+                fetchDiamond()
             } else {
                 console.error('Failed to create diamond');
             }
@@ -118,7 +118,7 @@ export const Diamond: React.FC = () => {
 
             if (response.ok) {
                 setIsUpdating(false);
-                fetchPromotions();
+                fetchDiamond();
             } else {
                 console.error('Failed to update diamond');
             }
@@ -136,26 +136,28 @@ export const Diamond: React.FC = () => {
         }
     };
 
-    const handleDelete = async (e: React.FormEvent, diamondId: string) => {
-        e.preventDefault();
-        console.log(diamondId)
-        try {
-            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond/delete/${diamondId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${headers}`
-                }
-            });
-            if (response.ok) {
-                fetchPromotions();
-            } else {
-                console.error('Failed to delete diamond');
-            }
-        } catch (error) {
-            console.error('Error deleting diamond: ', error);
-        }
-    };
+    // const handleDelete = async (e: React.FormEvent, diamondId: string) => {
+    //     e.preventDefault();
+    //     console.log(diamondId)
+    //     try {
+    //         const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond/delete/${diamondId}`, {
+    //             method: 'DELETE',
+    //             headers: {
+    //                 'Authorization': `Bearer ${headers}`
+    //             }
+    //         });
+    //         if (response.ok) {
+    //             fetchDiamond();
+    //         } else {
+    //             console.error('Failed to delete diamond');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error deleting diamond: ', error);
+    //     }
+    // };
+
     const columns = [
+        {title: 'ID', dataIndex: 'diamondId', key: 'diamondId'},
         {title: 'Carat', dataIndex: 'carat', key: 'carat'},
         {title: 'Cut', dataIndex: 'cut', key: 'cut'},
         {title: 'Clarity', dataIndex: 'clarity', key: 'clarity'},

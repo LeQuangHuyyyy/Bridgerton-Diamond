@@ -253,6 +253,25 @@ public class OrderService implements OrderServiceImp {
         return orderDTOS;
     }
 
+    @Override
+    public List<OrderDTO> getOrderSoldInThisWeek() {
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        Date monday = calendar.getTime();
+
+        List<Order> orders = orderRepository.findAll();
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+
+        for (Order o : orders) {
+            if (o.getOrderDate().after(monday) && o.getStatus() == OrderStatus.PAYMENT) {
+                orderDTOList.add(orderMapper.getAllOrder(o));
+            }
+        }
+
+        return orderDTOList;
+    }
 
     @Override
     public List<OrderProductDetailRequest> getTotalProductInLastWeek() {
@@ -262,6 +281,21 @@ public class OrderService implements OrderServiceImp {
             for (OrderDetails od : o.getOrderDetails()) {
                 OrderProductDetailRequest orderProductDetailRequests = getOrderProductDetailRequest(od);
                 list.add(orderProductDetailRequests);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<OrderProductDetailRequest> getTotalProductInTHisWeek() {
+        List<Order> orders = orderRepository.findAll();
+        List<OrderProductDetailRequest> list = new ArrayList<>();
+        for (Order o : orders) {
+            if (o.getStatus() == OrderStatus.PAYMENT) {
+                for (OrderDetails od : o.getOrderDetails()) {
+                    OrderProductDetailRequest orderProductDetailRequests = getOrderProductDetailRequest(od);
+                    list.add(orderProductDetailRequests);
+                }
             }
         }
         return list;
@@ -314,7 +348,7 @@ public class OrderService implements OrderServiceImp {
     @Override
     public List<DiamondCategory> diamondSoldByCategory() {
         List<DiamondCategory> diamondCategories = new ArrayList<>();
-        List<Order> orders = orderListLastWeek();
+        List<Order> orders = orderRepository.findAll();
         List<String> days = new ArrayList<>();
         days.add("Mon");
         days.add("Tue");
@@ -329,23 +363,25 @@ public class OrderService implements OrderServiceImp {
             int roundQuantity = 0;
             int ovalQuantity = 0;
             for (Order o : orders) {
-                for (OrderDetails od : o.getOrderDetails()) {
-                    LocalDateTime localDateTime = LocalDateTime.ofInstant(o.getOrderDate().toInstant(), ZoneId.systemDefault());
-                    DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
-                    if (dayOfWeek.toString().substring(0, 3).equalsIgnoreCase(day)) {
-                        Products p = od.getProduct();
-                        Set<Diamond> diamonds = p.getDiamonds();
-                        for (Diamond d : diamonds) {
-                            switch (d.getCut().toLowerCase()) {
-                                case "heart":
-                                    heartQuantity++;
-                                    break;
-                                case "round":
-                                    roundQuantity++;
-                                    break;
-                                case "oval":
-                                    ovalQuantity++;
-                                    break;
+                if (o.getStatus() == OrderStatus.PAYMENT) {
+                    for (OrderDetails od : o.getOrderDetails()) {
+                        LocalDateTime localDateTime = LocalDateTime.ofInstant(o.getOrderDate().toInstant(), ZoneId.systemDefault());
+                        DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
+                        if (dayOfWeek.toString().substring(0, 3).equalsIgnoreCase(day)) {
+                            Products p = od.getProduct();
+                            Set<Diamond> diamonds = p.getDiamonds();
+                            for (Diamond d : diamonds) {
+                                switch (d.getCut().toLowerCase()) {
+                                    case "heart":
+                                        heartQuantity++;
+                                        break;
+                                    case "round":
+                                        roundQuantity++;
+                                        break;
+                                    case "oval":
+                                        ovalQuantity++;
+                                        break;
+                                }
                             }
                         }
                     }
@@ -371,36 +407,37 @@ public class OrderService implements OrderServiceImp {
         int DiamondEarrings = 0;
         int DiamondBracelets = 0;
 
-        List<Order> orders = orderListLastWeek();
-        ProductCategory productCategory = new ProductCategory();
+        List<Order> orders = orderRepository.findAll();
         for (Order o : orders) {
-            for (OrderDetails od : o.getOrderDetails()) {
-                Products products = od.getProduct();
-                Category category = products.getCategory();
+            if (o.getStatus() == OrderStatus.PAYMENT) {
+                for (OrderDetails od : o.getOrderDetails()) {
+                    Products products = od.getProduct();
+                    Category category = products.getCategory();
 
-                switch (category.getCategoryName()) {
-                    case "Engagement Rings":
-                        EngagementRings++;
-                        break;
-                    case "Wedding Bands":
-                        WeddingBands++;
-                        break;
-                    case "Men diamond ring":
-                        MenDiamondRing++;
-                        break;
-                    case "Women diamond ring":
-                        WomenDiamondRing++;
-                        break;
-                    case "Diamond Necklaces":
-                        DiamondNecklaces++;
-                        break;
-                    case "Diamond Earrings":
-                        DiamondEarrings++;
-                        break;
-                    case "Diamond Bracelets":
-                        DiamondBracelets++;
-                        break;
+                    switch (category.getCategoryName()) {
+                        case "Engagement Rings":
+                            EngagementRings++;
+                            break;
+                        case "Wedding Bands":
+                            WeddingBands++;
+                            break;
+                        case "Men diamond ring":
+                            MenDiamondRing++;
+                            break;
+                        case "Women diamond ring":
+                            WomenDiamondRing++;
+                            break;
+                        case "Diamond Necklaces":
+                            DiamondNecklaces++;
+                            break;
+                        case "Diamond Earrings":
+                            DiamondEarrings++;
+                            break;
+                        case "Diamond Bracelets":
+                            DiamondBracelets++;
+                            break;
 
+                    }
                 }
             }
         }
@@ -458,5 +495,16 @@ public class OrderService implements OrderServiceImp {
     @Override
     public List<OrderDetails> getDetailByOrderId(@RequestParam int orderId) {
         return orderDetailRepository.findByOrderId(orderId);
+    }
+
+    @Override
+    public void setOrderFromPaymentToCancel(int orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+        order.setStatus(OrderStatus.CANCELED);
+        try {
+            orderRepository.save(order);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalStateException("Cannot update order status. The new status is not allowed.", e);
+        }
     }
 }

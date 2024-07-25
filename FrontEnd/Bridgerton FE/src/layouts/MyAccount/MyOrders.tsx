@@ -30,7 +30,7 @@ const MyOrders: React.FC = () => {
 
     useEffect(() => {
         const fetchOrders = async () => {
-            window.scrollTo(0,0)
+            window.scrollTo(0, 0)
             if (userId) {
                 const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/order/userOrder?userId=${userId}`;
                 const url: string = `${baseUrl}`;
@@ -118,7 +118,7 @@ const MyOrders: React.FC = () => {
         history.push(`/myorderdetail/${orderId}`);
     };
 
-    const handlePayment = async (e:React.FormEvent, orderId: number) => {
+    const handlePayment = async (e: React.FormEvent, orderId: number) => {
         const token = localStorage.getItem("token");
         const headersForPayment = {
             'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ const MyOrders: React.FC = () => {
         setOrders(updatedOrders);
     };
 
-    const handleCancel= async (e:React.FormEvent, orderId: number) => {
+    const handleCancel = async (e: React.FormEvent, orderId: number) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
         const headersForPayment = {
@@ -174,13 +174,13 @@ const MyOrders: React.FC = () => {
         try {
             const baseUrl = `https://deploy-be-b176a8ceb318.herokuapp.com`;
             const url = `${baseUrl}/order/cancel?orderId=${orderId}`;
-            const response = await fetch(url, { method: 'PUT', headers: headersForPayment });
+            const response = await fetch(url, {method: 'PUT', headers: headersForPayment});
 
             if (!response.ok) {
-                message.error('Something when wrong' );
+                message.error('Something when wrong');
                 throw new Error('Something went wrong!');
             }
-            updateOrderStatus(orderId, 'CANCEL');
+            updateOrderStatus(orderId, 'CANCELED');
         } catch (error) {
             console.log(error);
         }

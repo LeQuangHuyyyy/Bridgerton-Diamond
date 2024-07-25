@@ -69,7 +69,7 @@ public class WarrantiesService implements WarrantiesServiceImp {
         Order setOrder = orderRepository.findById(orderId).get();
         Products setProduct = productRepository.findById(productId).get();
         setOrder.setWarranties(warranties);
-        setProduct.setWarranties(warranties);
+        setProduct.setWarranties(List.of(warranties));
         orderRepository.save(setOrder);
         productRepository.save(setProduct);
 

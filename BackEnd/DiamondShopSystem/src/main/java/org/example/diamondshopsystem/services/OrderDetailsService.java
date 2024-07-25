@@ -47,10 +47,27 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         return dto;
     }
 
+    private static OrderProductDetailRequest getOrderProductDetailRequest(OrderDetails od) {
+        OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
+
+        Products products = od.getProduct();
+        String productName = products.getProductName();
+        double price = products.getPrice();
+        int quantity = od.getQuantity();
+        orderProductDetailRequests.setCertificateImage(products.getImageCertificate());
+        orderProductDetailRequests.setWarrantiesImage(products.getImageWarranties());
+        orderProductDetailRequests.setImage(products.getImage1());
+        orderProductDetailRequests.setProductName(productName);
+        orderProductDetailRequests.setQuantity(quantity);
+        orderProductDetailRequests.setPrice(price);
+        orderProductDetailRequests.setSize(od.getSize());
+
+        return orderProductDetailRequests;
+    }
 
     @Override
     public OrderDetailRequest getOrderDetailSaleStaffById(int orderId) {
-        Order orders = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("who is this Order"));
+        Order orders = orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("Cannot find Order"));
 
         OrderDetailRequest orderDetailRequest = new OrderDetailRequest();
 
@@ -61,12 +78,10 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         String phoneNumber = user.getPhoneNumber();
         String address = orders.getOrderDeliveryAddress();
 
-
         OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
         for (OrderDetails od : orders.getOrderDetails()) {
             orderProductDetailRequests = getOrderProductDetailRequest(od);
             list.add(orderProductDetailRequests);
-            orderDetailRequest.setImage(od.getProduct().getImage1());
         }
 
         orderDetailRequest.setUserName(username);
@@ -130,23 +145,6 @@ public class OrderDetailsService implements OrderDetailsServiceImp {
         }
 
         return orderDetailList;
-    }
-
-
-    private static OrderProductDetailRequest getOrderProductDetailRequest(OrderDetails od) {
-        OrderProductDetailRequest orderProductDetailRequests = new OrderProductDetailRequest();
-
-        Products products = od.getProduct();
-        String productName = products.getProductName();
-        double price = products.getPrice();
-        int quantity = od.getQuantity();
-        orderProductDetailRequests.setCertificateImage(products.getImageCertificate());
-        orderProductDetailRequests.setWarrantiesImage(products.getImageWarranties());
-        orderProductDetailRequests.setProductName(productName);
-        orderProductDetailRequests.setQuantity(quantity);
-        orderProductDetailRequests.setPrice(price);
-        orderProductDetailRequests.setSize(od.getSize());
-        return orderProductDetailRequests;
     }
 
 

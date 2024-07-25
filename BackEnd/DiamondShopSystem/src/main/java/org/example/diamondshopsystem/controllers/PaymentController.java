@@ -70,6 +70,8 @@ public class PaymentController {
             order.setOrderTotalAmount(price);
             orderRepository.save(order);
         }
+//////////////////////////////////////////////////  dag suy nghĩ xem thanh toán xong mới trừ tiền hay pendding thì trừ sao cho đúng logic
+        productServiceImp.updateQuantityPay(orderId);
 
         BigDecimal totalPrice = orderService.findPriceByOrderId(orderId);
         PaymentDTO.VNPayResponse vnPayResponse = paymentService.createVnPayPayment(totalPrice, bankCode, paymentRequest.getOrderId(), request);
@@ -91,17 +93,19 @@ public class PaymentController {
 
                     String orderInfo = parameterMap.get("vnp_OrderInfo")[0];
                     int orderId = Integer.parseInt(orderInfo.split("Order ID: ")[1]);
-                    productServiceImp.updateQuantityPay(orderId);
+
                     OrderStatus currentStatus = orderService.getOrderStatus(orderId);
                     if (!OrderStatus.PAYMENT.equals(currentStatus)) {
                         orderService.setOrderStatus(orderId);
                     }
                     paymentService.savePayment(paymentDTO);
 
+                    redirectUrl = "http://localhost:3000/ordersuccess";
 
-                    redirectUrl = "https://bridgerton.vercel.app/ordersuccess";
+//                    redirectUrl = "https://bridgerton.vercel.app/ordersuccess";
                 } else {
-                    redirectUrl = "https://bridgerton.vercel.app/ordersuccess";
+//                    redirectUrl = "https://bridgerton.vercel.app/ordersuccess";
+                    redirectUrl = "http://localhost:3000/ordersuccess";
                 }
             } else {
                 redirectUrl = "http://localhost:3000/payment/result?vnp_ResponseCode=" + responseCode;

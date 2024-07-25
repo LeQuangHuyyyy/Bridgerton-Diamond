@@ -70,4 +70,14 @@ public class SaleController {
         }
     }
 
+    @PostMapping("/setOrderToCancel/{orderId}")
+    public ResponseEntity<?> setOrderToCancel(@PathVariable int orderId) {
+        try {
+            orderServiceImp.setOrderFromPaymentToCancel(orderId);
+            return ResponseEntity.ok("Set successfully from payment to cancel");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }

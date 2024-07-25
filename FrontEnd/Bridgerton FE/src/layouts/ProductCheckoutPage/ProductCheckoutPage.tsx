@@ -152,7 +152,17 @@ export const ProductCheckoutPage = () => {
         setHttpError(error.message);
         console.log(error);
     })
+
+    const checkIfInCart = () => {
+        const cart = JSON.parse(localStorage.getItem("cart")!);
+        return cart.some((item: any) => item.productId === productId);
+    };
+
     const addToCartHandler = async () => {
+        if (checkIfInCart()) {
+            message.warning('This product is already in your cart.');
+            return;
+        }
         if (!selectedSize) {
             setSizeError('Please select a size.');
             return;
@@ -228,82 +238,51 @@ export const ProductCheckoutPage = () => {
     }
 
     return (
-        <div style={{marginTop: "200px", marginBottom: "80px"}} className="container">
+        <div style={{ marginTop: '200px', marginBottom: '80px'}} className="container">
             <div className="container d-none d-lg-block w-1000">
                 <div className="row mt-5">
                     <div className="col-sm-2 col-md-6 text-center">
                         <img
                             src={selectedImage}
-                            style={{width: "455px", height: "390px", border: '1px solid black'}}
+                            style={{
+                                width: '455px',
+                                height: '390px',
+                                border: '1px solid black',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                            }}
                             alt="product"
                         />
                         <div className="d-flex justify-content-center mt-3">
                             {product?.image1 && (
                                 <>
-                                    <img
-                                        src={product?.image1}
-                                        style={{
-                                            width: "106px",
-                                            height: "100px",
-                                            margin: "5px",
-                                            cursor: "pointer",
-                                            border: "1px solid black"
-                                        }}
-                                        alt="thumbnail"
-                                        onClick={() => handleThumbnailClick(product?.image1)}
-                                    />
-                                    <img
-                                        src={product?.image2}
-                                        style={{
-                                            width: "106px",
-                                            height: "100px",
-                                            margin: "5px",
-                                            cursor: "pointer",
-                                            border: "1px solid black"
-                                        }}
-                                        alt="thumbnail"
-                                        onClick={() => handleThumbnailClick(product?.image2)}
-                                    />
-                                    <img
-                                        src={product?.image3}
-                                        style={{
-                                            width: "106px",
-                                            height: "100px",
-                                            margin: "5px",
-                                            cursor: "pointer",
-                                            border: "1px solid black"
-                                        }}
-                                        alt="thumbnail"
-                                        onClick={() => handleThumbnailClick(product?.image3)}
-                                    />
-                                    <img
-                                        src={product?.image4}
-                                        style={{
-                                            width: "106px",
-                                            height: "100px",
-                                            margin: "5px",
-                                            cursor: "pointer",
-                                            border: "1px solid black"
-                                        }}
-                                        alt="thumbnail"
-                                        onClick={() => handleThumbnailClick(product?.image4)}
-                                    />
+                                    {[product.image1, product.image2, product.image3, product.image4].map((image, index) => (
+                                        <img
+                                            key={index}
+                                            src={image}
+                                            style={{
+                                                width: '106px',
+                                                height: '100px',
+                                                margin: '5px',
+                                                cursor: 'pointer',
+                                                border: '1px solid black',
+                                                borderRadius: '8px',
+                                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                            }}
+                                            alt="thumbnail"
+                                            onClick={() => handleThumbnailClick(image)}
+                                        />
+                                    ))}
                                 </>
                             )}
                         </div>
                     </div>
                     <div className="col-md-6 col-4 container">
                         <div className="ml-2">
-                            <h2 style={{fontSize: "30px", paddingLeft: "0"}}>
+                            <h2 style={{fontSize: '40px', paddingLeft: '0', fontWeight: 'bold'}}>
                                 {product?.productName}
                             </h2>
-                            <p
-                                style={{
-                                    fontWeight: "bolder",
-                                    fontSize: "20px",
-                                    color: "red",
-                                }}
-                            >
+                            <p style={{fontWeight: 'bolder', fontSize: '20px', color: 'red'}}>
                                 Price: ${product?.price}
                             </p>
                             <p>{product?.description}</p>
@@ -312,7 +291,8 @@ export const ProductCheckoutPage = () => {
                                 style={{marginRight: '10px'}}
                             >
                                 <img style={{width: 50}}
-                                     src={'https://www.gia.edu/assets/img/global-header/desktop/gia-logo.svg'}/>
+                                     src={'https://www.gia.edu/assets/img/global-header/desktop/gia-logo.svg'}
+                                     alt="certificate"/>
                             </Button>
 
                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -325,41 +305,66 @@ export const ProductCheckoutPage = () => {
                                     cursor: 'pointer',
                                     color: 'black',
                                     textDecoration: 'underline',
-                                    marginBottom: '10px'
+                                    marginBottom: '10px',
+                                    display: 'block',
+                                    marginTop: '10px',
                                 }}
                             >
                                 Size Guide
                             </a>
-                            <select style={{width: '200px', outline: 'none', boxShadow: 'none'}}
-                                    className="form-select"
-                                    aria-label="Default select example"
-                                    onChange={handleSizeSelect}>
+                            <select
+                                style={{
+                                    width: '200px',
+                                    outline: 'none',
+                                    boxShadow: 'none',
+                                    marginTop: '10px',
+                                    borderRadius: '4px',
+                                    padding: '8px',
+                                }}
+                                className="form-select"
+                                aria-label="Default select example"
+                                onChange={handleSizeSelect}
+                            >
                                 <option selected>Choose size...</option>
-                                {size.map((size) => (
-                                    <option key={size.sizeId} value={size.sizeId}>
-                                        {size.valueSize}
+                                {size.map((s) => (
+                                    <option key={s.sizeId} value={s.sizeId}>
+                                        {s.valueSize}
                                     </option>
                                 ))}
                             </select>
                             {sizeError && <p style={{color: 'red'}}>{sizeError}</p>}
 
-                            {
-                                outOfStock ?
-                                    <h1
-                                        style={{borderRadius: '0', backgroundColor: 'red', textAlign: 'center'}}
-                                        className=" text-white mt-3 w-100"
-                                    >
-                                        OUT OF STOCK
-                                    </h1>
-                                    :
-                                    <button
-                                        style={{borderRadius: '0'}}
-                                        className="btn btn-success mt-3 w-100"
-                                        onClick={addToCartHandler}
-                                    >
-                                        ADD TO CART
-                                    </button>
-                            }
+                            {outOfStock ? (
+                                <h1
+                                    style={{
+                                        borderRadius: '4px',
+                                        backgroundColor: 'red',
+                                        textAlign: 'center',
+                                        color: 'white',
+                                        padding: '10px',
+                                        marginTop: '10px',
+                                    }}
+                                >
+                                    OUT OF STOCK
+                                </h1>
+                            ) : (
+                                <button
+                                    style={{
+                                        borderRadius: '4px',
+                                        backgroundColor: '#28a745',
+                                        color: 'white',
+                                        padding: '10px',
+                                        marginTop: '10px',
+                                        width: '100%',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        fontWeight: 'bold',
+                                    }}
+                                    onClick={addToCartHandler}
+                                >
+                                    ADD TO CART
+                                </button>
+                            )}
                             <Modal
                                 title="Image"
                                 visible={visible}
@@ -367,25 +372,24 @@ export const ProductCheckoutPage = () => {
                                 onCancel={handleCancel}
                                 width={800}
                             >
-                                <img src={imageUrl} alt="Example" style={{width: '100%'}}/>
+                                <img src={imageUrl} alt="Example" style={{ width: '100%' }} />
                             </Modal>
                         </div>
                     </div>
                 </div>
             </div>
-            <>
-                <div className='container mt-5' style={{height: 550}}>
-                    <div className='homepage-carousel-title'>
-                        <h1 style={{fontSize: '45px', marginBottom: '0'}} className='custom-heading'>Similar Items</h1>
-                    </div>
-                    <Carousel responsive={responsive} className='mt-5'>
-                        {suggest.slice(0, 4).map((product) => (
-                            <SimilarItems key={product.productId} product={product}/>
-                        ))}
-                    </Carousel>
+            <div className="container mt-5" style={{ height: 550 }}>
+                <div className="homepage-carousel-title">
+                    <h1 style={{ fontSize: '45px', marginBottom: '0' }} className="custom-heading">
+                        Similar Items
+                    </h1>
                 </div>
-            </>
-
+                <Carousel responsive={responsive} className="mt-5">
+                    {suggest.slice(0, 4).map((prod) => (
+                        <SimilarItems key={prod.productId} product={prod} />
+                    ))}
+                </Carousel>
+            </div>
         </div>
     );
 };

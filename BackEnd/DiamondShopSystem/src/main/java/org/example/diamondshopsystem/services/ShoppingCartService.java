@@ -299,7 +299,6 @@ public class ShoppingCartService implements ShoppingCartServiceImp {
             orderDetailRepository.save(orderDetails);
 
 
-
         }
 
         return order;

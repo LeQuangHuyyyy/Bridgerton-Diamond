@@ -14,5 +14,4 @@ public class SignupRequest {
     private String address;
     private Role role ;
     private boolean status = true;
-
 }

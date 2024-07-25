@@ -74,9 +74,5 @@ public class Order {
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonBackReference
-    private List<Invoice> invoices;
-
-    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JsonBackReference
     private List<Payments> payments;
 }

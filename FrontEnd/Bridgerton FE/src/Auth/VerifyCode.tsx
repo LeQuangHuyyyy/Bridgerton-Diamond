@@ -5,39 +5,54 @@ import './Login.css';
 export const VerifyCode = () => {
     const [verifyCode, setVerifyCode] = React.useState('');
 
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const email = localStorage.getItem('email-register')
-        const data = {
-            email: email,
-            verificationCode: verifyCode
-        };
-        const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/login/verify-registration', {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        if (response.ok) {
-            const password = localStorage.getItem('password-register');
-
-            fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/login/signin?email=${email}&password=${password}`, {
+        const password = localStorage.getItem('password-register')
+        try {
+            const data = {
+                email: email,
+                verificationCode: verifyCode
+            };
+            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/login/verify-registration', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-            }).then(
-                response => response.json()
-            ).then(
-                data => {
-                    localStorage.setItem('token', data.data);
-                    window.location.href = '/'
+                body: JSON.stringify(data)
+            })
+
+            if (response.ok) {
+                try {
+                    if (email && password) {
+                        const formData = new FormData();
+                        formData.append("email", email);
+                        formData.append("password", password);
+                        const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/login/signin`, {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        const data = await response.json();
+                        if (data !== false) {
+                            localStorage.setItem('token', data.data);
+                            window.location.href = "/"
+                        }
+                    }
+                } catch (err) {
+                    message.error('Invalid email or password');
+                    console.error(err);
                 }
-            )
-        } else {
-            message.error('Change password successful!');
+            } else {
+                message.error('Invalid Verify Code');
+            }
+        } catch (err) {
+            message.error("Invalid Verify Code")
         }
+        localStorage.removeItem('password-register')
+        localStorage.removeItem('email-register')
+
     };
 
     return (

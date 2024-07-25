@@ -63,7 +63,7 @@ export const Navbar = () => {
                              fontSize: '30px',
                              color: 'white',
                          }}>
-                    <img src={'./logo192.png'} style={{width: '70px', height: '70px'}}/>
+                    <img src={'./logo192.png'} style={{width: '70px', height: '70px'}} alt="..."/>
                     Bridgerton
                 </NavLink>
             </div>

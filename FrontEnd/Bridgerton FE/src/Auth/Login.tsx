@@ -77,7 +77,7 @@ export const Login = () => {
     const handleRegister = async () => {
         const userModel = {
             id: 0,
-            username: registerUsername,
+            name: registerUsername,
             password: registerPassword,
             phoneNumber: registerPhoneNumber,
             email: registerEmail,
@@ -97,7 +97,6 @@ export const Login = () => {
                 localStorage.setItem('email-register', registerEmail);
                 localStorage.setItem('password-register', registerPassword);
                 window.location.href = "/verify-register";
-                message.success("Register successfully!");
             } else {
                 message.error('Email or phone number already exists');
             }

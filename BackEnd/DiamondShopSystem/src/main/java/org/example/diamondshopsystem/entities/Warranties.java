@@ -36,7 +36,7 @@ public class Warranties {
     @JsonManagedReference
     private Order order;
 
-    @OneToOne(mappedBy = "warranties", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @ManyToOne( cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JsonBackReference
-    private Products product;
+    private  Products product;
 }

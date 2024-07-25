@@ -22,9 +22,7 @@ public class OrderDetailRequest {
     private int saleId;
     private int percent;
 
-
     private int orderId;
-    private String image;
     private OrderStatus orderStatus;
     private int totalProductInOrder;
 

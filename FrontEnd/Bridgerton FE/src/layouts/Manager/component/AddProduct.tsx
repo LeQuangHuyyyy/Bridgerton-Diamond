@@ -36,14 +36,7 @@ interface AddProductProps {
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const AddProduct: React.FC<AddProductProps> = ({
-                                                          isOpen,
-                                                          onClose,
-                                                          onSubmit,
-                                                          formData,
-                                                          handleChange,
-                                                          handleFileChange,
-                                                      }) => {
+export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit, formData, handleChange, handleFileChange}) => {
     const [diamonds, setDiamonds] = useState<DiamondModel[]>([]);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -111,6 +104,14 @@ export const AddProduct: React.FC<AddProductProps> = ({
             console.log(error);
         })
     }, []);
+
+    const validateNoWhitespace = (_: any, value: any) => {
+        if (!value || value.trim() !== "") {
+            return Promise.resolve();
+        }
+        return Promise.reject('Input cannot be only whitespace');
+    };
+
     return (
         <div
             className={`modal ${isOpen ? 'show' : ''}`}
@@ -136,7 +137,6 @@ export const AddProduct: React.FC<AddProductProps> = ({
                                         value={formData.productName}
                                         onChange={handleChange}
                                         className="form-control"
-                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -169,7 +169,9 @@ export const AddProduct: React.FC<AddProductProps> = ({
                                         name="diamondId"
                                         className="form-select"
                                         value={formData.diamondId}
-                                        onChange={handleChange}>
+                                        onChange={handleChange}
+                                    >
+                                        <option value="" defaultChecked disabled>Choose Diamond..</option>
                                         {diamonds.map((diamond) => (
                                             <option key={diamond.diamondId} value={diamond.diamondId}>
                                                 {`ID: ${diamond.diamondId}, Carat: ${diamond.carat}, Price: ${diamond.price}, Cut: ${diamond.cut}, Color: ${diamond.color}, Clarity: ${diamond.clarity}, Certification: ${diamond.certification}, Product ID: ${diamond.productId}, Status: ${diamond.status}`}

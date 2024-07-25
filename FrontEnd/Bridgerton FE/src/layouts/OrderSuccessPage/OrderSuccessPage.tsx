@@ -4,6 +4,8 @@ import './OrderSuccessPage.css';
 import Lottie from "lottie-react";
 
 const OrderSuccessPage: React.FC = () => {
+    localStorage.setItem('cart', JSON.stringify([]));
+    localStorage.removeItem('promoCode')
     return (
         <div style={{paddingTop: '30px'}} className="order-success-container">
             <Lottie animationData={require('./Animation.json')} style={{width: '280px', height: '280px'}}/>

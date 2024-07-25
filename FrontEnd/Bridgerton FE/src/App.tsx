@@ -32,6 +32,7 @@ import ChangePassword from "./layouts/MyAccount/ChangePassword";
 import MyOrderDetail from "./layouts/MyAccount/MyOrderDetail";
 import OrderDeliveryDetail from "./layouts/DeliveryStaff/OrderDeliveryDetail";
 import {DiamondEducation} from "./layouts/HomePage/component/DiamondEducation";
+import NotFoundPage from "./layouts/NotFoundPage/NotFoundPage";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -54,6 +55,30 @@ export const App = () => {
                     {token === undefined && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
+                            <Route path='/deliverystaff'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/deliverydetailorder/:orderId'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/salestaff'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/orderdetail/:orderId'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/promotion'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/dashboard'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/product'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/diamond'>
+                                <NotFoundPage/>
+                            </Route>
                             <Route path='/diamond-education'>
                                 <DiamondEducation/>
                             </Route>
@@ -93,6 +118,9 @@ export const App = () => {
                             <Route path='/ordersuccess'>
                                 <OrderSuccessPage/>
                             </Route>
+                            <Route path='/admin'>
+                                <NotFoundPage/>
+                            </Route>
                             <Footer/>
                         </div>
                     )
@@ -100,7 +128,33 @@ export const App = () => {
                     {token === 'CUSTOMER' && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
-
+                            <Route path='/deliverystaff'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/deliverydetailorder/:orderId'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/salestaff'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/orderdetail/:orderId'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/promotion'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/dashboard'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/product'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/diamond'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/admin'>
+                                <NotFoundPage/>
+                            </Route>
                             <Route path='/diamond-education'>
                                 <DiamondEducation/>
                             </Route>
@@ -131,12 +185,7 @@ export const App = () => {
                             <Route path='/login'>
                                 <Login/>
                             </Route>
-                            <Route path='/verify-register'>
-                                <VerifyCode/>
-                            </Route>
-                            <Route path='/forgot-password'>
-                                <ForgotPassword/>
-                            </Route>
+
                             <Route path='/reset-password'>
                                 <ResetPassword/>
                             </Route>

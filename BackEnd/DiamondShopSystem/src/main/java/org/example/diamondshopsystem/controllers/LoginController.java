@@ -65,7 +65,6 @@ public class LoginController {
     public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) throws MessagingException, IOException {
         ResponseData responseData = new ResponseData();
 
-        // Check if email already exists
         if (userRepository.findByEmail(signupRequest.getEmail()) != null) {
             responseData.setData(false);
             responseData.setSuccess(false);

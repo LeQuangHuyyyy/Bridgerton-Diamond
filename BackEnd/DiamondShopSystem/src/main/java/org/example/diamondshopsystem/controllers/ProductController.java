@@ -1,12 +1,8 @@
 package org.example.diamondshopsystem.controllers;
 
 import org.example.diamondshopsystem.dto.ProductDTO;
-import org.example.diamondshopsystem.entities.Products;
 import org.example.diamondshopsystem.payload.ResponseData;
 import org.example.diamondshopsystem.payload.requests.ProductRequest;
-import org.example.diamondshopsystem.repositories.ProductRepository;
-import org.example.diamondshopsystem.services.DiamondService;
-import org.example.diamondshopsystem.services.FileService;
 import org.example.diamondshopsystem.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -29,48 +25,6 @@ public class ProductController {
 
     @Autowired
     ProductService productService;
-
-    @Autowired
-    FileService fileService;
-
-
-    @PostMapping("/saveFile")
-    public ResponseEntity<ResponseData> uploadFile(@RequestParam MultipartFile[] files) {
-        ResponseData responseData = new ResponseData();
-        for (MultipartFile file : files) {
-            boolean isSuccess = fileService.saveFile(file);
-            if (!isSuccess) {
-                responseData.setData(false);
-                return new ResponseEntity<>(responseData, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-        responseData.setData(true);
-        return new ResponseEntity<>(responseData, HttpStatus.OK);
-    }
-
-    @GetMapping("/load/{filename}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
-        Resource fileResource = fileService.loadFile(filename);
-        try {
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileResource.getFilename() + "\"").body(fileResource);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @GetMapping("/load-image/{filename}")
-    public ResponseEntity<Resource> loadImage(@PathVariable String filename) {
-        Resource fileResource = fileService.loadFile(filename);
-
-        if (fileResource != null && fileResource.exists() && fileResource.isReadable()) {
-            try {
-                return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(fileResource.getFile().toPath())).body(fileResource);
-            } catch (IOException ignored) {
-            }
-        }
-
-        return ResponseEntity.notFound().build();
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable int id) {

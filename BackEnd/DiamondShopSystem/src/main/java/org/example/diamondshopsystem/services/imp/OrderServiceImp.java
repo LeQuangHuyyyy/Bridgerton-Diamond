@@ -41,7 +41,10 @@ public interface OrderServiceImp {
 
     List<OrderDTO> getOrderSoldInLastWeek();
 
+    List<OrderDTO> getOrderSoldInThisWeek();
+
     List<OrderProductDetailRequest> getTotalProductInLastWeek();
+    List<OrderProductDetailRequest> getTotalProductInTHisWeek();
 
     double revenueLastWeek();
 
@@ -57,5 +60,6 @@ public interface OrderServiceImp {
 
     boolean setOrderFromDeliveryToReceived(int orderId, String email) throws MessagingException;
 
+    void setOrderFromPaymentToCancel(int orderId);
 
 }

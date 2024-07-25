@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -76,10 +77,10 @@ public class Products {
     @JsonBackReference
     private Set<Diamond> diamonds = new HashSet<>();
 
-    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinColumn(name = "warranties_id")
     @JsonBackReference
-    private Warranties warranties;
+    private List<Warranties> warranties;
 
     @Override
     public boolean equals(Object obj) {

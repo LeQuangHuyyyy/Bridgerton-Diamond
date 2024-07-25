@@ -114,16 +114,6 @@ public class OrderMapper {
     }
 
 
-    private InvoiceDTO mapInvoiceToInvoiceDTO(Invoice invoice) {
-        InvoiceDTO invoiceDTO = new InvoiceDTO();
-        invoiceDTO.setInvoiceId(invoice.getInvoiceId());
-        invoiceDTO.setInvoiceDate(invoice.getInvoiceDate());
-        invoiceDTO.setInvoiceDueDate(invoice.getInvoiceDueDate());
-        invoiceDTO.setTotalAmount(invoice.getTotalAmount());
-        invoiceDTO.setPaidAmount(invoice.getPaidAmount());
-        return invoiceDTO;
-    }
-
     private PaymentDTO mapPaymentToPaymentDTO(Payments payment) {
         PaymentDTO paymentDTO = new PaymentDTO();
         paymentDTO.setPaymentsId(payment.getPaymentsId());

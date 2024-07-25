@@ -10,6 +10,7 @@ public class OrderProductDetailRequest {
     private int quantity;
     private double price;
     private double size;
+    private String image;
     private String warrantiesImage;
     private String certificateImage;
 }

@@ -41,7 +41,6 @@ const Checkout = () => {
     const fetchProducts = async () => {
         try {
             const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/cart/cart";
-
             const addProductRequests = localStorage.getItem("cart");
             console.log(addProductRequests);
             const response = await fetch(baseUrl, {
@@ -201,7 +200,7 @@ const Checkout = () => {
                 justifyContent: 'center',
                 alignItems: 'center'
             }}>
-                <Row gutter={24} style={{width: '100%'}}>
+                <Row gutter={24} style={{width: '100%', height: '80%'}}>
                     <Col span={16}>
                         <Card title="Checkout">
                             <Form
@@ -300,7 +299,8 @@ const Checkout = () => {
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 marginTop: '10px',
-                                fontWeight: 'bold'
+                                fontWeight: 'bolder',
+                                color: 'green'
                             }}>
                                 <div>Final Amount:</div>
                                 <div>${finalAmount}</div>

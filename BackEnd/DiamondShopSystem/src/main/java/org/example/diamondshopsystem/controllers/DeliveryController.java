@@ -23,18 +23,8 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class DeliveryController {
 
-
-    @Autowired
-    ShoppingCartService shoppingCartService;
-
-    @Autowired
-    OrderRepository orderRepository;
-
     @Autowired
     OrderServiceImp orderServiceImp;
-
-    @Autowired
-    OrderDetailsServiceImp orderDetailsServiceImp;
 
     @GetMapping("/ViewOrderDelivery")
     public ResponseEntity<?> getOrderByDelivery(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "1000") int size) {

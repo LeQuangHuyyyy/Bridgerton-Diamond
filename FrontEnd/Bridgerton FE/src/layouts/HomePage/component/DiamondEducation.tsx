@@ -8,14 +8,12 @@ export const DiamondEducation: React.FC = () => {
             <div className="article-inner">
                 <header className="entry-header">
                     <div className="entry-header-text entry-header-text-top text-center">
-
-
                         <h1 className="entry-title">BASIC DIAMOND KNOWLEDGE YOU SHOULD KNOW</h1>
                         <div className="entry-divider is-divider small"></div>
 
                     </div>
                     <div className="entry-image relative">
-                        <a href="https://www.meezjewelry.com/product-knowledge/basic-diamond-knowledge-you-should-know/">
+                        <a href="https://www.bluenile.com/diamond-and-jewelry-education">
                             <img width="1020" height="542"
                                  src="https://www.meezjewelry.com/wp-content/uploads/2023/06/Loose-Diamond-Meez-Jewelry-1024x544.jpg"
                                  className="attachment-large size-large wp-post-image" alt="" decoding="async"

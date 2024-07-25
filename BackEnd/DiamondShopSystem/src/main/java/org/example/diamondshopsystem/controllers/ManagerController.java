@@ -26,16 +26,9 @@ public class ManagerController {
 
     @Autowired
     private OrderServiceImp orderServiceImp;
-    @Autowired
-    private DiamondPriceService diamondPriceService;
+
     @Autowired
     private DiamondServiceImp diamondServiceImp;
-
-    @PostMapping("/cloudinary/upload")
-    public ResponseEntity<Map> uploadImage(@RequestParam("image") MultipartFile file) {
-        Map data = this.uploadImageService.upload(file);
-        return new ResponseEntity<>(data, HttpStatus.OK);
-    }
 
     @GetMapping("/orderLastWeek")
     public ResponseEntity<?> getTotalOrderInSoldInWeek() {
@@ -45,6 +38,15 @@ public class ManagerController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
+    @GetMapping("/orderThisWeek")
+    public ResponseEntity<?> getTotalOrderInSoldInThisWeek() {
+        ResponseData responseData = new ResponseData();
+        responseData.setData(orderServiceImp.getOrderSoldInThisWeek());
+        responseData.setDescription("ke ke ke, lấy order trong tuần này");
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
+
     @GetMapping("/productLastWeek")
     public ResponseEntity<?> getTotalProductInLastWeek() {
         ResponseData responseData = new ResponseData();
@@ -52,6 +54,15 @@ public class ManagerController {
         responseData.setDescription("ke ke ke, lấy product trong tuần trc");
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
+
+    @GetMapping("/productThisWeek")
+    public ResponseEntity<?> getTotalProductInThisWeek() {
+        ResponseData responseData = new ResponseData();
+        responseData.setData(orderServiceImp.getTotalProductInTHisWeek());
+        responseData.setDescription("ke ke ke, lấy product trong tuần trc");
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
 
     @GetMapping("/revenueLastWeek")
     public ResponseEntity<?> getTotalRevenueLastWeek() {
@@ -65,7 +76,7 @@ public class ManagerController {
     public ResponseEntity<?> getDiamondSoldLastWeek() {
         ResponseData responseData = new ResponseData();
         responseData.setData(orderServiceImp.diamondSoldByCategory());
-        responseData.setDescription("ke ke ke, lấy kim cương bán ra của Heart Oval Round trong tuần trc");
+        responseData.setDescription("ke ke ke, lấy kim cương bán ra của Heart Oval Round trong tat cả diamond dc bán ra");
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
@@ -73,7 +84,7 @@ public class ManagerController {
     public ResponseEntity<?> getProductSoldByCate() {
         ResponseData responseData = new ResponseData();
         responseData.setData(orderServiceImp.getProductSoldByCategory());
-        responseData.setDescription("ke ke ke, product bán ra lấy số lựng từng cate trong tuần trc");
+        responseData.setDescription("ke ke ke, product bán ra lấy số lựng từng cate trong tất cả các mặt hàng đã bán");
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
