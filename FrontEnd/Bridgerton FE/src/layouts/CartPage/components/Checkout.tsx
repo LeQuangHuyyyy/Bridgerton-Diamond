@@ -19,13 +19,15 @@ const Checkout = () => {
     const [userId, setUserId] = useState<number | undefined>();
     const [finalAmount, setFinalAmount] = useState<number>(0);
 
+    const token = localStorage.getItem("token")
+
     useEffect(() => {
-        window.scrollTo(0,0)
         fetchProducts();
-        const data = localStorage.getItem('token')
+        const data = localStorage.getItem('token');
         if (!data || localStorage.getItem('token') === null) {
-            window.location.href = '/login'
-        } else {
+            window.location.href = '/login';
+        }
+        if (data) {
             const decodedToken = jwtDecode(data) as { id: number, email: string, name: string, phone: string };
             setEmail(decodedToken.email);
             setPhone(decodedToken.phone);
@@ -46,7 +48,7 @@ const Checkout = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXlscXNlMTcxMjkzQGZwdC5lZHUudm4ifQ.FzAs3FrNbICbW9dUGZivmqNtMvUs7dh-fCgJy0EvluQ'
+                    'Authorization': `Bearer ${token}`
                 },
                 body: addProductRequests,
             });
@@ -82,6 +84,10 @@ const Checkout = () => {
     };
 
     useEffect(() => {
+        const data = localStorage.getItem('token');
+        if (!data || localStorage.getItem('token') === null) {
+            window.location.href = '/login';
+        }
         const totalAmount = products.reduce((acc, product) => acc + product.totalPrice, 0);
         handleApplyPromoCode(totalAmount);
     }, [products]);
@@ -89,11 +95,9 @@ const Checkout = () => {
     const handleApplyPromoCode = async (totalPrice: number) => {
         try {
             const promoCode = localStorage.getItem('promoCode');
-            if(!promoCode) {
+            if (!promoCode) {
                 throw new Error('Promo code not found');
             }
-
-            const token = localStorage.getItem('token');
             const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/cart/apply-code?discountCode=${promoCode}&totalAmount=${totalPrice}`, {
                 method: 'POST',
                 headers: {
@@ -197,7 +201,7 @@ const Checkout = () => {
                 justifyContent: 'center',
                 alignItems: 'center'
             }}>
-                <Row gutter={24} style={{width: '100%'}}>
+                <Row gutter={24} style={{width: '100%', height: '80%'}}>
                     <Col span={16}>
                         <Card title="Checkout">
                             <Form
@@ -296,7 +300,8 @@ const Checkout = () => {
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 marginTop: '10px',
-                                fontWeight: 'bold'
+                                fontWeight: 'bolder',
+                                color: 'green'
                             }}>
                                 <div>Final Amount:</div>
                                 <div>${finalAmount}</div>

@@ -1,23 +1,27 @@
 .login-container {
+
     position: relative;
     height: 100vh;
     width: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     background-image: url('../../public/assets/banner/bannerLogin.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
+
 .ant-tabs-tab-active .ant-tabs-tab-btn {
     color: #001529 !important;
 }
-
+    
 .ant-tabs-ink-bar {
     background-color: #001529 !important;
 }
+
 .login-register-container {
+    margin-top: 5%;
     background: rgba(255, 255, 255, 0.8);
     padding: 20px;
     border-radius: 10px;

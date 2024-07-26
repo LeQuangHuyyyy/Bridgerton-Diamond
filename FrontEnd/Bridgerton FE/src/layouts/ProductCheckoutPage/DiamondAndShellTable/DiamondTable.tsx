@@ -10,11 +10,6 @@ const DiamondTable: React.FC<{ product: ProductModel | undefined }> = (props) =>
     const [diamonds, setDiamonds] = useState<DiamondModel>();
     const[isLoading, setIsLoading] = useState(true);
     const[httpError, setHttpError] = useState(null);
-    const [showDetails, setShowDetails] = useState(false);
-
-    const handleShowDetail = () => {
-        setShowDetails(!showDetails);
-    };
 
     useEffect(() => {
 
@@ -64,12 +59,6 @@ const DiamondTable: React.FC<{ product: ProductModel | undefined }> = (props) =>
     }
     return (
         <div style={{width: '200px'}} className="mt-3 mb-3">
-            <div className='card-header-none'>
-                <button style={{width: '265px'}} className='bg-dark text-white' onClick={handleShowDetail}>
-                    Diamond Information
-                </button>
-            </div>
-            {showDetails && (
                 <div className='card-body'>
                     <div className="diamond-table">
                         <table>
@@ -98,7 +87,6 @@ const DiamondTable: React.FC<{ product: ProductModel | undefined }> = (props) =>
                         </table>
                     </div>
                 </div>
-            )}
         </div>
     );
 };

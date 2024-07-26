@@ -180,7 +180,7 @@ const MyOrders: React.FC = () => {
                 message.error('Something when wrong' );
                 throw new Error('Something went wrong!');
             }
-            updateOrderStatus(orderId, 'CANCEL');
+            updateOrderStatus(orderId, 'CANCELED');
         } catch (error) {
             console.log(error);
         }

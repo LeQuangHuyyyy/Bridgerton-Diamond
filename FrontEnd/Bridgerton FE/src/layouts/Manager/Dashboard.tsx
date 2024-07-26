@@ -4,6 +4,7 @@ import {MoneyCollectOutlined, ShoppingCartOutlined, LineChartOutlined, ShoppingO
 import Chart from "./component/Chart";
 import PieChartComponent from "./component/PieChartComponent";
 import {SpinnerLoading} from "../Utils/SpinnerLoading";
+import {DetailTable} from "./component/DetailTable";
 
 const headers = {
     'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjdXN0b21lckBnbWFpbC5jb20iLCJpZCI6MSwibmFtZSI6IkNVUyIsInJvbGUiOiJDVVNUT01FUiIsInBob25lIjoiMTIzMTIzMTIzMTIiLCJhZGRyZXNzIjoiMjM0LzIzNCAifQ.9R2lECgKGx5pI1euKSGUnBl9ufhGs2YsaG5uhipN6cg'
@@ -12,7 +13,7 @@ const headers = {
 const {Content} = Layout;
 const Dashboard = () => {
     const [totalOrders, setTotalOrders] = useState();
-    const [revenuel, setRevenuel] = useState();
+    const [revenuel, setRevenuel] = useState<number>(0);
     const [totalProducts, setTotalProducts] = useState();
     const [profit, setProfit] = useState();
     const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +21,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/orderLastWeek";
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/orderThisWeek";
             const url: string = `${baseUrl}`;
             const response = await fetch(url, {headers: headers});
             if (!response.ok) {
@@ -39,7 +40,7 @@ const Dashboard = () => {
     }, []);
     useEffect(() => {
         const fetchData = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/productLastWeek";
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/productThisWeek";
             const url: string = `${baseUrl}`;
             const response = await fetch(url, {headers: headers});
             if (!response.ok) {
@@ -59,7 +60,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/revenueLastWeek";
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/revenueThisWeek";
             const url: string = `${baseUrl}`;
             const response = await fetch(url, {headers: headers});
             if (!response.ok) {
@@ -68,25 +69,6 @@ const Dashboard = () => {
             const responseJson = await response.json();
             const responseData = responseJson.data;
             setRevenuel(responseData);
-            setIsLoading(false);
-        };
-        fetchData().catch((error: any) => {
-            setIsLoading(false);
-            setHttpError(error.message);
-            console.log(error);
-        })
-    }, []);
-    useEffect(() => {
-        const fetchData = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/getProfit";
-            const url: string = `${baseUrl}`;
-            const response = await fetch(url, {headers: headers});
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
-            }
-            const responseJson = await response.json();
-            const responseData = responseJson.data;
-            setProfit(responseData);
             setIsLoading(false);
         };
         fetchData().catch((error: any) => {
@@ -115,18 +97,18 @@ const Dashboard = () => {
                 </Breadcrumb>
                 <div>
                     <Row gutter={16}>
-                        <Col span={6}>
+                        <Col span={8}>
                             <Card>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <MoneyCollectOutlined style={{ fontSize: '48px', color: '#30BF78' }} />
                                     <div style={{ marginLeft: '16px' }}>
                                         <div style={{ fontSize: '16px', color: '#8c8c8c' }}>Total Sale</div>
-                                        <div style={{ fontSize: '24px'}}>${revenuel}</div>
+                                        <div style={{ fontSize: '24px'}}>${revenuel.toLocaleString()}</div>
                                     </div>
                                 </div>
                             </Card>
                         </Col>
-                        <Col span={6}>
+                        <Col span={8}>
                             <Card>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <ShoppingOutlined style={{ fontSize: '48px', color: '#D897EB' }} />
@@ -137,24 +119,13 @@ const Dashboard = () => {
                                 </div>
                             </Card>
                         </Col>
-                        <Col span={6}>
+                        <Col span={8}>
                             <Card>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <ShoppingCartOutlined style={{ fontSize: '48px', color: '#8FC9FB' }} />
                                     <div style={{ marginLeft: '16px' }}>
                                         <div style={{ fontSize: '16px', color: '#8c8c8c' }}>Total Items Sold</div>
                                         <div style={{ fontSize: '24px'}}>{totalProducts}</div>
-                                    </div>
-                                </div>
-                            </Card>
-                        </Col>
-                        <Col span={6}>
-                            <Card>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <LineChartOutlined style={{ fontSize: '48px', color: '#F69899' }} />
-                                    <div style={{ marginLeft: '16px' }}>
-                                        <div style={{ fontSize: '16px', color: '#8c8c8c' }}>Total Profit</div>
-                                        <div style={{ fontSize: '24px'}}>{profit}%</div>
                                     </div>
                                 </div>
                             </Card>
@@ -171,6 +142,9 @@ const Dashboard = () => {
                                 <PieChartComponent/>
                             </Row>
                         </Col>
+                    </Row>
+                    <Row gutter={16} style={{ marginTop: 25 }}>
+                            <DetailTable/>
                     </Row>
                 </div>
             </Content>

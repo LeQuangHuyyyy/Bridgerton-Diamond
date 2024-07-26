@@ -8,14 +8,12 @@ export const DiamondEducation: React.FC = () => {
             <div className="article-inner">
                 <header className="entry-header">
                     <div className="entry-header-text entry-header-text-top text-center">
-
-
                         <h1 className="entry-title">BASIC DIAMOND KNOWLEDGE YOU SHOULD KNOW</h1>
                         <div className="entry-divider is-divider small"></div>
 
                     </div>
                     <div className="entry-image relative">
-                        <a href="https://www.meezjewelry.com/product-knowledge/basic-diamond-knowledge-you-should-know/">
+                        <a href="https://www.bluenile.com/diamond-and-jewelry-education">
                             <img width="1020" height="542"
                                  src="https://www.meezjewelry.com/wp-content/uploads/2023/06/Loose-Diamond-Meez-Jewelry-1024x544.jpg"
                                  className="attachment-large size-large wp-post-image" alt="" decoding="async"
@@ -73,14 +71,15 @@ export const DiamondEducation: React.FC = () => {
                         “fair”, and “poor”. At Meez, we always choose the “excellent” cut for diamonds to advise our
                         customers.</p>
                     <p><img decoding="async" className="aligncenter wp-image-23684 size-full"
-                            src="https://meezjewelry.vn/wp-content/uploads/2023/06/image001.png" alt="" width="846"
-                            height="645"/></p>
+                            src="https://meezjewelry.vn/wp-content/uploads/2023/06/image001.png" alt="" width="750"
+                    /></p>
                     <p style={{textAlign: 'center'}}>Diamond Cut Chart</p>
                     <p style={{textAlign: 'center'}}>Excellent-Good-Average (from left to right). Arrows indicate the
                         direction of light.</p>
-                    <p><img decoding="async" className="aligncenter wp-image-23685 size-full"
-                            src="https://meezjewelry.vn/wp-content/uploads/2023/06/image003.jpg" alt="" width="1024"
-                            height="302"/></p>
+                    <p><img decoding="async"
+                            className="aligncenter wp-image-23685 size-full"
+                            src="https://meezjewelry.vn/wp-content/uploads/2023/06/image003.jpg" alt="" width="800"
+                    /></p>
                     <p style={{textAlign: 'center'}}>The difference in cut quality affects a diamond's ability to
                         refract light</p>
                     <h3><strong>6. Types of cuts in diamond crafting</strong></h3>
@@ -137,8 +136,8 @@ export const DiamondEducation: React.FC = () => {
                     </table>
                     <p>&nbsp;</p>
                     <p><img decoding="async" loading="lazy" className="aligncenter wp-image-23690 size-full"
-                            src="https://meezjewelry.vn/wp-content/uploads/2023/06/image005.jpg" alt="" width="1365"
-                            height="619"/></p>
+                            src="https://meezjewelry.vn/wp-content/uploads/2023/06/image005.jpg" alt="" width="780"
+                    /></p>
                     <p style={{textAlign: 'center'}}>You can refer to this image for the level of flaw visibility at
                         different clarity grades of a diamond</p>
                     <p>At Meez, we strictly adhere to international standards when advising our customers. We always
@@ -202,9 +201,10 @@ export const DiamondEducation: React.FC = () => {
                         differ in size if one is cut deeper than the other. In other words, it's important to note that
                         carat weight does not necessarily indicate size.</p>
                     <h3><strong>3. Some common carat sizes of diamonds</strong></h3>
-                    <p><img decoding="async" loading="lazy" className="aligncenter wp-image-23696 size-full"
-                            src="https://meezjewelry.vn/wp-content/uploads/2023/06/image012.png" alt="" width="1075"
-                            height="508"/></p>
+                    <p><img decoding="async" loading="lazy"
+                            className="aligncenter wp-image-23696 size-full"
+                            src="https://meezjewelry.vn/wp-content/uploads/2023/06/image012.png" alt="" width="650"
+                    /></p>
                     <h3><strong>4. Is a higher Carat weight better?</strong></h3>
                     <p>In this aspect, carat weight does not determine the value of the diamond. For example, two
                         one-carat stones may differ in price considering clarity, color, and cut. This means the special

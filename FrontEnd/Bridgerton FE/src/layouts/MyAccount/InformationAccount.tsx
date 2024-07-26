@@ -139,7 +139,7 @@ export const InformationAccount = () => {
                         name="email"
                         className="form-item"
                     >
-                        <div>{data?.email}</div>
+                        <Input value={data?.email} disabled/>
                     </Form.Item>
 
                     <Form.Item

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Layout, Card, Typography, Button, Row, Col, Input } from 'antd';
-import { Link } from 'react-router-dom';
-const { Content } = Layout;
-const { Text, Title } = Typography;
+import React, {useEffect, useState} from 'react';
+import {Layout, Card, Typography, Button, Row, Col, Input} from 'antd';
+import {Link} from 'react-router-dom';
+
+const {Content} = Layout;
+const {Text, Title} = Typography;
 
 const BillSummary: React.FC<{ cart: number }> = (props) => {
     const [promoCode, setPromoCode] = useState<string>('');
@@ -11,10 +12,6 @@ const BillSummary: React.FC<{ cart: number }> = (props) => {
     const [errorMessage, setErrorMessage] = useState<string>('');
 
     useEffect(() => {
-        const data = localStorage.getItem('token');
-        if (!data || localStorage.getItem('token') === null) {
-            window.location.href = '/login';
-        }
         window.scrollTo(0, 0);
     }, []);
 
@@ -46,28 +43,28 @@ const BillSummary: React.FC<{ cart: number }> = (props) => {
     };
 
     return (
-        <Layout style={{ minHeight: "100vh", display: 'flex' }}>
-            <Content style={{ padding: '50px', width: '100%', maxWidth: '500px' }}>
+        <Layout style={{minHeight: "100vh", display: 'flex'}}>
+            <Content style={{padding: '50px', width: '100%', maxWidth: '500px'}}>
                 <Card>
                     <Title level={4}>Cart Total</Title>
-                    <hr />
-                    <Row style={{ marginBottom: '16px' }}>
+                    <hr/>
+                    <Row style={{marginBottom: '16px'}}>
                         <Col span={12}>
                             <Text>Total products: </Text>
                         </Col>
-                        <Col span={12} style={{ textAlign: 'right' }}>
+                        <Col span={12} style={{textAlign: 'right'}}>
                             <Text><strong>${props.cart}</strong></Text>
                         </Col>
                     </Row>
-                    <Row style={{ marginBottom: '16px' }}>
+                    <Row style={{marginBottom: '16px'}}>
                         <Col span={12}>
                             <Text>Shipping: </Text>
                         </Col>
-                        <Col span={12} style={{ textAlign: 'right' }}>
+                        <Col span={12} style={{textAlign: 'right'}}>
                             <Text><strong>Free</strong></Text>
                         </Col>
                     </Row>
-                    <Row style={{ marginBottom: '16px' }}>
+                    <Row style={{marginBottom: '16px'}}>
                         <Col span={24}>
                             <label>Promo Code: </label>
                             <Row gutter={8}>
@@ -79,21 +76,22 @@ const BillSummary: React.FC<{ cart: number }> = (props) => {
                                     />
                                 </Col>
                                 <Col span={8}>
-                                    <Button style={{ color: 'green', width: '100%' }} onClick={handleApplyPromoCode}>Apply</Button>
+                                    <Button style={{color: 'green', width: '100%'}}
+                                            onClick={handleApplyPromoCode}>Apply</Button>
                                 </Col>
                             </Row>
                             {errorMessage && <Text type="danger">{errorMessage}</Text>}
                         </Col>
                     </Row>
-                    <Row style={{ marginBottom: '16px' }}>
+                    <Row style={{marginBottom: '16px'}}>
                         <Col span={12}>
                             <Text>Total after discount: </Text>
                         </Col>
-                        <Col span={12} style={{ textAlign: 'right' }}>
+                        <Col span={12} style={{textAlign: 'right'}}>
                             <Text><strong>${totalAmount}</strong></Text>
                         </Col>
                     </Row>
-                    <Button type="primary" size="large" style={{ backgroundColor: 'black', width: '100%' }}>
+                    <Button type="primary" size="large" style={{backgroundColor: 'black', width: '100%'}}>
                         <Link className='text-decoration-none text-white' to={'/checkout'}>
                             PROCEED TO CHECKOUT
                         </Link>

@@ -60,10 +60,9 @@ export const Navbar = () => {
                          style={{
                              fontFamily: 'Petit Formal Script, cursive',
                              textDecoration: 'none',
-                             fontSize: '30px',
+                             fontSize: '40px',
                              color: 'white',
                          }}>
-                    <img src={'./logo192.png'} style={{width: '70px', height: '70px'}}/>
                     Bridgerton
                 </NavLink>
             </div>
@@ -79,11 +78,11 @@ export const Navbar = () => {
                     <NavLink className="nav-link" to="/price">
                         Diamond Price
                     </NavLink>
+                    <NavLink className="nav-link" to="/diamond-education">
+                        Diamond Knowledge
+                    </NavLink>
                     <NavLink className="nav-link" to="/contactus">
                         Contact Us
-                    </NavLink>
-                    <NavLink className="nav-link" to="/diamond-education">
-                        Diamond Education
                     </NavLink>
                 </Space>
                 <Space>

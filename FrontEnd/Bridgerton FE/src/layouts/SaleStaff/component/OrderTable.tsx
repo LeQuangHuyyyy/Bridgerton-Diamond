@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './OrderTable.css';
-import {Alert, Button, Input, message, Space, Spin, Table, Tag} from 'antd';
+import {Alert, Button, message, Space, Spin, Table, Tag} from 'antd';
 import {useHistory} from 'react-router-dom';
 import OrderModel from "../../../models/OrderModel"
-import DiamondModel from "../../../models/DiamondModel";
 
 const token = localStorage.getItem('token')
 const headers = {
@@ -147,32 +146,32 @@ const OrderTable: React.FC = () => {
             title: 'ORDER ID',
             dataIndex: 'orderId',
             key: 'orderId',
+            className:'text-center'
         },
         {
             title: 'ORDER DATE',
             dataIndex: 'orderDate',
             key: 'orderDate',
+            className:'text-center',
             render: (text: any) => new Date(text).toLocaleDateString(),
         },
         {
             title: 'ORDER TOTAL AMOUNT',
             dataIndex: 'orderTotalAmount',
             key: 'orderTotalAmount',
+            className:'text-center'
         },
         {
             title: 'ORDER DELIVERY ADDRESS',
             dataIndex: 'orderDeliveryAddress',
             key: 'orderDeliveryAddress',
-        },
-        {
-            title: 'DISCOUNT CODE',
-            dataIndex: 'discountCode',
-            key: 'discountCode',
+            className:'text-center'
         },
         {
             title: 'STATUS',
             dataIndex: 'status',
             key: 'status',
+            className:'text-center',
             render: (status: any) => (
                 <Tag color={getStatusColor(status)} style={{fontWeight: 'bolder'}} key={status}>
                     {status}
@@ -182,30 +181,50 @@ const OrderTable: React.FC = () => {
         {
             title: 'ACTION',
             key: 'action',
+            className:'text-center',
             render: (record: any) => (
                 record.status === 'PAYMENT' ? (
                     <Space size="middle">
                         <Button onClick={(event) => handleConfirm(event, record.orderId)}>
                             CONFIRM
                         </Button>
-                        CANCEL
+                        <Button onClick={(event) => handleCancel(event, record.orderId)}>
+                            CANCEL
+                        </Button>
                     </Space>
                 ) : null
             ),
         },
     ];
 
+    const handleCancel= async (e:React.FormEvent, orderId: number) => {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
+        const headersForPayment = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+        try {
+            const baseUrl = `https://deploy-be-b176a8ceb318.herokuapp.com`;
+            const url = `${baseUrl}/order/cancel?orderId=${orderId}`;
+            const response = await fetch(url, { method: 'PUT', headers: headersForPayment });
+
+            if (!response.ok) {
+                message.error('Something when wrong' );
+                throw new Error('Something went wrong!');
+            }
+            updateOrderStatus(orderId, 'CANCELED');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div style={{marginTop: '50px'}} className="container">
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <h1 className='custom-heading text-center'>Orders List</h1>
+                <h1 className='custom-heading justify-content-center'>Orders List</h1>
                 <Button onClick={logOut} type="primary" style={{marginBottom: '100px'}}> Logout</Button>
             </div>
-            {/*<Search*/}
-            {/*    placeholder="Search"*/}
-            {/*    enterButton*/}
-            {/*    style={{marginBottom: '20px', width: '300px'}}*/}
-            {/*/>*/}
             <Table
                 columns={columns}
                 dataSource={orders}

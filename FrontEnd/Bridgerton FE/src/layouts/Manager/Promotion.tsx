@@ -99,10 +99,11 @@ export const Promotion: React.FC = () => {
             });
             if (response.ok) {
                 setIsAddingNew(false);
+                message.success("Create New Promotion successfully")
                 fetchPromotions();
             } else {
                 console.error('Failed to create promotion');
-                message.success('Promotion created successfully');
+                message.success('Promotion created fail');
             }
         } catch (error) {
             console.error('Error creating promotion: ', error);

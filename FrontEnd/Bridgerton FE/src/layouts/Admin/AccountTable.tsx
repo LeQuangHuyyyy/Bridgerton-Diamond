@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {jwtDecode} from "jwt-decode";
-import { Table, Button, Modal, Form, Input, Select, message, Badge, Dropdown, Menu } from "antd";
+import {Badge, Button, Dropdown, Form, Input, Menu, message, Modal, Table} from "antd";
 import AddAccount from "./AddAccount";
 import UpdateAccount from "./UpdateAccount";
 import {UserAddOutlined, UserOutlined} from "@ant-design/icons";
-
 
 const headers = localStorage.getItem('token');
 
@@ -37,7 +36,7 @@ export const AccountTable: React.FC = () => {
     };
 
     const toggleUpdateModal = () => {
-        setIsUpdating(false);
+        setIsUpdating(!isUpdating);
     };
 
     useEffect(() => {
@@ -77,11 +76,12 @@ export const AccountTable: React.FC = () => {
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
     };
+
     const handleStatusChange = (checked: boolean) => {
-        setFormData({ ...formData, status: checked ? 'true' : 'false' });
+        setFormData({...formData, status: checked ? 'true' : 'false'});
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -132,11 +132,8 @@ export const AccountTable: React.FC = () => {
     };
 
     const handleEdit = (userid: string, e: React.FormEvent) => {
-
         setIsUpdating(true);
-
         const accountToEdit = dataSource.find((account: any) => account.userid === userid);
-
         if (accountToEdit) {
             setFormData(accountToEdit);
         }
@@ -144,7 +141,6 @@ export const AccountTable: React.FC = () => {
 
     const handleUpdate = async () => {
         let check = true;
-
         try {
             const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts', {
                 method: "GET",
@@ -293,7 +289,7 @@ export const AccountTable: React.FC = () => {
             dataIndex: 'status',
             key: 'status',
             render: (text: string) => (
-                <Badge status={text ? "success" : "error"} text={text ? "ACTIVE" : "SUSPENDED"} />
+                <Badge status={text ? "success" : "error"} text={text ? "ACTIVE" : "SUSPENDED"}/>
             )
         },
         {
@@ -302,7 +298,7 @@ export const AccountTable: React.FC = () => {
             render: (text: string, record: any) => (
                 <>
                     <Button type="link" onClick={(e) => handleEdit(record.userid, e)}>Edit</Button>
-                    <Button type="link" danger onClick={(e) => handleDelete(record.userid, e)}>Delete</Button>
+                    <Button type="link" danger onClick={(e) => handleDelete(record.userid, e)}>Suspended</Button>
                 </>
             )
         }
@@ -310,9 +306,9 @@ export const AccountTable: React.FC = () => {
 
     return (
         <div className="container">
-            <div className="mb-3 p-4 mt-5 d-flex justify-content-between"
-                 style={{ marginLeft: '20px', marginRight: '20px', borderRadius: '20px' }}>
-                <div className="d-flex align-items-center w-25 justify-content-around">
+            <div className="mb-3 p-4 mt-5 d-flex justify-content-end "
+                 style={{marginLeft: '20px', marginRight: '20px', borderRadius: '20px'}}>
+                <div className="d-flex align-items-center w-25 justify-content-around ">
                     <div>
                         <p className="m-0">Welcome back, {userName}!</p>
                     </div>
@@ -348,14 +344,26 @@ export const AccountTable: React.FC = () => {
                     </Form.Item>
                 </Form>
 
-                <h6 className="custom-heading" style={{fontSize: '45px', display: 'flex', justifyContent: 'center'}}>Account Table<UserOutlined /></h6>
+                <h6 className="custom-heading"
+                    style={{fontSize: '45px', display: 'flex', justifyContent: 'center'}}>Account Table<UserOutlined/>
+                </h6>
                 <div className="d-flex justify-content-end mb-3">
-                    <Button style={{fontSize: '25px', fontWeight: 'bold', marginRight: 5}} onClick={toggleAddModal} type="primary" className="new btn mt-3 d-flex justify-content-end">
-                        <UserAddOutlined /> New Account
+                    <Button style={{
+                        fontSize: '25px',
+                        fontWeight: 'bold',
+                        boxSizing: "border-box",
+                        marginRight: "10px",
+                        padding: "20px"
+                    }}
+                            onClick={toggleAddModal}
+                            type="primary" className="btn mt-3 d-flex justify-content-end">
+                        <UserAddOutlined/> New Account
                     </Button>
                 </div>
                 <Table dataSource={dataSource} columns={columns} rowKey="userid"/>
             </div>
+
+
             <Modal visible={isAddingNew} title="Add New Account" onCancel={toggleAddModal} footer={null}>
                 <AddAccount
                     isOpen={isAddingNew}
@@ -374,7 +382,6 @@ export const AccountTable: React.FC = () => {
                     handleChange={handleChange}
                     handleStatusChange={handleStatusChange}
                 />
-
             </Modal>
         </div>
     );

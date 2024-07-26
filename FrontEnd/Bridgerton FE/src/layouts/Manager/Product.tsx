@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {SpinnerLoading} from "../Utils/SpinnerLoading";
 import {AddProduct} from "./component/AddProduct";
+import {UpdateProduct} from "./component/UpdateProduct";
 import {Button, Image, message, Table, Pagination} from "antd";
 import ProductModel from "../../models/ProductModel";
+import {EditOutlined, DeleteFilled} from "@ant-design/icons";
+
 
 interface ProductData {
     productId: number;
@@ -90,7 +93,7 @@ export const Product = () => {
                 const responseData = responseJson.content;
                 setTotalAmountOfProducts(responseJson.totalElements);
                 setTotalPages(responseJson.totalPages);
-
+                console.log(responseData)
                 const loadedProducts: ProductModel[] = [];
 
                 for (const key in responseData) {
@@ -161,6 +164,81 @@ export const Product = () => {
         });
         setIsAddingNew(!isAddingNew);
     }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    const toggleUpdateModal = () => {
+        setFormData({
+            productId: 0,
+            collection: '',
+            description: '',
+            image1: '',
+            image2: '',
+            image3: '',
+            image4: '',
+            price: 0,
+            productName: '',
+            stockQuantity: 0,
+            categoryId: 0,
+            diamondId: 0,
+            shellId: 0,
+            certificateImage: '',
+            warrantyImage: ''
+        });
+        setIsUpdating(false)
+    }
+    const handleToEdit = (e: React.FormEvent, record: ProductModel) => {
+        const productToEdit = products.find(product => product.productId === record.productId);
+        if (productToEdit) {
+            setFormData(productToEdit);
+            setIsUpdating(!isUpdating);
+        }
+
+    }
+    const handleUpdate = async (e: React.FormEvent, product: ProductModel) => {
+        e.preventDefault();
+        try {
+            const requestBody = {
+                productId: product.productId,
+                collection: product.collection,
+                description: product.description,
+                image1: product.image1,
+                image2: product.image2,
+                image3: product.image3,
+                image4: product.image4,
+                price: product.price,
+                productName: product.productName,
+                stockQuantity: product.stockQuantity,
+                categoryId: product.categoryId,
+                shellId: product.shellId,
+                certificateImage: product.certificateImage,
+                warrantyImage: product.warrantyImage,
+                diamondId: product.diamondId
+            }
+
+            const createProduct = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/product/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${headers}`
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (createProduct.ok) {
+                setIsAddingNew(false);
+                message.success('Product update successfully');
+                setIsUpdating(false)
+            } else {
+                message.error('Failed to update product');
+                console.log(requestBody)
+                setIsUpdating(false)
+            }
+
+
+        } catch (error) {
+            console.error('Error update product: ', error);
+        }
+    };
+
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, files} = e.target;
@@ -255,6 +333,7 @@ export const Product = () => {
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
+
     const handleDelete = async (record: ProductModel) => {
         console.log("Product ID: ", record.productId);
         if (record) {
@@ -267,7 +346,6 @@ export const Product = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${headers}`
                 },
-                // body: JSON.stringify(body)
             });
             if (response.ok) {
                 message.success('Product deleted successfully')
@@ -283,6 +361,7 @@ export const Product = () => {
             title: 'Image',
             dataIndex: 'image1',
             key: 'image1',
+            className: 'text-center',
             render: (text: string) => (
                 <Image
                     width={100}
@@ -295,19 +374,22 @@ export const Product = () => {
             title: 'Product Name',
             dataIndex: 'productName',
             key: 'productName',
+            className: 'text-center',
         },
         {
             title: 'Price',
             dataIndex: 'price',
             key: 'price',
+            className: 'text-center',
             render: (text: number) => (
-                <span style={{fontWeight: 'bolder'}}>${text}</span>
+                <span style={{fontWeight: 'bolder'}}>${text.toLocaleString()}</span>
             ),
         },
         {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
+            className: 'text-center',
             render: (text: string) => (
                 <span style={{textAlign: 'center'}}>{text}</span>
             ),
@@ -316,6 +398,16 @@ export const Product = () => {
             title: 'Quantity',
             dataIndex: 'stockQuantity',
             key: 'stockQuantity',
+            className: 'text-center',
+            render: (text: number) => (
+                <span>{text}</span>
+            ),
+        },
+        {
+            title: 'Published',
+            dataIndex: 'status',
+            key: 'status',
+            className: 'text-center',
             render: (text: number) => (
                 <span>{text}</span>
             ),
@@ -323,23 +415,23 @@ export const Product = () => {
         {
             title: 'Actions',
             key: 'actions',
-            render: (text: string, record: ProductModel) => (
-                <Button type="primary" onClick={() => handleDelete(record)} danger>
-                    Delete
-                </Button>
+            render: (record: ProductModel) => (
+                <>
+                    {/*<Button onClick={() => handleDelete(record)}>*/}
+                    {/*    <DeleteFilled />*/}
+                    {/*</Button>*/}
+                    <Button onClick={(event) => handleToEdit(event, record)}>
+                        <EditOutlined />
+                    </Button>
+                </>
+
             ),
         },
     ];
     return (
         <div>
             <div className='container'>
-                <div className="mb-4 d-flex justify-content-between align-items-center">
-                    <h2 className="text-dark">Product</h2>
-                    <button onClick={() => setIsAddingNew(true)} className="btn btn-primary">
-                        New Product
-                    </button>
-                </div>
-                <div className='row mt-5 ms-4'>
+                <div className='row ms-4'>
                     <div style={{width: '300px'}} className='col-6'>
                         <div
                             className='d-flex'>
@@ -353,10 +445,12 @@ export const Product = () => {
                                 className='btn btn-outline-dark' onClick={() => searchHandleChange()}>Search
                             </button>
                         </div>
+
                     </div>
-                    <div className='col-4'>
+                    <div className='col-4 mb-3'>
                         <div className='dropdown'>
-                            <button className='btn btn-outline-dark dropdown-toggle' type='button'
+                            <button style={{borderRadius: '0'}} className='btn btn-outline-dark dropdown-toggle'
+                                    type='button'
                                     id='dropdownMenuButton1' data-bs-toggle='dropdown' aria-expanded='false'
                             >
                                 {searchCategory}
@@ -405,10 +499,14 @@ export const Product = () => {
                         </div>
                     </div>
 
+                        <h2 style={{fontSize: 45}} className="custom-heading text-center mt-2">Product Management</h2>
+
+                    <button style={{width: 150, marginLeft: 20, borderRadius: '0'}} onClick={() => setIsAddingNew(true)} className="btn btn-outline-success">
+                        New Product
+                    </button>
                     {totalAmountOfProducts > 0 ?
                         <>
-                            <Table className="mt-5" dataSource={products} columns={columns} rowKey="productId"
-
+                            <Table dataSource={products} columns={columns} rowKey="productId"
                                    pagination={false}/>
                             <Pagination
                                 current={currentPage}
@@ -429,6 +527,14 @@ export const Product = () => {
                         isOpen={isAddingNew}
                         onClose={toggleAddModal}
                         onSubmit={handleSubmit}
+                        formData={formData}
+                        handleChange={handleChange}
+                        handleFileChange={handleFileChange}
+                    />
+                    <UpdateProduct
+                        isOpen={isUpdating}
+                        onClose={toggleUpdateModal}
+                        onSubmit={handleUpdate}
                         formData={formData}
                         handleChange={handleChange}
                         handleFileChange={handleFileChange}

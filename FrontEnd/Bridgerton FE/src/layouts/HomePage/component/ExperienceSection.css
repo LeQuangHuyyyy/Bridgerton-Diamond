@@ -1,15 +1,15 @@
 .experience-section {
     display: flex;
     align-items: center;
-    padding: 40px;
+    padding: 50px;
 }
 
 .text-content {
     flex: 1;
-    padding-right: 20px;
+    justify-content: center;
 }
 
-.text-content h2 {
+.text-content h3 {
     font-size: 32px;
     font-weight: bold;
     color: #0B2447;
@@ -34,7 +34,6 @@
 }
 
 .image-content img {
-    max-width: 100%;
+    max-width: 80%;
     height: auto;
-    border-radius: 10px;
 }

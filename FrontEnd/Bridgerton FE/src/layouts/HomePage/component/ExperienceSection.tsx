@@ -1,14 +1,14 @@
 import React from 'react';
 import './ExperienceSection.css';
-import ExpandableFeature from "./ExpandableFeature";
+import ExpandableFeature from "../../Utils/ExpandableFeature";
 
 const ExperienceSection: React.FC = () => {
     return (
         <div className="experience-section">
             <div className="text-content">
-                <h2>We're committed to making your entire experience a pleasant one, from shopping to shipping.</h2>
+                <h3 style={{paddingLeft: 0}}>We're committed to making your entire experience a pleasant one, from shopping to shipping.</h3>
                 <p>
-                    Every item we send comes in our signature Blue Nile packaging. Engagement rings arrive in a deluxe ring box within an elegant presentation box ready for your proposal. The presentation box also secures your appraisal certificate and GIA diamond grading report. Loose diamonds are presented in a velvet lined diamond case that securely holds the stone.
+                    Every item we send comes in our signature Bridgerton packaging. Engagement rings arrive in a deluxe ring box within an elegant presentation box ready for your proposal. The presentation box also secures your appraisal certificate and GIA diamond grading report. Loose diamonds are presented in a velvet lined diamond case that securely holds the stone.
                 </p>
                 <div className="features">
                     <ExpandableFeature

@@ -1,7 +1,10 @@
 import CartModel from "../../../models/CartModel";
 
 
-export const CartProduct: React.FC<{ product: CartModel; onRemoveProduct: (productId: number, sizeId: number) => void }> = (props) => {
+export const CartProduct: React.FC<{
+    product: CartModel;
+    onRemoveProduct: (productId: number, sizeId: number) => void
+}> = (props) => {
 
     const handleRemoveProduct = () => {
         props.onRemoveProduct(props.product.productId, props.product.sizeId);

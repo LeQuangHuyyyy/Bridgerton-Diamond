@@ -32,19 +32,20 @@ import ChangePassword from "./layouts/MyAccount/ChangePassword";
 import MyOrderDetail from "./layouts/MyAccount/MyOrderDetail";
 import OrderDeliveryDetail from "./layouts/DeliveryStaff/OrderDeliveryDetail";
 import {DiamondEducation} from "./layouts/HomePage/component/DiamondEducation";
+import NotFoundPage from "./layouts/NotFoundPage/NotFoundPage";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
 
     useEffect(() => {
-const data = localStorage.getItem('token');
-    if (data) {
-        const decodedToken = jwtDecode(data) as { role: string };
-        setToken(decodedToken.role);
+        const data = localStorage.getItem('token');
+        if (data) {
+            const decodedToken = jwtDecode(data) as { role: string };
+            setToken(decodedToken.role);
 
-    } else {
-        setToken(undefined);
-    }
+        } else {
+            setToken(undefined);
+        }
     }, []);
 
     return (
@@ -54,9 +55,33 @@ const data = localStorage.getItem('token');
                     {token === undefined && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
+                            <Route path='/deliverystaff'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/deliverydetailorder/:orderId'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/salestaff'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/orderdetail/:orderId'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/promotion'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/dashboard'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/product'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/diamond'>
+                                <NotFoundPage/>
+                            </Route>
                             <Route path='/diamond-education'>
-                            <DiamondEducation/>
-                        </Route>
+                                <DiamondEducation/>
+                            </Route>
                             <Route path='/' exact>
                                 <HomePage/>
                             </Route>
@@ -93,6 +118,9 @@ const data = localStorage.getItem('token');
                             <Route path='/ordersuccess'>
                                 <OrderSuccessPage/>
                             </Route>
+                            <Route path='/admin'>
+                                <NotFoundPage/>
+                            </Route>
                             <Footer/>
                         </div>
                     )
@@ -100,7 +128,33 @@ const data = localStorage.getItem('token');
                     {token === 'CUSTOMER' && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
-
+                            <Route path='/deliverystaff'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/deliverydetailorder/:orderId'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/salestaff'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/orderdetail/:orderId'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/promotion'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/dashboard'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/product'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/diamond'>
+                                <NotFoundPage/>
+                            </Route>
+                            <Route path='/admin'>
+                                <NotFoundPage/>
+                            </Route>
                             <Route path='/diamond-education'>
                                 <DiamondEducation/>
                             </Route>
@@ -131,12 +185,7 @@ const data = localStorage.getItem('token');
                             <Route path='/login'>
                                 <Login/>
                             </Route>
-                            <Route path='/verify-register'>
-                                <VerifyCode/>
-                            </Route>
-                            <Route path='/forgot-password'>
-                                <ForgotPassword/>
-                            </Route>
+
                             <Route path='/reset-password'>
                                 <ResetPassword/>
                             </Route>
@@ -146,22 +195,22 @@ const data = localStorage.getItem('token');
                             <Switch>
                                 <Route path='/myaccount'>
                                     <Account>
-                                        <InformationAccount />
+                                        <InformationAccount/>
                                     </Account>
                                 </Route>
                                 <Route path='/myorders'>
                                     <Account>
-                                        <MyOrders />
+                                        <MyOrders/>
                                     </Account>
                                 </Route>
                                 <Route path='/myorderdetail/:orderId'>
                                     <Account>
-                                        <MyOrderDetail />
+                                        <MyOrderDetail/>
                                     </Account>
                                 </Route>
                                 <Route path='/changepassword'>
                                     <Account>
-                                        <ChangePassword />
+                                        <ChangePassword/>
                                     </Account>
                                 </Route>
                             </Switch>
@@ -179,18 +228,18 @@ const data = localStorage.getItem('token');
                     {token === 'MANAGER' && (
                         <>
                             <SideBar>
-                            <Route path='/promotion'>
-                                <Promotion/>
-                            </Route>
-                            <Route path='/dashboard'>
-                                <Dashboard/>
-                            </Route>
-                            <Route path='/product'>
-                                <Product/>
-                            </Route>
-                            <Route path='/diamond'>
-                                <Diamond/>
-                            </Route>
+                                <Route path='/promotion'>
+                                    <Promotion/>
+                                </Route>
+                                <Route path='/dashboard'>
+                                    <Dashboard/>
+                                </Route>
+                                <Route path='/product'>
+                                    <Product/>
+                                </Route>
+                                <Route path='/diamond'>
+                                    <Diamond/>
+                                </Route>
                             </SideBar>
                         </>
                     )}
