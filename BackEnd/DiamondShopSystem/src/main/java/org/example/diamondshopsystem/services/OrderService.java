@@ -81,17 +81,17 @@ public class OrderService implements OrderServiceImp {
     @Override
     public void setOrderStatus(Integer orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
-        if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.PAYMENT)) {
+        if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.PAID)) {
             try {
                 System.out.println("ccccc");
-                order.setStatus(OrderStatus.PAYMENT);
+                order.setStatus(OrderStatus.PAID);
                 orderRepository.save(order);
 
             } catch (Exception e) {
                 throw new IllegalStateException("cannot save");
             }
         } else {
-            throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.PAYMENT + " is not allowed.");
+            throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.PAID + " is not allowed.");
         }
     }
 
@@ -107,7 +107,7 @@ public class OrderService implements OrderServiceImp {
                 throw new IllegalStateException("cannot save");
             }
         } else {
-            throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.PAYMENT + " is not allowed.");
+            throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.PAID + " is not allowed.");
         }
     }
 
@@ -198,8 +198,8 @@ public class OrderService implements OrderServiceImp {
 
     public boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
         return switch (currentStatus) {
-            case PENDING -> newStatus == OrderStatus.PAYMENT || newStatus == OrderStatus.CANCELED;
-            case PAYMENT -> newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.CANCELED;
+            case PENDING -> newStatus == OrderStatus.PAID || newStatus == OrderStatus.CANCELED;
+            case PAID -> newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.CANCELED;
             case DELIVERED -> newStatus == OrderStatus.RECEIVED || newStatus == OrderStatus.CANCELED;
             case CANCELED, RECEIVED -> false;
         };
@@ -236,7 +236,7 @@ public class OrderService implements OrderServiceImp {
         Date endOfLastWeek = calendar.getTime();
 
         for (Order o : orders) {
-            if (o.getOrderDate().after(startOfLastWeek) && o.getOrderDate().before(endOfLastWeek) && o.getStatus().equals(OrderStatus.PAYMENT)) {
+            if (o.getOrderDate().after(startOfLastWeek) && o.getOrderDate().before(endOfLastWeek) && o.getStatus().equals(OrderStatus.PAID)) {
                 result.add(o);
             }
         }
@@ -266,7 +266,7 @@ public class OrderService implements OrderServiceImp {
         List<OrderDTO> orderDTOList = new ArrayList<>();
 
         for (Order o : orders) {
-            if (o.getOrderDate().after(monday) && o.getStatus() == OrderStatus.PAYMENT) {
+            if (o.getOrderDate().after(monday) && o.getStatus() == OrderStatus.PAID) {
                 orderDTOList.add(orderMapper.getAllOrder(o));
             }
         }
@@ -292,7 +292,7 @@ public class OrderService implements OrderServiceImp {
         List<Order> orders = orderRepository.findAll();
         List<OrderProductDetailRequest> list = new ArrayList<>();
         for (Order o : orders) {
-            if (o.getStatus() == OrderStatus.PAYMENT) {
+            if (o.getStatus() == OrderStatus.PAID) {
                 for (OrderDetails od : o.getOrderDetails()) {
                     OrderProductDetailRequest orderProductDetailRequests = getOrderProductDetailRequest(od);
                     list.add(orderProductDetailRequests);
@@ -348,7 +348,7 @@ public class OrderService implements OrderServiceImp {
             int roundQuantity = 0;
             int ovalQuantity = 0;
             for (Order o : orders) {
-                if (o.getStatus() == OrderStatus.PAYMENT) {
+                if (o.getStatus() == OrderStatus.PAID) {
                     for (OrderDetails od : o.getOrderDetails()) {
                         LocalDateTime localDateTime = LocalDateTime.ofInstant(o.getOrderDate().toInstant(), ZoneId.systemDefault());
                         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
@@ -394,7 +394,7 @@ public class OrderService implements OrderServiceImp {
 
         List<Order> orders = orderRepository.findAll();
         for (Order o : orders) {
-            if (o.getStatus() == OrderStatus.PAYMENT) {
+            if (o.getStatus() == OrderStatus.PAID) {
                 for (OrderDetails od : o.getOrderDetails()) {
                     Products products = od.getProduct();
                     Category category = products.getCategory();
@@ -492,7 +492,7 @@ public class OrderService implements OrderServiceImp {
             int totalOrder = 0;
             int totalItem = 0;
             for (Order o : orders) {
-                if (d.equals(o.getOrderDate().toString().substring(0, 10)) && o.getStatus().equals(OrderStatus.PAYMENT)) {
+                if (d.equals(o.getOrderDate().toString().substring(0, 10)) && o.getStatus().equals(OrderStatus.PAID)) {
                     totalOrder++;
                     totalSale += o.getOrderTotalAmount();
                     for (OrderDetails od : o.getOrderDetails()) {

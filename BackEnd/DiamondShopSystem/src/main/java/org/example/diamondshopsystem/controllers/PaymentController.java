@@ -87,7 +87,7 @@ public class PaymentController {
                     int orderId = Integer.parseInt(orderInfo.split("Order ID: ")[1]);
 
                     OrderStatus currentStatus = orderService.getOrderStatus(orderId);
-                    if (!OrderStatus.PAYMENT.equals(currentStatus)) {
+                    if (!OrderStatus.PAID.equals(currentStatus)) {
                         orderService.setOrderStatus(orderId);
                     }
                     paymentService.savePayment(paymentDTO);

@@ -2,7 +2,7 @@ package org.example.diamondshopsystem.entities;
 
 public enum OrderStatus {
     PENDING,
-    PAYMENT,
+    PAID,
     DELIVERED,
     CANCELED,
     RECEIVED,

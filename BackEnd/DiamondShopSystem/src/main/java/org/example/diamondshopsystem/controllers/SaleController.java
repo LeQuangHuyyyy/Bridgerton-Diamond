@@ -36,7 +36,7 @@ public class SaleController {
     @GetMapping("/ViewOrderPaymentAndPending")
     public ResponseEntity<List<OrderDTO>> getOrderByPaymentAndPending(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         try {
-            List<OrderStatus> statuses = Arrays.asList(OrderStatus.PAYMENT, OrderStatus.PENDING, OrderStatus.DELIVERED);
+            List<OrderStatus> statuses = Arrays.asList(OrderStatus.PAID, OrderStatus.PENDING, OrderStatus.DELIVERED);
             Page<OrderDTO> newOrdersPage = orderServiceImp.getAllOrdersByStatuses(statuses, PageRequest.of(page, size));
             List<OrderDTO> newOrders = newOrdersPage.getContent();
             return ResponseEntity.ok(newOrders);
