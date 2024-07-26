@@ -72,6 +72,14 @@ public class ManagerController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
+    @GetMapping("/revenueThisWeek")
+    public ResponseEntity<?> getTotalRevenueThisWeek() {
+        ResponseData responseData = new ResponseData();
+        responseData.setData(orderServiceImp.revenueThisWeek());
+        responseData.setDescription("ke ke ke, lấy doanh thu trong tuần này");
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
+    }
+
     @GetMapping("/getDiamondSold")
     public ResponseEntity<?> getDiamondSoldLastWeek() {
         ResponseData responseData = new ResponseData();
@@ -88,11 +96,11 @@ public class ManagerController {
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
-    @GetMapping("/getProfit")
-    public ResponseEntity<?> getProfit() {
+    @GetMapping("/statisticBeforeThisWeek")
+    public ResponseEntity<?> getStatisticBeForeThisWeek() {
         ResponseData responseData = new ResponseData();
-        responseData.setData(orderServiceImp.getProfit());
-        responseData.setDescription("ke ke ke, lợi nhuận tuần trc so với bây h");
+        responseData.setData(orderServiceImp.getStatisticBeforeThisWeek());
+        responseData.setDescription("ke ke ke, statistic trong tất cả các mặt hàng đã bán tính từ tuần trc");
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
@@ -103,4 +111,6 @@ public class ManagerController {
         responseData.setDescription("lấy diamond mà k có product");
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
+
+
 }

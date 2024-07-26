@@ -6,10 +6,7 @@ import org.example.diamondshopsystem.dto.PaymentDTO;
 import org.example.diamondshopsystem.entities.Order;
 import org.example.diamondshopsystem.entities.OrderDetails;
 import org.example.diamondshopsystem.entities.OrderStatus;
-import org.example.diamondshopsystem.payload.requests.AddProductRequest;
-import org.example.diamondshopsystem.payload.requests.DiamondCategory;
-import org.example.diamondshopsystem.payload.requests.OrderProductDetailRequest;
-import org.example.diamondshopsystem.payload.requests.ProductCategory;
+import org.example.diamondshopsystem.payload.requests.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -44,15 +41,18 @@ public interface OrderServiceImp {
     List<OrderDTO> getOrderSoldInThisWeek();
 
     List<OrderProductDetailRequest> getTotalProductInLastWeek();
+
     List<OrderProductDetailRequest> getTotalProductInTHisWeek();
 
     double revenueLastWeek();
+
+    double revenueThisWeek();
 
     List<DiamondCategory> diamondSoldByCategory();
 
     List<ProductCategory> getProductSoldByCategory();
 
-    double getProfit();
+    List<Statistic> getStatisticBeforeThisWeek();
 
     List<OrderDTO> getOrderByUserId(int userId);
 

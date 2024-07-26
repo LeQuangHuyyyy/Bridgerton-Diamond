@@ -50,6 +50,7 @@ export const Navbar = () => {
         setIsLogin(false);
         localStorage.removeItem('token');
         localStorage.removeItem('promoCode');
+        window.location.href="/"
         message.success('Logout successful!');
     };
 

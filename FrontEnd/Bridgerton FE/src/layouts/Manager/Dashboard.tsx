@@ -5,8 +5,9 @@ import Chart from "./component/Chart";
 import PieChartComponent from "./component/PieChartComponent";
 import {SpinnerLoading} from "../Utils/SpinnerLoading";
 
+const token = localStorage.getItem('token')
 const headers = {
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjdXN0b21lckBnbWFpbC5jb20iLCJpZCI6MSwibmFtZSI6IkNVUyIsInJvbGUiOiJDVVNUT01FUiIsInBob25lIjoiMTIzMTIzMTIzMTIiLCJhZGRyZXNzIjoiMjM0LzIzNCAifQ.9R2lECgKGx5pI1euKSGUnBl9ufhGs2YsaG5uhipN6cg'
+    'Authorization': `Bearer ${token}`
 }
 
 const {Content} = Layout;
@@ -39,7 +40,7 @@ const Dashboard = () => {
     }, []);
     useEffect(() => {
         const fetchData = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/productLastWeek";
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/productThisWeek";
             const url: string = `${baseUrl}`;
             const response = await fetch(url, {headers: headers});
             if (!response.ok) {

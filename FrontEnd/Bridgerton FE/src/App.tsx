@@ -228,6 +228,7 @@ export const App = () => {
                     {token === 'MANAGER' && (
                         <>
                             <SideBar>
+                                <Redirect to="/dashboard"/>
                                 <Route path='/promotion'>
                                     <Promotion/>
                                 </Route>

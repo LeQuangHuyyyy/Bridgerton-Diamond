@@ -4,11 +4,14 @@ import jakarta.mail.MessagingException;
 import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.dto.WarrantyDTO;
 import org.example.diamondshopsystem.entities.*;
-
 import org.example.diamondshopsystem.payload.requests.DiamondCategory;
 import org.example.diamondshopsystem.payload.requests.OrderProductDetailRequest;
 import org.example.diamondshopsystem.payload.requests.ProductCategory;
-import org.example.diamondshopsystem.repositories.*;
+import org.example.diamondshopsystem.payload.requests.Statistic;
+import org.example.diamondshopsystem.repositories.OrderDetailRepository;
+import org.example.diamondshopsystem.repositories.OrderRepository;
+import org.example.diamondshopsystem.repositories.ProductRepository;
+import org.example.diamondshopsystem.repositories.UserRepository;
 import org.example.diamondshopsystem.services.Map.OrderMapper;
 import org.example.diamondshopsystem.services.imp.OrderServiceImp;
 import org.example.diamondshopsystem.services.imp.WarrantiesServiceImp;
@@ -21,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -61,7 +63,6 @@ public class OrderService implements OrderServiceImp {
         return new PageImpl<>(orderDTOList, pageable, orderPage.getTotalElements());
     }
 
-
     @Override
     public OrderDTO getOrderById(int orderId) {
         Optional<Order> Order = orderRepository.findById(orderId);
@@ -80,17 +81,17 @@ public class OrderService implements OrderServiceImp {
     @Override
     public void setOrderStatus(Integer orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
-        if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.PAYMENT)) {
+        if (isStatusTransitionAllowed(order.getStatus(), OrderStatus.PAID)) {
             try {
                 System.out.println("ccccc");
-                order.setStatus(OrderStatus.PAYMENT);
+                order.setStatus(OrderStatus.PAID);
                 orderRepository.save(order);
 
             } catch (Exception e) {
                 throw new IllegalStateException("cannot save");
             }
         } else {
-            throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.PAYMENT + " is not allowed.");
+            throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.PAID + " is not allowed.");
         }
     }
 
@@ -106,7 +107,7 @@ public class OrderService implements OrderServiceImp {
                 throw new IllegalStateException("cannot save");
             }
         } else {
-            throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.PAYMENT + " is not allowed.");
+            throw new IllegalStateException("Status transition from " + order.getStatus() + " to " + OrderStatus.PAID + " is not allowed.");
         }
     }
 
@@ -197,8 +198,8 @@ public class OrderService implements OrderServiceImp {
 
     public boolean isStatusTransitionAllowed(OrderStatus currentStatus, OrderStatus newStatus) {
         return switch (currentStatus) {
-            case PENDING -> newStatus == OrderStatus.PAYMENT || newStatus == OrderStatus.CANCELED;
-            case PAYMENT -> newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.CANCELED;
+            case PENDING -> newStatus == OrderStatus.PAID || newStatus == OrderStatus.CANCELED;
+            case PAID -> newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.CANCELED;
             case DELIVERED -> newStatus == OrderStatus.RECEIVED || newStatus == OrderStatus.CANCELED;
             case CANCELED, RECEIVED -> false;
         };
@@ -235,7 +236,7 @@ public class OrderService implements OrderServiceImp {
         Date endOfLastWeek = calendar.getTime();
 
         for (Order o : orders) {
-            if (o.getOrderDate().after(startOfLastWeek) && o.getOrderDate().before(endOfLastWeek) && o.getStatus().equals(OrderStatus.PAYMENT)) {
+            if (o.getOrderDate().after(startOfLastWeek) && o.getOrderDate().before(endOfLastWeek) && o.getStatus().equals(OrderStatus.PAID)) {
                 result.add(o);
             }
         }
@@ -265,7 +266,7 @@ public class OrderService implements OrderServiceImp {
         List<OrderDTO> orderDTOList = new ArrayList<>();
 
         for (Order o : orders) {
-            if (o.getOrderDate().after(monday) && o.getStatus() == OrderStatus.PAYMENT) {
+            if (o.getOrderDate().after(monday) && o.getStatus() == OrderStatus.PAID) {
                 orderDTOList.add(orderMapper.getAllOrder(o));
             }
         }
@@ -291,7 +292,7 @@ public class OrderService implements OrderServiceImp {
         List<Order> orders = orderRepository.findAll();
         List<OrderProductDetailRequest> list = new ArrayList<>();
         for (Order o : orders) {
-            if (o.getStatus() == OrderStatus.PAYMENT) {
+            if (o.getStatus() == OrderStatus.PAID) {
                 for (OrderDetails od : o.getOrderDetails()) {
                     OrderProductDetailRequest orderProductDetailRequests = getOrderProductDetailRequest(od);
                     list.add(orderProductDetailRequests);
@@ -312,38 +313,22 @@ public class OrderService implements OrderServiceImp {
     }
 
     @Override
-    public double getProfit() {
-        List<Order> orderListLastWeek = orderListLastWeek();
-        List<Order> orderThisWeek = orderRepository.findAll();
-
-        BigDecimal priceLastWeek = BigDecimal.ZERO;
-        BigDecimal priceThisWeek = BigDecimal.ZERO;
-
+    public double revenueThisWeek() {
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        Date startOfThisWeek = calendar.getTime();
+        Date monday = calendar.getTime();
 
-        for (Order o : orderListLastWeek) {
-            priceLastWeek = priceLastWeek.add(BigDecimal.valueOf(o.getOrderTotalAmount()));
-        }
-
-        for (Order o : orderThisWeek) {
-            if (o.getOrderDate().after(startOfThisWeek) && o.getOrderDate().before(now) && o.getStatus().equals(OrderStatus.PAYMENT)) {
-                priceThisWeek = priceThisWeek.add(BigDecimal.valueOf(o.getOrderTotalAmount()));
+        List<Order> orders = orderRepository.findAll();
+        double price = 0;
+        for (Order o : orders) {
+            if (o.getOrderDate().after(monday)) {
+                price += o.getOrderTotalAmount();
             }
         }
-
-        if (priceLastWeek.compareTo(BigDecimal.ZERO) == 0) {
-            return 0;
-        }
-
-        BigDecimal profit = priceThisWeek.subtract(priceLastWeek).divide(priceLastWeek, 2, BigDecimal.ROUND_HALF_UP);
-
-        return profit.multiply(BigDecimal.valueOf(100)).doubleValue();
+        return price;
     }
-
 
     @Override
     public List<DiamondCategory> diamondSoldByCategory() {
@@ -363,7 +348,7 @@ public class OrderService implements OrderServiceImp {
             int roundQuantity = 0;
             int ovalQuantity = 0;
             for (Order o : orders) {
-                if (o.getStatus() == OrderStatus.PAYMENT) {
+                if (o.getStatus() == OrderStatus.PAID) {
                     for (OrderDetails od : o.getOrderDetails()) {
                         LocalDateTime localDateTime = LocalDateTime.ofInstant(o.getOrderDate().toInstant(), ZoneId.systemDefault());
                         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
@@ -409,7 +394,7 @@ public class OrderService implements OrderServiceImp {
 
         List<Order> orders = orderRepository.findAll();
         for (Order o : orders) {
-            if (o.getStatus() == OrderStatus.PAYMENT) {
+            if (o.getStatus() == OrderStatus.PAID) {
                 for (OrderDetails od : o.getOrderDetails()) {
                     Products products = od.getProduct();
                     Category category = products.getCategory();
@@ -480,6 +465,50 @@ public class OrderService implements OrderServiceImp {
         productCategories.add(productCategory7);
 
         return productCategories;
+    }
+
+    @Override
+    public List<Statistic> getStatisticBeforeThisWeek() {
+        List<Statistic> result = new ArrayList<>();
+
+        List<Order> orders = orderRepository.findAll();
+
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        Set<String> listOfOrderDate = new HashSet<>();
+
+        for (Order o : orders) {
+            if (o.getOrderDate().before(calendar.getTime())) {
+                listOfOrderDate.add(o.getOrderDate().toString().substring(0, 10));
+            }
+        }
+
+        for (String d : listOfOrderDate) {
+            Statistic statistic = new Statistic();
+            double totalSale = 0;
+            int totalOrder = 0;
+            int totalItem = 0;
+            for (Order o : orders) {
+                if (d.equals(o.getOrderDate().toString().substring(0, 10)) && o.getStatus().equals(OrderStatus.PAID)) {
+                    totalOrder++;
+                    totalSale += o.getOrderTotalAmount();
+                    for (OrderDetails od : o.getOrderDetails()) {
+                        totalItem++;
+                    }
+                }
+            }
+            statistic.setDate(d);
+            statistic.setTotalSale(totalSale);
+            statistic.setTotalOrder(totalOrder);
+            statistic.setTotalItem(totalItem);
+            result.add(statistic);
+
+        }
+
+        return result;
     }
 
     @Override

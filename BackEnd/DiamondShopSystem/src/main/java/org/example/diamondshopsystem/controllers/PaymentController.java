@@ -2,26 +2,18 @@ package org.example.diamondshopsystem.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.example.diamondshopsystem.dto.OrderDTO;
 import org.example.diamondshopsystem.dto.PaymentDTO;
-import org.example.diamondshopsystem.dto.UserDTO;
 import org.example.diamondshopsystem.entities.DiscountCodes;
 import org.example.diamondshopsystem.entities.Order;
 import org.example.diamondshopsystem.entities.OrderStatus;
-import org.example.diamondshopsystem.entities.Payments;
-import org.example.diamondshopsystem.payload.ResponseObject;
 import org.example.diamondshopsystem.payload.requests.PaymentRequest;
 import org.example.diamondshopsystem.repositories.DiscountCodeRepository;
 import org.example.diamondshopsystem.repositories.OrderRepository;
 import org.example.diamondshopsystem.services.OrderService;
 import org.example.diamondshopsystem.services.PaymentService;
-import org.example.diamondshopsystem.services.ProductService;
 import org.example.diamondshopsystem.services.ShoppingCartService;
 import org.example.diamondshopsystem.services.imp.ProductServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -95,7 +87,7 @@ public class PaymentController {
                     int orderId = Integer.parseInt(orderInfo.split("Order ID: ")[1]);
 
                     OrderStatus currentStatus = orderService.getOrderStatus(orderId);
-                    if (!OrderStatus.PAYMENT.equals(currentStatus)) {
+                    if (!OrderStatus.PAID.equals(currentStatus)) {
                         orderService.setOrderStatus(orderId);
                     }
                     paymentService.savePayment(paymentDTO);
