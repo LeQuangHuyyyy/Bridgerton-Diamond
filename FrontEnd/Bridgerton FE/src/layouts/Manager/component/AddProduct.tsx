@@ -36,7 +36,14 @@ interface AddProductProps {
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit, formData, handleChange, handleFileChange}) => {
+export const AddProduct: React.FC<AddProductProps> = ({
+                                                          isOpen,
+                                                          onClose,
+                                                          onSubmit,
+                                                          formData,
+                                                          handleChange,
+                                                          handleFileChange
+                                                      }) => {
     const [diamonds, setDiamonds] = useState<DiamondModel[]>([]);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -76,7 +83,7 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
 
     useEffect(() => {
         const fetchOrders = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/diamond";
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/diamond?productId=0";
             const url: string = `${baseUrl}`;
             const response = await fetch(url, {headers: headers});
             if (!response.ok) {
@@ -168,10 +175,10 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
                                         id="diamondId"
                                         name="diamondId"
                                         className="form-select"
-                                        value={formData.diamondId}
                                         onChange={handleChange}
+                                        required
                                     >
-                                        <option value="" defaultChecked disabled>Choose Diamond..</option>
+                                        <option value="" defaultChecked>Choose Diamond..</option>
                                         {diamonds.map((diamond) => (
                                             <option key={diamond.diamondId} value={diamond.diamondId}>
                                                 {`ID: ${diamond.diamondId}, Carat: ${diamond.carat}, Price: ${diamond.price}, Cut: ${diamond.cut}, Color: ${diamond.color}, Clarity: ${diamond.clarity}, Certification: ${diamond.certification}, Product ID: ${diamond.productId}, Status: ${diamond.status}`}
@@ -190,8 +197,9 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
                                         className="form-select"
                                         value={formData.categoryId}
                                         onChange={handleChange}
+                                        required
                                     >
-                                        <option value="" disabled>Select Category</option>
+                                        <option value="" defaultChecked>Select Category</option>
                                         <option value="1">Engagement Rings</option>
                                         <option value="2">Wedding Bands</option>
                                         <option value="3">Men Diamond Ring</option>
@@ -209,8 +217,9 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
                                         className="form-select"
                                         value={formData.shellId}
                                         onChange={handleChange}
+                                        required
                                     >
-                                        <option value="" disabled>Select Shell</option>
+                                        <option value="" defaultChecked>Select Shell</option>
                                         <option value="1">Twist</option>
                                         <option value="13">Vintage-Inspired</option>
                                         <option value="3">Solitaire</option>

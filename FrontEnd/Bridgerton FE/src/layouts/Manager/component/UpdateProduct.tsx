@@ -86,47 +86,52 @@ export const UpdateProduct: React.FC<AddProductProps> = ({
                 image3URL ?? "",
                 image4URL ?? "",
                 formData.categoryId,
-                formData.diamondId,
+                diamonds.length > 0 ? diamonds[0].diamondId : 0,
                 formData.shellId,
                 certificateImage,
                 warrantyImage
             );
-
+            console.log(productData)
             onSubmit(e, productData);
         } catch (error) {
             console.error("Error uploading files:", error);
         }
     };
 
+
     useEffect(() => {
-        const fetchDiamonds = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/diamond";
-            const response = await fetch(baseUrl, {headers: headers});
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
-            }
-            const responseJson = await response.json();
-            const responseData = responseJson.data;
-            const loadedDiamonds: DiamondModel[] = [];
-            for (const key in responseData) {
-                loadedDiamonds.push({
-                    diamondId: responseData[key].diamondId,
-                    carat: responseData[key].carat,
-                    price: responseData[key].price,
-                    cut: responseData[key].cut,
-                    color: responseData[key].color,
-                    clarity: responseData[key].clarity,
-                    certification: responseData[key].certification,
-                    productId: responseData[key].productId,
-                    status: responseData[key].status,
-                });
-            }
-            setDiamonds(loadedDiamonds);
-        };
-        fetchDiamonds().catch((error: any) => {
-            console.log(error);
-        });
-    }, []);
+        if (formData.productId) {
+            const fetchDiamonds = async () => {
+                const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/manager/diamond?productId=${formData.productId}`;
+
+                const response = await fetch(baseUrl, {headers: headers});
+                if (!response.ok) {
+                    throw new Error('Something went wrong!');
+                }
+                const responseJson = await response.json();
+
+                const responseData = responseJson.data;
+                const loadedDiamonds: DiamondModel[] = [];
+                for (const key in responseData) {
+                    loadedDiamonds.push({
+                        diamondId: responseData[key].diamondId,
+                        carat: responseData[key].carat,
+                        price: responseData[key].price,
+                        cut: responseData[key].cut,
+                        color: responseData[key].color,
+                        clarity: responseData[key].clarity,
+                        certification: responseData[key].certification,
+                        productId: responseData[key].productId,
+                        status: responseData[key].status,
+                    });
+                }
+                setDiamonds(loadedDiamonds);
+            };
+            fetchDiamonds().catch((error: any) => {
+                console.log(error);
+            });
+        }
+    }, [formData.productId]);
 
     return (
         <div
@@ -186,14 +191,17 @@ export const UpdateProduct: React.FC<AddProductProps> = ({
                                         name="diamondId"
                                         className="form-select"
                                         value={formData.diamondId}
-                                        onChange={handleChange}>
-                                        {diamonds.map((diamond) => (
-                                            <option key={diamond.diamondId} value={diamond.diamondId}>
-                                                {`ID: ${diamond.diamondId}, Carat: ${diamond.carat}, Price: ${diamond.price}, Cut: ${diamond.cut}, Color: ${diamond.color}, Clarity: ${diamond.clarity}, Certification: ${diamond.certification}, Product ID: ${diamond.productId}, Status: ${diamond.status}`}
+                                        onChange={handleChange}
+                                    >
+                                        {diamonds.map((diamond, index) => (
+                                            <option key={diamond.diamondId} value={diamond.diamondId}
+                                                    selected={index === 0}>
+                                                {`ID: ${diamond.diamondId}, Carat: ${diamond.carat},  Cut: ${diamond.cut}, Color: ${diamond.color}, Clarity: ${diamond.clarity},  Product ID: ${diamond.productId}`}
                                             </option>
                                         ))}
                                     </select>
                                 </div>
+
                             </div>
 
                             <div className="col-md-6">

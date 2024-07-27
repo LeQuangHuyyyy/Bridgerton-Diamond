@@ -335,27 +335,6 @@ export const Product = () => {
         setCurrentPage(page);
     };
 
-    const handleDelete = async (record: ProductModel) => {
-        console.log("Product ID: ", record.productId);
-        if (record) {
-            const body = {
-                id: record.productId
-            }
-            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/product/delete?id=${record.productId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${headers}`
-                },
-            });
-            if (response.ok) {
-                message.success('Product deleted successfully')
-                setProducts(products.filter(product => product.productId !== record.productId));
-            } else {
-                message.error('Fail to delete product')
-            }
-        }
-    };
 
     const columns = [
         {

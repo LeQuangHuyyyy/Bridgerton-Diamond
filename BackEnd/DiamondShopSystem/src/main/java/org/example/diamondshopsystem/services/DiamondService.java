@@ -59,11 +59,20 @@ public class DiamondService implements DiamondServiceImp {
     }
 
     @Override
-    public List<DiamondDTO> getAllDiamondWithoutDTO() {
+    public List<DiamondDTO> getAllDiamondWithoutProduct(int productId) {
+        List<Diamond> diamond = diamondsRepository.findDiamondsByProductId(productId);
         List<Diamond> diamonds = diamondsRepository.findDiamondWithoutProduct();
+        List<Diamond> result = new ArrayList<>();
+
+        if (productId != 0) {
+            result.addAll(diamond);
+            result.addAll(diamonds);
+        } else {
+            result.addAll(diamonds);
+        }
 
         List<DiamondDTO> diamondDTOS = new ArrayList<>();
-        for (Diamond d : diamonds) {
+        for (Diamond d : result) {
             DiamondDTO diamondDTO = new DiamondDTO();
             diamondDTO.setCut(d.getCut());
             diamondDTO.setPrice(d.getPrice());
@@ -72,6 +81,9 @@ public class DiamondService implements DiamondServiceImp {
             diamondDTO.setCarat(d.getCarat());
             diamondDTO.setColor(d.getColor());
             diamondDTO.setStatus(d.isStatus());
+            if (d.getProduct() != null) {
+                diamondDTO.setProductId(d.getProduct().getProductId());
+            }
             diamondDTOS.add(diamondDTO);
         }
         return diamondDTOS;

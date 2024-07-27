@@ -29,5 +29,5 @@ public interface DiamondServiceImp {
 
     boolean setProductForDiamond(int diamondId, Products products);
 
-    List<DiamondDTO> getAllDiamondWithoutDTO();
+    List<DiamondDTO> getAllDiamondWithoutProduct(int productId);
 }

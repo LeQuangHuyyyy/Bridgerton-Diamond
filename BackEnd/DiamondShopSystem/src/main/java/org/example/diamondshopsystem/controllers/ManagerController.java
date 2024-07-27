@@ -105,12 +105,10 @@ public class ManagerController {
     }
 
     @GetMapping("/diamond")
-    public ResponseEntity<?> getDiamondWithoutProduct() {
+    public ResponseEntity<?> getDiamondWithoutProduct(@RequestParam int productId) {
         ResponseData responseData = new ResponseData();
-        responseData.setData(diamondServiceImp.getAllDiamondWithoutDTO());
+        responseData.setData(diamondServiceImp.getAllDiamondWithoutProduct(productId));
         responseData.setDescription("lấy diamond mà k có product");
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
-
-
 }
