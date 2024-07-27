@@ -9,9 +9,9 @@
     transition: transform 0.3s ease;
 }
 
-.card-body:hover img {
-    opacity: 1;
-}
-.card-body:hover{
-    border: #0B2447 1px solid;
-}
+/*.card-body:hover img {*/
+/*    opacity: 1;*/
+/*}*/
+/*.card-body:hover{*/
+/*    border: #0B2447 1px solid;*/
+/*}*/

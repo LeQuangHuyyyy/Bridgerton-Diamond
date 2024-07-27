@@ -163,6 +163,7 @@ const Checkout = () => {
                 if (paymentResponse.ok) {
                     const paymentResult = await paymentResponse.json();
                     window.location.href = paymentResult.paymentUrl;
+                    localStorage.removeItem('cart')
                 } else {
                     console.error("Failed to create payment");
                 }

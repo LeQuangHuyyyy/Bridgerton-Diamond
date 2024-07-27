@@ -1,6 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Modal, Form, Input, Select, Switch, Button} from 'antd';
+import { Form, Input, Select, Switch, Button} from 'antd';
 
 interface UpdateAccountProps {
     isOpen: boolean;
@@ -42,15 +42,8 @@ const UpdateAccount: React.FC<UpdateAccountProps> = ({
         return Promise.reject('Input cannot be only whitespace');
     };
 
-    const validatePassword = (_: any, value: any) => {
-        if (!value || /^[0-9]{6,}$/.test(value)) {
-            return Promise.resolve();
-        }
-        return Promise.reject('Password must be at least 6 numeric characters.');
-    };
 
     return (
-
         <Form
             layout="vertical"
             initialValues={formData}

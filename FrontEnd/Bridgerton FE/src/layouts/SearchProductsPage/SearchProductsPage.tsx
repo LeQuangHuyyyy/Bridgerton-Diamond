@@ -16,9 +16,9 @@ export const SearchProductsPage = () => {
     const [searchUrl, setSearchUrl] = useState('');
     const [searchCategory, setSearchCategory] = useState('All Category');
 
-
+    const token = localStorage.getItem('token');
     const headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXlscXNlMTcxMjkzQGZwdC5lZHUudm4ifQ.FzAs3FrNbICbW9dUGZivmqNtMvUs7dh-fCgJy0EvluQ'
+        'Authorization': `Bearer ${token}`
     }
     useEffect(() => {
         const fetchProducts = async () => {
@@ -58,10 +58,10 @@ export const SearchProductsPage = () => {
                     image3: responseData[key].image3,
                     image4: responseData[key].image4,
                     categoryId: responseData[key].categoryId,
-                    diamondId: responseData[key].diamondId,
                     shellId: responseData[key].shellId,
                     certificateImage: responseData[key].certificateImage,
                     warrantyImage: responseData[key].warrantyImage,
+                    diamondId: responseData[key].diamondId
                 });
             }
             setProducts(loadedProducts);

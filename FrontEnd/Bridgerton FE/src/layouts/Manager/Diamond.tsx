@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useEffect, useState} from 'react';
 import {AddDiamond} from "./component/AddDiamond";
 import {UpdateDiamond} from "./component/UpdateDiamond";
-import {Table, Button, Badge} from 'antd';
+import {Table, Button, Badge, message} from 'antd';
 
 const headers = localStorage.getItem('token');
 
@@ -119,8 +119,10 @@ export const Diamond: React.FC = () => {
             if (response.ok) {
                 setIsUpdating(false);
                 fetchPromotions();
+                message.success('Diamond updated successfully');
             } else {
                 console.error('Failed to update diamond');
+                message.error('Failed to update diamond');
             }
         } catch (error) {
             console.error('Error update diamond: ', error);
@@ -136,26 +138,8 @@ export const Diamond: React.FC = () => {
         }
     };
 
-    const handleDelete = async (e: React.FormEvent, diamondId: string) => {
-        e.preventDefault();
-        console.log(diamondId)
-        try {
-            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond/delete/${diamondId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${headers}`
-                }
-            });
-            if (response.ok) {
-                fetchPromotions();
-            } else {
-                console.error('Failed to delete diamond');
-            }
-        } catch (error) {
-            console.error('Error deleting diamond: ', error);
-        }
-    };
     const columns = [
+        {title: 'ID', dataIndex: 'diamondId', key: 'diamondId'},
         {title: 'Carat', dataIndex: 'carat', key: 'carat'},
         {title: 'Cut', dataIndex: 'cut', key: 'cut'},
         {title: 'Clarity', dataIndex: 'clarity', key: 'clarity'},

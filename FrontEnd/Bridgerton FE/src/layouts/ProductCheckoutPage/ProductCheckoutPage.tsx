@@ -8,6 +8,7 @@ import Carousel from "react-multi-carousel";
 import {SimilarItems} from "./component/SimilarItems";
 import {Button, message, Modal} from "antd";
 import ExpandableFeature from "../Utils/ExpandableFeature";
+import ExpandInformation from "./component/ExpandInformation";
 
 export const ProductCheckoutPage = () => {
     const [suggest, setSuggest] = useState<ProductModel[]>([]);
@@ -96,10 +97,10 @@ export const ProductCheckoutPage = () => {
                     image3: responseData[key].image3,
                     image4: responseData[key].image4,
                     categoryId: responseData[key].categoryId,
-                    diamondId: responseData[key].diamondId,
                     shellId: responseData[key].shellId,
                     certificateImage: responseData[key].certificateImage,
                     warrantyImage: responseData[key].warrantyImage,
+                    diamondId: responseData[key].diamondId,
                 });
             }
 
@@ -309,8 +310,12 @@ export const ProductCheckoutPage = () => {
                                     Size Guide
                                 </Button>
                             </div>
-                            {/*<ExpandableFeature title='Information' content= {<DiamondTable product={product}/>}/>*/}
+                            <ExpandInformation title='More Information' content= {
+                                <>
+                                <DiamondTable product={product}/>
                                 <ShellTable product={product}/>
+                                </>
+                            }/>
 
                             <select
                                 style={{

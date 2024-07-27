@@ -13,7 +13,7 @@ export const CarouselProduct = () => {
 
 
     useEffect(() => {
-            const fetchProducts = async () => {
+        const fetchProducts = async () => {
             const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/home";
             const url: string = `${baseUrl}`;
             const response = await fetch(url);
@@ -37,11 +37,10 @@ export const CarouselProduct = () => {
                     image3: responseData[key].image3,
                     image4: responseData[key].image4,
                     categoryId: responseData[key].categoryId,
-                    diamondId: responseData[key].diamondId,
                     shellId: responseData[key].shellId,
+                    diamondId: responseData[key].diamondId,
                     certificateImage: responseData[key].certificateImage,
                     warrantyImage: responseData[key].warrantyImage,
-
                 });
             }
             setProducts(loadedProducts);
@@ -88,7 +87,12 @@ export const CarouselProduct = () => {
     return (
         <div className='container mt-5' style={{height: 450}}>
             <div className='homepage-carousel-title'>
-                <h1 style={{fontSize: '45px', fontFamily: 'Playfair Display', color: '#001529', fontWeight: 'bold'}}>New Products</h1>
+                <h1 style={{
+                    fontSize: '45px',
+                    fontFamily: 'Petit Formal Script',
+                    color: '#001529',
+                    fontWeight: 'bold'
+                }}>New Products</h1>
             </div>
             <Carousel responsive={responsive}>
                 {product.slice(0, 10).map((product) => (

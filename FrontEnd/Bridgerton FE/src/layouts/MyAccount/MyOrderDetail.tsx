@@ -40,7 +40,6 @@ const MyOrderDetail: React.FC = (props) => {
                 userName: responseJson.data.userName,
                 products: responseJson.data.product,
                 status: responseJson.data.orderStatus,
-                image: responseJson.data.image,
                 totalProductInOrder: responseJson.data.totalProductInOrder,
                 phoneNumber: responseJson.data.phoneNumber,
                 saleStaff: responseJson.data.saleStaff,
@@ -175,7 +174,7 @@ const MyOrderDetail: React.FC = (props) => {
                             renderItem={item => (
                                 <List.Item>
                                     <List.Item.Meta
-                                        avatar={<Avatar style={{width: '55px', height: '55px'}} shape="square" size="large" src={details?.image} />}
+                                        avatar={<Avatar style={{width: '55px', height: '55px'}} shape="square" size="large" src={item.image} />}
                                         title={<span style={{fontSize: '17px'}}>{item.productName}</span>}
                                         description={
                                             <div>

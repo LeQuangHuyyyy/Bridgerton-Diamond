@@ -33,14 +33,7 @@ interface AddProductProps {
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const UpdateProduct: React.FC<AddProductProps> = ({
-                                                             isOpen,
-                                                             onClose,
-                                                             onSubmit,
-                                                             formData,
-                                                             handleChange,
-                                                             handleFileChange,
-                                                         }) => {
+export const UpdateProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit, formData, handleChange, handleFileChange,}) => {
     const [diamonds, setDiamonds] = useState<DiamondModel[]>([]);
     const [image1, setImage1] = useState<string>('');
     const [image2, setImage2] = useState<string>('');
@@ -61,7 +54,6 @@ export const UpdateProduct: React.FC<AddProductProps> = ({
             setImage4(typeof formData.image4 === 'string' ? formData.image4 : URL.createObjectURL(formData.image4));
         }
     }, [formData.image1, formData.image2, formData.image3, formData.image4]);
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -86,7 +78,7 @@ export const UpdateProduct: React.FC<AddProductProps> = ({
                 image3URL ?? "",
                 image4URL ?? "",
                 formData.categoryId,
-                formData.diamondId,
+                diamonds.length > 0 ? diamonds[0].diamondId : 0,
                 formData.shellId,
                 certificateImage,
                 warrantyImage
@@ -98,37 +90,43 @@ export const UpdateProduct: React.FC<AddProductProps> = ({
         }
     };
 
-    useEffect(() => {
-        const fetchDiamonds = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/diamond";
-            const response = await fetch(baseUrl, {headers: headers});
-            if (!response.ok) {
-                throw new Error('Something went wrong!');
-            }
-            const responseJson = await response.json();
-            const responseData = responseJson.data;
-            const loadedDiamonds: DiamondModel[] = [];
-            for (const key in responseData) {
-                loadedDiamonds.push({
-                    diamondId: responseData[key].diamondId,
-                    carat: responseData[key].carat,
-                    price: responseData[key].price,
-                    cut: responseData[key].cut,
-                    color: responseData[key].color,
-                    clarity: responseData[key].clarity,
-                    certification: responseData[key].certification,
-                    productId: responseData[key].productId,
-                    status: responseData[key].status,
+
+        useEffect(() => {
+            if (formData.productId) {
+                const fetchDiamonds = async () => {
+                    const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/manager/diamond?productId=${formData.productId}`;
+
+                    const response = await fetch(baseUrl, {headers: headers});
+                    if (!response.ok) {
+                        throw new Error('Something went wrong!');
+                    }
+                    const responseJson = await response.json();
+
+                    const responseData = responseJson.data;
+                    const loadedDiamonds: DiamondModel[] = [];
+                    for (const key in responseData) {
+                        loadedDiamonds.push({
+                            diamondId: responseData[key].diamondId,
+                            carat: responseData[key].carat,
+                            price: responseData[key].price,
+                            cut: responseData[key].cut,
+                            color: responseData[key].color,
+                            clarity: responseData[key].clarity,
+                            certification: responseData[key].certification,
+                            productId: responseData[key].productId,
+                            status: responseData[key].status,
+                        });
+                    }
+                    setDiamonds(loadedDiamonds);
+                };
+                fetchDiamonds().catch((error: any) => {
+                    console.log(error);
                 });
             }
-            setDiamonds(loadedDiamonds);
-        };
-        fetchDiamonds().catch((error: any) => {
-            console.log(error);
-        });
-    }, []);
+        }, [formData.productId]);
 
-    return (
+
+        return (
         <div
             className={`modal ${isOpen ? 'show' : ''}`}
             style={{display: isOpen ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
@@ -187,9 +185,9 @@ export const UpdateProduct: React.FC<AddProductProps> = ({
                                         className="form-select"
                                         value={formData.diamondId}
                                         onChange={handleChange}>
-                                        {diamonds.map((diamond) => (
-                                            <option key={diamond.diamondId} value={diamond.diamondId}>
-                                                {`ID: ${diamond.diamondId}, Carat: ${diamond.carat}, Price: ${diamond.price}, Cut: ${diamond.cut}, Color: ${diamond.color}, Clarity: ${diamond.clarity}, Certification: ${diamond.certification}, Product ID: ${diamond.productId}, Status: ${diamond.status}`}
+                                        {diamonds.map((diamond, index) => (
+                                            <option key={diamond.diamondId} value={diamond.diamondId} selected={index === 0} >
+                                                {`ID: ${diamond.diamondId}, Carat: ${diamond.carat}, Cut: ${diamond.cut}, Color: ${diamond.color}, Clarity: ${diamond.clarity}`}
                                             </option>
                                         ))}
                                     </select>

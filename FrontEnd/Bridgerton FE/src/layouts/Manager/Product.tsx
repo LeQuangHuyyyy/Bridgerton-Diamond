@@ -2,10 +2,15 @@ import React, {useEffect, useState} from "react";
 import {SpinnerLoading} from "../Utils/SpinnerLoading";
 import {AddProduct} from "./component/AddProduct";
 import {UpdateProduct} from "./component/UpdateProduct";
-import {Button, Image, message, Table, Pagination} from "antd";
+import {Button, Image, message, Pagination, Table} from "antd";
 import ProductModel from "../../models/ProductModel";
-import {EditOutlined, DeleteFilled} from "@ant-design/icons";
+import {EditOutlined} from "@ant-design/icons";
+import DiamondModel from "../../models/DiamondModel";
 
+const token = localStorage.getItem('token');
+const headers = {
+    'Authorization': `Bearer ${token}`
+}
 
 interface ProductData {
     productId: number;
@@ -46,8 +51,6 @@ export const Product = () => {
     const [searchCategory, setSearchCategory] = useState('All Category');
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
-    const [diamonds, setDiamonds] = useState<Diamond[]>([]);
-    const [product, setProduct] = useState<ProductModel>();
     const [formData, setFormData] = useState<ProductData>({
         productId: 0,
         collection: '',
@@ -127,7 +130,7 @@ export const Product = () => {
             setIsLoading(false);
             setHttpError(error.message);
         });
-    }, [currentPage, searchUrl]);
+    }, [currentPage, searchUrl, isUpdating]);
 
 
     if (isLoading) {
@@ -164,7 +167,7 @@ export const Product = () => {
         });
         setIsAddingNew(!isAddingNew);
     }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     const toggleUpdateModal = () => {
         setFormData({
             productId: 0,
@@ -185,14 +188,15 @@ export const Product = () => {
         });
         setIsUpdating(false)
     }
+
     const handleToEdit = (e: React.FormEvent, record: ProductModel) => {
         const productToEdit = products.find(product => product.productId === record.productId);
         if (productToEdit) {
             setFormData(productToEdit);
             setIsUpdating(!isUpdating);
         }
-
     }
+
     const handleUpdate = async (e: React.FormEvent, product: ProductModel) => {
         e.preventDefault();
         try {
@@ -334,29 +338,14 @@ export const Product = () => {
         setCurrentPage(page);
     };
 
-    const handleDelete = async (record: ProductModel) => {
-        console.log("Product ID: ", record.productId);
-        if (record) {
-            const body = {
-                id: record.productId
-            }
-            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/product/delete?id=${record.productId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${headers}`
-                },
-            });
-            if (response.ok) {
-                message.success('Product deleted successfully')
-                setProducts(products.filter(product => product.productId !== record.productId));
-            } else {
-                message.error('Fail to delete product')
-            }
-        }
-    };
 
     const columns = [
+        {
+            title: 'ID',
+            dataIndex: 'productId',
+            key: 'productId',
+            className: 'text-center',
+        },
         {
             title: 'Image',
             dataIndex: 'image1',
@@ -404,24 +393,12 @@ export const Product = () => {
             ),
         },
         {
-            title: 'Published',
-            dataIndex: 'status',
-            key: 'status',
-            className: 'text-center',
-            render: (text: number) => (
-                <span>{text}</span>
-            ),
-        },
-        {
             title: 'Actions',
             key: 'actions',
             render: (record: ProductModel) => (
                 <>
-                    {/*<Button onClick={() => handleDelete(record)}>*/}
-                    {/*    <DeleteFilled />*/}
-                    {/*</Button>*/}
                     <Button onClick={(event) => handleToEdit(event, record)}>
-                        <EditOutlined />
+                        <EditOutlined/>
                     </Button>
                 </>
 
@@ -499,9 +476,10 @@ export const Product = () => {
                         </div>
                     </div>
 
-                        <h2 style={{fontSize: 45}} className="custom-heading text-center mt-2">Product Management</h2>
+                    <h2 style={{fontSize: 45}} className="custom-heading text-center mt-2">Product Management</h2>
 
-                    <button style={{width: 150, marginLeft: 20, borderRadius: '0'}} onClick={() => setIsAddingNew(true)} className="btn btn-outline-success">
+                    <button style={{width: 150, marginLeft: 20, borderRadius: '0'}} onClick={() => setIsAddingNew(true)}
+                            className="btn btn-outline-success">
                         New Product
                     </button>
                     {totalAmountOfProducts > 0 ?

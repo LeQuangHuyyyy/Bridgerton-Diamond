@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import uploadFile from '../../../firebase/uploadFile';
 import ProductModel from "../../../models/ProductModel";
 import productModel from "../../../models/ProductModel";
-import DiamondModel from "../../../models/DiamondModel"; // Path to your uploadFile function
+import DiamondModel from "../../../models/DiamondModel";
 
 const token = localStorage.getItem('token');
 const headers = {
@@ -40,7 +40,6 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
     const [diamonds, setDiamonds] = useState<DiamondModel[]>([]);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         try {
             const image1URL = formData.image1 instanceof File ? await uploadFile(formData.image1) : formData.image1;
             const image2URL = formData.image2 instanceof File ? await uploadFile(formData.image2) : formData.image2;
@@ -76,7 +75,7 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
 
     useEffect(() => {
         const fetchOrders = async () => {
-            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/diamond";
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manager/diamond?productId=0";
             const url: string = `${baseUrl}`;
             const response = await fetch(url, {headers: headers});
             if (!response.ok) {
@@ -168,10 +167,10 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
                                         id="diamondId"
                                         name="diamondId"
                                         className="form-select"
-                                        value={formData.diamondId}
                                         onChange={handleChange}
+                                        required
                                     >
-                                        <option value="" defaultChecked disabled>Choose Diamond..</option>
+                                        <option value="" defaultChecked>Choose Diamond..</option>
                                         {diamonds.map((diamond) => (
                                             <option key={diamond.diamondId} value={diamond.diamondId}>
                                                 {`ID: ${diamond.diamondId}, Carat: ${diamond.carat}, Price: ${diamond.price}, Cut: ${diamond.cut}, Color: ${diamond.color}, Clarity: ${diamond.clarity}, Certification: ${diamond.certification}, Product ID: ${diamond.productId}, Status: ${diamond.status}`}
@@ -190,8 +189,9 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
                                         className="form-select"
                                         value={formData.categoryId}
                                         onChange={handleChange}
+                                        required
                                     >
-                                        <option value="" disabled>Select Category</option>
+                                        <option value="" defaultChecked>Select Category</option>
                                         <option value="1">Engagement Rings</option>
                                         <option value="2">Wedding Bands</option>
                                         <option value="3">Men Diamond Ring</option>
@@ -209,8 +209,9 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
                                         className="form-select"
                                         value={formData.shellId}
                                         onChange={handleChange}
+                                        required
                                     >
-                                        <option value="" disabled>Select Shell</option>
+                                        <option value="" defaultChecked>Select Shell</option>
                                         <option value="1">Twist</option>
                                         <option value="13">Vintage-Inspired</option>
                                         <option value="3">Solitaire</option>

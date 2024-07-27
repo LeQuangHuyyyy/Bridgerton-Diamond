@@ -31,8 +31,9 @@ import MyOrders from "./layouts/MyAccount/MyOrders";
 import ChangePassword from "./layouts/MyAccount/ChangePassword";
 import MyOrderDetail from "./layouts/MyAccount/MyOrderDetail";
 import OrderDeliveryDetail from "./layouts/DeliveryStaff/OrderDeliveryDetail";
-import {DiamondEducation} from "./layouts/HomePage/component/DiamondEducation";
+import {DiamondEducation} from "./layouts/DiamondKnowledge/DiamondEducation";
 import NotFoundPage from "./layouts/NotFoundPage/NotFoundPage";
+import {SearchWarranty} from "./layouts/SearchWarranty/SearchWarranty";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -164,6 +165,9 @@ export const App = () => {
                             <Route path='/home'>
                                 <HomePage/>
                             </Route>
+                            <Route path='/warranty'>
+                                <SearchWarranty/>
+                            </Route>
                             <Route path='/cart'>
                                 <CartPage/>
                             </Route>
@@ -185,7 +189,6 @@ export const App = () => {
                             <Route path='/login'>
                                 <Login/>
                             </Route>
-
                             <Route path='/reset-password'>
                                 <ResetPassword/>
                             </Route>
