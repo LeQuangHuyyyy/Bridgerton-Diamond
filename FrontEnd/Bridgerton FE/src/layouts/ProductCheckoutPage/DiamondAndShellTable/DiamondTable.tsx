@@ -65,10 +65,6 @@ const DiamondTable: React.FC<{ product: ProductModel | undefined }> = (props) =>
                         <td style={{textAlign: 'right'}}>{diamonds?.carat}</td>
                     </tr>
                     <tr>
-                        <th>Price:</th>
-                        <td style={{textAlign: 'right'}}>{diamonds?.price}</td>
-                    </tr>
-                    <tr>
                         <th>Cut:</th>
                         <td style={{textAlign: 'right'}}>{diamonds?.cut}</td>
                     </tr>

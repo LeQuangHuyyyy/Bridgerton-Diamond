@@ -4,7 +4,6 @@ import {UpdateDiamond} from "./component/UpdateDiamond";
 import {Badge, Button, message, Table} from 'antd';
 
 const headers = localStorage.getItem('token');
-
 interface DiamondData {
     diamondId: string;
     carat: string;

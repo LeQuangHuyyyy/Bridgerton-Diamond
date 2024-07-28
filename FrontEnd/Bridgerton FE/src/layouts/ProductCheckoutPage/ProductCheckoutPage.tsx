@@ -7,7 +7,7 @@ import SizeModel from "../../models/SizeModel";
 import Carousel from "react-multi-carousel";
 import {SimilarItems} from "./component/SimilarItems";
 import {Button, message, Modal} from "antd";
-import ExpandableFeature from "../Utils/ExpandableFeature";
+
 import ExpandInformation from "./component/ExpandInformation";
 
 export const ProductCheckoutPage = () => {
@@ -126,6 +126,7 @@ export const ProductCheckoutPage = () => {
     useEffect(() => {
         fetchSize();
     }, [product]);
+
     const fetchSize = async () => {
         if (!product || !product.categoryId) return;
         const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/sizes/${product?.categoryId}`;
