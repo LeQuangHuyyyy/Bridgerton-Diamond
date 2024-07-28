@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import './OrderTable.css';
-import {Alert, Button, Input, message, Space, Spin, Table, Tag} from 'antd';
+import {Alert, Button, message, Space, Spin, Table, Tag} from 'antd';
 import {useHistory} from 'react-router-dom';
 import OrderModel from "../../../models/OrderModel"
-import DiamondModel from "../../../models/DiamondModel";
 
 const token = localStorage.getItem('token')
 const headers = {
@@ -223,7 +222,7 @@ const OrderTable: React.FC = () => {
     return (
         <div style={{marginTop: '50px'}} className="container">
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <h1 className='custom-heading text-center'>Orders List</h1>
+                <h1 className='custom-heading justify-content-center'>Orders List</h1>
                 <Button onClick={logOut} type="primary" style={{marginBottom: '100px'}}> Logout</Button>
             </div>
             <Table

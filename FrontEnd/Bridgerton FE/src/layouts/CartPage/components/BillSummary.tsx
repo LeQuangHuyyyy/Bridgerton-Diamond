@@ -10,12 +10,8 @@ const BillSummary: React.FC<{ cart: number }> = (props) => {
     const [totalAmount, setTotalAmount] = useState<number>(props.cart);
     const [originalAmount] = useState<number>(props.cart);
     const [errorMessage, setErrorMessage] = useState<string>('');
-    const [header, setHeader] = useState<string>();
+
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        if (token) {
-            setHeader(token)
-        }
         window.scrollTo(0, 0);
     }, []);
 
@@ -96,16 +92,9 @@ const BillSummary: React.FC<{ cart: number }> = (props) => {
                         </Col>
                     </Row>
                     <Button type="primary" size="large" style={{backgroundColor: 'black', width: '100%'}}>
-                        {header ?
-                            <Link className='text-decoration-none text-white' to={'/checkout'}>
-                                PROCEED TO CHECKOUT
-                            </Link>
-                            :
-                            <Link className='text-decoration-none text-white' to={'/login'}>
-                                LOGIN TO CHECKOUT
-                            </Link>
-                        }
-
+                        <Link className='text-decoration-none text-white' to={'/checkout'}>
+                            PROCEED TO CHECKOUT
+                        </Link>
                     </Button>
                 </Card>
             </Content>

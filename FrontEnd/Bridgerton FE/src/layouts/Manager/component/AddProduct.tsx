@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import uploadFile from '../../../firebase/uploadFile';
 import ProductModel from "../../../models/ProductModel";
 import productModel from "../../../models/ProductModel";
-import DiamondModel from "../../../models/DiamondModel"; // Path to your uploadFile function
+import DiamondModel from "../../../models/DiamondModel";
 
 const token = localStorage.getItem('token');
 const headers = {
@@ -36,18 +36,10 @@ interface AddProductProps {
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const AddProduct: React.FC<AddProductProps> = ({
-                                                          isOpen,
-                                                          onClose,
-                                                          onSubmit,
-                                                          formData,
-                                                          handleChange,
-                                                          handleFileChange
-                                                      }) => {
+export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit, formData, handleChange, handleFileChange}) => {
     const [diamonds, setDiamonds] = useState<DiamondModel[]>([]);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         try {
             const image1URL = formData.image1 instanceof File ? await uploadFile(formData.image1) : formData.image1;
             const image2URL = formData.image2 instanceof File ? await uploadFile(formData.image2) : formData.image2;

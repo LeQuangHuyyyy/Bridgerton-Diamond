@@ -6,6 +6,10 @@ import {Button, Image, message, Pagination, Table} from "antd";
 import ProductModel from "../../models/ProductModel";
 import {EditOutlined} from "@ant-design/icons";
 
+const token = localStorage.getItem('token');
+const headers = {
+    'Authorization': `Bearer ${token}`
+}
 
 interface ProductData {
     productId: number;
@@ -46,8 +50,6 @@ export const Product = () => {
     const [searchCategory, setSearchCategory] = useState('All Category');
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
-    const [diamonds, setDiamonds] = useState<Diamond[]>([]);
-    const [product, setProduct] = useState<ProductModel>();
     const [formData, setFormData] = useState<ProductData>({
         productId: 0,
         collection: '',
@@ -93,9 +95,7 @@ export const Product = () => {
                 const responseData = responseJson.content;
                 setTotalAmountOfProducts(responseJson.totalElements);
                 setTotalPages(responseJson.totalPages);
-                console.log(responseData)
                 const loadedProducts: ProductModel[] = [];
-
                 for (const key in responseData) {
                     loadedProducts.push({
                         productId: responseData[key].productId,
@@ -109,7 +109,7 @@ export const Product = () => {
                         image3: responseData[key].image3,
                         image4: responseData[key].image4,
                         categoryId: responseData[key].categoryId,
-                        diamondId: responseData[key].diamondId,
+                        diamondId: responseData[key].diamonds[0].diamondId,
                         shellId: responseData[key].shellId,
                         certificateImage: responseData[key].certificateImage,
                         warrantyImage: responseData[key].warrantyImage,
@@ -127,7 +127,7 @@ export const Product = () => {
             setIsLoading(false);
             setHttpError(error.message);
         });
-    }, [currentPage, searchUrl]);
+    }, [currentPage, searchUrl, isUpdating]);
 
 
     if (isLoading) {
@@ -164,7 +164,7 @@ export const Product = () => {
         });
         setIsAddingNew(!isAddingNew);
     }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     const toggleUpdateModal = () => {
         setFormData({
             productId: 0,
@@ -185,17 +185,20 @@ export const Product = () => {
         });
         setIsUpdating(false)
     }
+
     const handleToEdit = (e: React.FormEvent, record: ProductModel) => {
         const productToEdit = products.find(product => product.productId === record.productId);
+        console.log(productToEdit)
+
         if (productToEdit) {
             setFormData(productToEdit);
             setIsUpdating(!isUpdating);
         }
-
     }
 
     const handleUpdate = async (e: React.FormEvent, product: ProductModel) => {
         e.preventDefault();
+        console.log(product)
         try {
             const requestBody = {
                 productId: product.productId,
@@ -329,6 +332,7 @@ export const Product = () => {
             ...prevFormData,
             [name]: value,
         }));
+        console.log(name + ":" + value)
     };
 
     const handlePageChange = (page: number) => {
@@ -337,6 +341,12 @@ export const Product = () => {
 
 
     const columns = [
+        {
+            title: 'ID',
+            dataIndex: 'productId',
+            key: 'productId',
+            className: 'text-center',
+        },
         {
             title: 'Image',
             dataIndex: 'image1',
@@ -388,9 +398,6 @@ export const Product = () => {
             key: 'actions',
             render: (record: ProductModel) => (
                 <>
-                    {/*<Button onClick={() => handleDelete(record)}>*/}
-                    {/*    <DeleteFilled />*/}
-                    {/*</Button>*/}
                     <Button onClick={(event) => handleToEdit(event, record)}>
                         <EditOutlined/>
                     </Button>

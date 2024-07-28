@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useEffect, useState} from 'react';
 import {AddDiamond} from "./component/AddDiamond";
 import {UpdateDiamond} from "./component/UpdateDiamond";
-import {Table, Button, Badge} from 'antd';
+import {Table, Button, Badge, message} from 'antd';
 
 const headers = localStorage.getItem('token');
 
@@ -51,11 +51,11 @@ export const Diamond: React.FC = () => {
 
 
     useEffect(() => {
-        fetchDiamond();
+        fetchPromotions();
     }, []);
 
 
-    const fetchDiamond = async () => {
+    const fetchPromotions = async () => {
         try {
             const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond/get-all', {
                 method: 'GET',
@@ -94,7 +94,7 @@ export const Diamond: React.FC = () => {
             console.log(formData)
             if (response.ok) {
                 setIsAddingNew(false);
-                fetchDiamond()
+                fetchPromotions()
             } else {
                 console.error('Failed to create diamond');
             }
@@ -118,9 +118,11 @@ export const Diamond: React.FC = () => {
 
             if (response.ok) {
                 setIsUpdating(false);
-                fetchDiamond();
+                fetchPromotions();
+                message.success('Diamond updated successfully');
             } else {
                 console.error('Failed to update diamond');
+                message.error('Failed to update diamond');
             }
         } catch (error) {
             console.error('Error update diamond: ', error);
@@ -135,26 +137,6 @@ export const Diamond: React.FC = () => {
             setIsUpdating(true);
         }
     };
-
-    // const handleDelete = async (e: React.FormEvent, diamondId: string) => {
-    //     e.preventDefault();
-    //     console.log(diamondId)
-    //     try {
-    //         const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond/delete/${diamondId}`, {
-    //             method: 'DELETE',
-    //             headers: {
-    //                 'Authorization': `Bearer ${headers}`
-    //             }
-    //         });
-    //         if (response.ok) {
-    //             fetchDiamond();
-    //         } else {
-    //             console.error('Failed to delete diamond');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error deleting diamond: ', error);
-    //     }
-    // };
 
     const columns = [
         {title: 'ID', dataIndex: 'diamondId', key: 'diamondId'},

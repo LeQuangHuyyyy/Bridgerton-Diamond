@@ -52,7 +52,7 @@ public interface OrderServiceImp {
 
     List<ProductCategory> getProductSoldByCategory();
 
-    List<Statistic> getStatisticBeforeThisWeek();
+    List<Statistic> getStatisticBeforeToday();
 
     List<OrderDTO> getOrderByUserId(int userId);
 

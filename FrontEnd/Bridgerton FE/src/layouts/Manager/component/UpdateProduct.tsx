@@ -61,7 +61,6 @@ export const UpdateProduct: React.FC<AddProductProps> = ({
             setImage4(typeof formData.image4 === 'string' ? formData.image4 : URL.createObjectURL(formData.image4));
         }
     }, [formData.image1, formData.image2, formData.image3, formData.image4]);
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -86,12 +85,13 @@ export const UpdateProduct: React.FC<AddProductProps> = ({
                 image3URL ?? "",
                 image4URL ?? "",
                 formData.categoryId,
-                diamonds.length > 0 ? diamonds[0].diamondId : 0,
+                // diamonds.length > 0 ? diamonds[0].diamondId : 0,
+                formData.diamondId,
                 formData.shellId,
                 certificateImage,
                 warrantyImage
             );
-            console.log(productData)
+
             onSubmit(e, productData);
         } catch (error) {
             console.error("Error uploading files:", error);
@@ -132,6 +132,7 @@ export const UpdateProduct: React.FC<AddProductProps> = ({
             });
         }
     }, [formData.productId]);
+
 
     return (
         <div
@@ -191,17 +192,15 @@ export const UpdateProduct: React.FC<AddProductProps> = ({
                                         name="diamondId"
                                         className="form-select"
                                         value={formData.diamondId}
-                                        onChange={handleChange}
-                                    >
+                                        onChange={handleChange}>
                                         {diamonds.map((diamond, index) => (
                                             <option key={diamond.diamondId} value={diamond.diamondId}
                                                     selected={index === 0}>
-                                                {`ID: ${diamond.diamondId}, Carat: ${diamond.carat},  Cut: ${diamond.cut}, Color: ${diamond.color}, Clarity: ${diamond.clarity},  Product ID: ${diamond.productId}`}
+                                                {`ID: ${diamond.diamondId}, Carat: ${diamond.carat}, Cut: ${diamond.cut}, Color: ${diamond.color}, Clarity: ${diamond.clarity}`}
                                             </option>
                                         ))}
                                     </select>
                                 </div>
-
                             </div>
 
                             <div className="col-md-6">

@@ -5,7 +5,7 @@ export const Heros = () => {
         <div>
             <div className="d-none d-lg-block">
                 <div>
-                    <div className="row g-0 mt-5">
+                    <div style={{marginTop: 100}} className="row g-0">
                         <div className="col-sm-6 col-md-6">
                             <div>
                                 <img className="col-image-left"

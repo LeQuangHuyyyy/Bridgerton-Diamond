@@ -41,6 +41,7 @@ const Checkout = () => {
     const fetchProducts = async () => {
         try {
             const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/cart/cart";
+
             const addProductRequests = localStorage.getItem("cart");
             console.log(addProductRequests);
             const response = await fetch(baseUrl, {
@@ -162,6 +163,7 @@ const Checkout = () => {
                 if (paymentResponse.ok) {
                     const paymentResult = await paymentResponse.json();
                     window.location.href = paymentResult.paymentUrl;
+                    localStorage.removeItem('cart')
                 } else {
                     console.error("Failed to create payment");
                 }

@@ -468,20 +468,16 @@ public class OrderService implements OrderServiceImp {
     }
 
     @Override
-    public List<Statistic> getStatisticBeforeThisWeek() {
+    public List<Statistic> getStatisticBeforeToday() {
         List<Statistic> result = new ArrayList<>();
 
         List<Order> orders = orderRepository.findAll();
 
         Date now = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-
         Set<String> listOfOrderDate = new HashSet<>();
 
         for (Order o : orders) {
-            if (o.getOrderDate().before(calendar.getTime())) {
+            if (o.getOrderDate().before(now)) {
                 listOfOrderDate.add(o.getOrderDate().toString().substring(0, 10));
             }
         }
@@ -500,11 +496,14 @@ public class OrderService implements OrderServiceImp {
                     }
                 }
             }
+
             statistic.setDate(d);
             statistic.setTotalSale(totalSale);
             statistic.setTotalOrder(totalOrder);
             statistic.setTotalItem(totalItem);
-            result.add(statistic);
+            if (statistic.getTotalOrder() != 0 && statistic.getTotalItem() != 0) {
+                result.add(statistic);
+            }
 
         }
 

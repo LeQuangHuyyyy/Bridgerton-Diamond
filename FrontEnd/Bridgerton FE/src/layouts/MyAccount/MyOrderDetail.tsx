@@ -40,7 +40,6 @@ const MyOrderDetail: React.FC = (props) => {
                 userName: responseJson.data.userName,
                 products: responseJson.data.product,
                 status: responseJson.data.orderStatus,
-                image: responseJson.data.image,
                 totalProductInOrder: responseJson.data.totalProductInOrder,
                 phoneNumber: responseJson.data.phoneNumber,
                 saleStaff: responseJson.data.saleStaff,
@@ -118,15 +117,15 @@ const MyOrderDetail: React.FC = (props) => {
     };
 
     return (
-        <div style={{padding: 24, paddingTop: 0}}>
-            <Row gutter={16} style={{marginBottom: 24, display: 'flex', justifyContent: 'space-between'}}>
+        <div style={{ padding: 24, paddingTop: 0 }}>
+            <Row gutter={16} style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between' }}>
                 <Col span={6}>
                     <Card style={{backgroundColor: '#D1E7DD', borderRadius: '8px', border: '1px solid #A3CFBB'}}>
                         <div className="info-container">
                             <ShoppingCartOutlined className="order-icon"/>
                             <div className="info">
                                 <div className="order-title">Order Created at</div>
-                                <div className="order-content">{details?.orderDate.substring(0, 10)}</div>
+                                <div className="order-content">{details?.orderDate.substring(0,10)}</div>
                             </div>
                         </div>
                     </Card>
@@ -143,7 +142,7 @@ const MyOrderDetail: React.FC = (props) => {
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card style={{backgroundColor: '#FFF3CD', borderRadius: '8px', border: '1px solid #FFE69C'}}>
+                    <Card style={{ backgroundColor: '#FFF3CD', borderRadius: '8px', border: '1px solid #FFE69C'}}>
                         <div className="info-container">
                             <MailOutlined className="email-icon"/>
                             <div className="info">
@@ -154,9 +153,9 @@ const MyOrderDetail: React.FC = (props) => {
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card style={{backgroundColor: '#CFF4FC', borderRadius: '8px', border: '1px solid #9EEAF9'}}>
+                    <Card style={{ backgroundColor: '#CFF4FC', borderRadius: '8px', border: '1px solid #9EEAF9'}}>
                         <div className="info-container">
-                            <PhoneOutlined className="contact-icon"/>
+                            <PhoneOutlined className="contact-icon" />
                             <div className="info">
                                 <div className="contact-title">Contact No</div>
                                 <div className="contact-content">{details?.phoneNumber}</div>
@@ -175,17 +174,14 @@ const MyOrderDetail: React.FC = (props) => {
                             renderItem={item => (
                                 <List.Item>
                                     <List.Item.Meta
-                                        avatar={<Avatar style={{width: '55px', height: '55px'}} shape="square"
-                                                        size="large" src={details?.image}/>}
+                                        avatar={<Avatar style={{width: '55px', height: '55px'}} shape="square" size="large" src={item.image} />}
                                         title={<span style={{fontSize: '17px'}}>{item.productName}</span>}
                                         description={
                                             <div>
                                                 <span style={{fontSize: '15px'}}>Size: {item.size}</span>
                                                 <div>
-                                                    <Image style={{width: '80px', height: '90px'}}
-                                                           src={item.warrantiesImage}/>
-                                                    <Image style={{width: '80px', height: '90px'}}
-                                                           src={item.certificateImage}/>
+                                                    <Image style={{width: '80px', height: '90px'}} src={item.warrantiesImage} />
+                                                    <Image style={{width: '80px', height: '90px'}} src={item.certificateImage} />
                                                 </div>
                                             </div>
                                         }
@@ -197,15 +193,14 @@ const MyOrderDetail: React.FC = (props) => {
                                 </List.Item>
                             )}
                         />
-                        <Descriptions column={1} style={{marginTop: 24, fontSize: '16px'}}>
-                            <Descriptions.Item label="Subtotal Price" style={{fontWeight: 'bold', fontSize: '18px'}}>
+                        <Descriptions column={1} style={{ marginTop: 24, fontSize: '16px' }}>
+                            <Descriptions.Item label="Subtotal Price" style={{ fontWeight: 'bold', fontSize: '18px' }}>
                                 ${details?.totalAmount}
                             </Descriptions.Item>
-                            <Descriptions.Item label="Shipping Cost" style={{fontSize: '16px'}}>
+                            <Descriptions.Item label="Shipping Cost" style={{ fontSize: '16px' }}>
                                 Free
                             </Descriptions.Item>
-                            <Descriptions.Item label="Total"
-                                               style={{fontWeight: 'bold', fontSize: '20px', color: 'red'}}>
+                            <Descriptions.Item label="Total" style={{ fontWeight: 'bold', fontSize: '20px', color: 'red' }}>
                                 ${details?.totalAmount.toFixed(2)}
                             </Descriptions.Item>
                         </Descriptions>
@@ -218,20 +213,13 @@ const MyOrderDetail: React.FC = (props) => {
                                 {details?.orderId}
                             </Form.Item>
                             <Form.Item label="Order Status:">
-                                <Input value={details?.status} disabled
-                                       style={{width: '23%', textAlign: 'center', ...getStatusColor(details?.status)}}/>
+                                <Input value={details?.status} disabled style={{ width: '23%', textAlign: 'center', ...getStatusColor(details?.status) }} />
                             </Form.Item>
                             <Form.Item label="Quantity:">
                                 {details?.totalProductInOrder}
                             </Form.Item>
                             <Form.Item>
-                                <Link to={"/myorders"} style={{
-                                    padding: '10px',
-                                    textDecoration: 'none',
-                                    fontSize: '16px',
-                                    borderRadius: "5px",
-                                    backgroundColor: '#3AA6B9'
-                                }} className="text-white">Back to list</Link>
+                                <Link to={"/myorders"} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#3AA6B9'}} className="text-white">Back to list</Link>
                             </Form.Item>
                         </Form>
                     </Card>

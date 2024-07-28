@@ -7,6 +7,8 @@ import SizeModel from "../../models/SizeModel";
 import Carousel from "react-multi-carousel";
 import {SimilarItems} from "./component/SimilarItems";
 import {Button, message, Modal} from "antd";
+import ExpandableFeature from "../Utils/ExpandableFeature";
+import ExpandInformation from "./component/ExpandInformation";
 
 export const ProductCheckoutPage = () => {
     const [suggest, setSuggest] = useState<ProductModel[]>([]);
@@ -95,10 +97,10 @@ export const ProductCheckoutPage = () => {
                     image3: responseData[key].image3,
                     image4: responseData[key].image4,
                     categoryId: responseData[key].categoryId,
-                    diamondId: responseData[key].diamondId,
                     shellId: responseData[key].shellId,
                     certificateImage: responseData[key].certificateImage,
                     warrantyImage: responseData[key].warrantyImage,
+                    diamondId: responseData[key].diamondId,
                 });
             }
 
@@ -286,32 +288,35 @@ export const ProductCheckoutPage = () => {
                                 Price: ${product?.price}
                             </p>
                             <p>{product?.description}</p>
-                            <Button
-                                onClick={() => showModal(product?.certificateImage)}
-                                style={{marginRight: '10px'}}
-                            >
-                                <img style={{width: 50}}
-                                     src={'https://www.gia.edu/assets/img/global-header/desktop/gia-logo.svg'}
-                                     alt="certificate"/>
-                            </Button>
-
-                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <div style={{display: 'flex'}}>
+                                <Button
+                                    onClick={() => showModal(product?.certificateImage)}
+                                    style={{marginRight: '10px'}}
+                                >
+                                    <img style={{width: 50}}
+                                         src={'https://www.gia.edu/assets/img/global-header/desktop/gia-logo.svg'}
+                                         alt="certificate"/>
+                                </Button>
+                                <Button
+                                    onClick={() => showModal('https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Fz5624916933804_dcdb067c2dd16407a4cf0a91cecce6f6.jpg?alt=media&token=7007668e-e495-4692-93d8-d698a6ac01ab')}
+                                    style={{
+                                        cursor: 'pointer',
+                                        color: 'black',
+                                        textDecoration: 'underline',
+                                        marginBottom: '10px',
+                                        display: 'block',
+                                    }}
+                                >
+                                    Size Guide
+                                </Button>
+                            </div>
+                            <ExpandInformation title='More Information' content= {
+                                <>
                                 <DiamondTable product={product}/>
                                 <ShellTable product={product}/>
-                            </div>
-                            <a
-                                onClick={() => showModal('https://firebasestorage.googleapis.com/v0/b/bridgertondiamond.appspot.com/o/BridgertonDiamond%2Fz5624916933804_dcdb067c2dd16407a4cf0a91cecce6f6.jpg?alt=media&token=7007668e-e495-4692-93d8-d698a6ac01ab')}
-                                style={{
-                                    cursor: 'pointer',
-                                    color: 'black',
-                                    textDecoration: 'underline',
-                                    marginBottom: '10px',
-                                    display: 'block',
-                                    marginTop: '10px',
-                                }}
-                            >
-                                Size Guide
-                            </a>
+                                </>
+                            }/>
+
                             <select
                                 style={{
                                     width: '200px',
@@ -366,7 +371,6 @@ export const ProductCheckoutPage = () => {
                                 </button>
                             )}
                             <Modal
-                                title="Image"
                                 visible={visible}
                                 onOk={handleOk}
                                 onCancel={handleCancel}

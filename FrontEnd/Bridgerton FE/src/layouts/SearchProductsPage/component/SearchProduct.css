@@ -1,32 +1,10 @@
-.product-name {
+.product-name{
     font-size: 15px;
     color: black;
     text-align: center;
     margin-top: 1em;
     text-decoration: none;
 }
-
-.image-container {
-    width: 100%;
-    height: 100%;
-}
-
-.product-image {
-    transition: 0.5s;
-}
-
-.image1 {
-    opacity: 1;
-}
-
-.image2 {
-    opacity: 0;
-}
-
-.image1:hover {
-    opacity: 0;
-}
-
-.image2:hover {
-    opacity: 1;
+.card:hover{
+    border: #0B2447 1px solid;
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {jwtDecode} from "jwt-decode";
 import {NavLink} from "react-router-dom";
 import {Button, Form, Input, message, Tabs} from "antd";
@@ -17,6 +17,9 @@ export const Login = () => {
     const [registerAddress, setRegisterAddress] = React.useState('');
     const [form] = Form.useForm();
 
+    useEffect(() => {
+        window.scrollTo(0,0);
+    });
     const handleSubmit = async () => {
         const formData = new FormData();
         formData.append("email", email);

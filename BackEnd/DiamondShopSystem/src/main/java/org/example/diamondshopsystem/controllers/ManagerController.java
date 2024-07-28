@@ -99,8 +99,8 @@ public class ManagerController {
     @GetMapping("/statisticBeforeThisWeek")
     public ResponseEntity<?> getStatisticBeForeThisWeek() {
         ResponseData responseData = new ResponseData();
-        responseData.setData(orderServiceImp.getStatisticBeforeThisWeek());
-        responseData.setDescription("ke ke ke, statistic trong tất cả các mặt hàng đã bán tính từ tuần trc");
+        responseData.setData(orderServiceImp.getStatisticBeforeToday());
+        responseData.setDescription("ke ke ke, statistic trong tất cả các mặt hàng đã bán tính từ hôm nay đổ về trc");
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
