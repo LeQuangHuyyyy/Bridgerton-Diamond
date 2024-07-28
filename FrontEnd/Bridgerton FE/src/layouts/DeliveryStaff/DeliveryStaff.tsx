@@ -89,9 +89,16 @@ const DeliveryStaff: React.FC = () => {
                 return 'gold';
         }
     };
+    const handleRowClick = (event: any, orderId: number) => {
+        const actionColumn = event.target.closest('.ant-space');
+        if (actionColumn) {
+            return;
+        }
+        navigateToOrderDetails(orderId);
+    };
 
-    const navigateToOrderDetails = async (e: React.FormEvent, orderId: number) => {
-        e.preventDefault();
+
+    const navigateToOrderDetails = (orderId: number) => {
         history.push(`/deliveryDetailOrder/${orderId}`)
     };
     const confirmOrderToReceived = async (e: React.FormEvent, orderId: number) => {
@@ -191,7 +198,11 @@ const DeliveryStaff: React.FC = () => {
                 columns={columns}
                 dataSource={orders}
                 rowKey="orderId"
-
+                onRow={(record) => {
+                    return {
+                        onClick: (event) => handleRowClick(event, record.orderId),
+                    };
+                }}
             />
         </div>
     );

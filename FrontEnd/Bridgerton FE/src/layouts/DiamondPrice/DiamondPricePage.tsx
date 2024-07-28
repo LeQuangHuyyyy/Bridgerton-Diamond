@@ -5,11 +5,6 @@ import {DiamondElement} from "./components/DiamondElement";
 
 export const DiamondPricePage = () => {
 
-    const token = localStorage.getItem("token");
-    const headers = {
-        'Authorization': `Bearer ${token}`
-    }
-
     const [diamonds, setDiamonds] = useState<DiamondPriceModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
@@ -18,7 +13,7 @@ export const DiamondPricePage = () => {
         const fetchProducts = async () => {
             const url = 'https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond-price/get-all';
             try {
-                const response = await fetch(url, {headers: headers});
+                const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Something went wrong!');
                 }

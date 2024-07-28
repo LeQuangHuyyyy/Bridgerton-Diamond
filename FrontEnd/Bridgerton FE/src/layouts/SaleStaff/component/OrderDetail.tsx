@@ -127,7 +127,7 @@ const OrderDetail: React.FC = (props) => {
                                 <ShoppingCartOutlined className="order-icon"/>
                                 <div className="info">
                                     <div className="order-title">Order Created at</div>
-                                    <div className="order-content">{details?.orderDate}</div>
+                                    <div className="order-contentt">{details?.orderDate.substring(0,10)}</div>
                                 </div>
                             </div>
                         </Card>
@@ -160,7 +160,7 @@ const OrderDetail: React.FC = (props) => {
                                 <PhoneOutlined className="contact-icon" />
                                 <div className="info">
                                     <div className="contact-title">Contact No</div>
-                                    <div className="contact-content">202-906-12354</div>
+                                    <div className="contact-content">{details?.phoneNumber}</div>
                                 </div>
                             </div>
                         </Card>
@@ -190,20 +190,20 @@ const OrderDetail: React.FC = (props) => {
                                     />
                                     <div className="product-details">
                                         <span className="product-quantity">{item.quantity}x</span>
-                                        <span className="product-price">Price: ${item.price.toFixed(2)}</span>
+                                        <span className="product-price">Price: ${item.price.toLocaleString()}</span>
                                     </div>
                                 </List.Item>
                             )}
                         />
                         <Descriptions column={1} style={{ marginTop: 24, fontSize: '16px' }}>
                             <Descriptions.Item label="Subtotal Price" style={{ fontWeight: 'bold', fontSize: '18px' }}>
-                                ${details?.totalAmount}
+                                ${details?.totalAmount.toLocaleString()}
                             </Descriptions.Item>
                             <Descriptions.Item label="Shipping Cost" style={{ fontSize: '16px' }}>
                                 Free Shipping
                             </Descriptions.Item>
                             <Descriptions.Item label="Total" style={{ fontWeight: 'bold', fontSize: '20px', color: 'red' }}>
-                                ${details?.totalAmount.toFixed(2)}
+                                ${details?.totalAmount.toLocaleString()}
                             </Descriptions.Item>
                         </Descriptions>
 

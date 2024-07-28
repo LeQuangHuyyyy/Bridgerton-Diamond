@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useEffect, useState} from 'react';
 import {AddDiamond} from "./component/AddDiamond";
 import {UpdateDiamond} from "./component/UpdateDiamond";
-import {Table, Button, Badge, message} from 'antd';
+import {Badge, Button, message, Table} from 'antd';
 
 const headers = localStorage.getItem('token');
 
@@ -144,7 +144,12 @@ export const Diamond: React.FC = () => {
         {title: 'Cut', dataIndex: 'cut', key: 'cut'},
         {title: 'Clarity', dataIndex: 'clarity', key: 'clarity'},
         {title: 'Color', dataIndex: 'color', key: 'color'},
-        {title: 'Price', dataIndex: 'price', key: 'price', render: (text: string) => `$${text}`},
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+            render: (text: any) => <span style={{fontWeight: 'bold'}}>${text.toLocaleString()}</span>,
+        },
         {
             title: 'Status', dataIndex: 'status', key: 'status', render: (status: boolean) => (
                 <Badge status={status ? "success" : "error"} text={status ? "On sale" : ""}/>

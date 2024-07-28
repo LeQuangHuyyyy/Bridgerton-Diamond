@@ -3,10 +3,6 @@ import DiamondModel from '../../../models/DiamondModel';
 import {SpinnerLoading} from "../../Utils/SpinnerLoading";
 import ProductModel from "../../../models/ProductModel";
 
-const token = localStorage.getItem('token');
-const headers = {
-    'Authorization': `Bearer ${token}`
-}
 const DiamondTable: React.FC<{ product: ProductModel | undefined }> = (props) => {
     const [diamonds, setDiamonds] = useState<DiamondModel>();
     const [isLoading, setIsLoading] = useState(true);
@@ -17,7 +13,7 @@ const DiamondTable: React.FC<{ product: ProductModel | undefined }> = (props) =>
         const fetchDiamond = async () => {
             const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/manage/diamond/pro/${props.product?.productId}`;
             const url: string = `${baseUrl}`;
-            const response = await fetch(url, {headers: headers});
+            const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Something went wrong!');
             }

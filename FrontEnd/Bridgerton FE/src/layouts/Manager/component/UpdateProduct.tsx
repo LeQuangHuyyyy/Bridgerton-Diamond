@@ -78,7 +78,7 @@ export const UpdateProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSub
                 image3URL ?? "",
                 image4URL ?? "",
                 formData.categoryId,
-                diamonds.length > 0 ? diamonds[0].diamondId : 0,
+                formData.diamondId,
                 formData.shellId,
                 certificateImage,
                 warrantyImage

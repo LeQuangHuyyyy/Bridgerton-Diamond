@@ -159,7 +159,8 @@ const OrderTable: React.FC = () => {
             title: 'ORDER TOTAL AMOUNT',
             dataIndex: 'orderTotalAmount',
             key: 'orderTotalAmount',
-            className:'text-center'
+            className:'text-center',
+            render: (text: any) =><span style={{fontWeight: 'bold'}}>${text.toLocaleString()}</span> ,
         },
         {
             title: 'ORDER DELIVERY ADDRESS',
@@ -183,12 +184,12 @@ const OrderTable: React.FC = () => {
             key: 'action',
             className:'text-center',
             render: (record: any) => (
-                record.status === 'PAYMENT' ? (
+                record.status === 'PAID' ? (
                     <Space size="middle">
-                        <Button onClick={(event) => handleConfirm(event, record.orderId)}>
+                        <Button className='btn-outline-success' onClick={(event) => handleConfirm(event, record.orderId)}>
                             CONFIRM
                         </Button>
-                        <Button onClick={(event) => handleCancel(event, record.orderId)}>
+                        <Button className='btn-outline-danger' onClick={(event) => handleCancel(event, record.orderId)}>
                             CANCEL
                         </Button>
                     </Space>

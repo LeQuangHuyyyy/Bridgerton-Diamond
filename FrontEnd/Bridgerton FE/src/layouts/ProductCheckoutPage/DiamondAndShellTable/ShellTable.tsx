@@ -3,9 +3,6 @@ import {SpinnerLoading} from "../../Utils/SpinnerLoading";
 import ProductModel from "../../../models/ProductModel";
 import ShellModel from "../../../models/ShellModel";
 
-const headers = {
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXlscXNlMTcxMjkzQGZwdC5lZHUudm4ifQ.FzAs3FrNbICbW9dUGZivmqNtMvUs7dh-fCgJy0EvluQ'
-}
 const ShellTable: React.FC<{ product: ProductModel | undefined }> = (props) => {
     const [shells, setShells] = useState<ShellModel>();
     const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +13,7 @@ const ShellTable: React.FC<{ product: ProductModel | undefined }> = (props) => {
         const fetchDiamond = async () => {
             const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/manage/shell/${props.product?.shellId}`;
             const url: string = `${baseUrl}`;
-            const response = await fetch(url, {headers: headers});
+            const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Something went wrong!');
             }

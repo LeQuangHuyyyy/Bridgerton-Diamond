@@ -5,7 +5,6 @@ import {UpdateProduct} from "./component/UpdateProduct";
 import {Button, Image, message, Pagination, Table} from "antd";
 import ProductModel from "../../models/ProductModel";
 import {EditOutlined} from "@ant-design/icons";
-import DiamondModel from "../../models/DiamondModel";
 
 const token = localStorage.getItem('token');
 const headers = {
@@ -28,15 +27,6 @@ interface ProductData {
     shellId: number;
     warrantyImage: string,
     certificateImage: string,
-}
-
-interface Diamond {
-    diamondId: number;
-    name: string;
-    carat: number;
-    color: string;
-    clarity: string;
-    cut: string;
 }
 
 export const Product = () => {
@@ -112,7 +102,7 @@ export const Product = () => {
                         image3: responseData[key].image3,
                         image4: responseData[key].image4,
                         categoryId: responseData[key].categoryId,
-                        diamondId: responseData[key].diamondId,
+                        diamondId: responseData[key].diamonds[0].diamondId,
                         shellId: responseData[key].shellId,
                         certificateImage: responseData[key].certificateImage,
                         warrantyImage: responseData[key].warrantyImage,

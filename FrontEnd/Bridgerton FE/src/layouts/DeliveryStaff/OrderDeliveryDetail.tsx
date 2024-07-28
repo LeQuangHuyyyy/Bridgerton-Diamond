@@ -99,14 +99,14 @@ const OrderDetail: React.FC = (props) => {
     return (
         <div style={{ padding: 24 }}>
             <h1 style={{textAlign: 'center', marginBottom: '19px'}} className="custom-heading">Order Details: {details?.orderId}</h1>
-            <Row gutter={16} style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between' }}>
+            <Row style={{ marginBottom: 24, display: 'flex', justifyContent: 'center'}}>
                 <Col span={8}>
                     <div className="card-salestaff">
                         <div className="info-container">
                             <UserOutlined className="order-icon"/>
                             <div className="info">
                                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                    <div className="order-title">Sale Name:</div>
+                                    <div className="order-title">Sale name:</div>
                                     <div className="order-content">{details?.saleStaff}</div>
                                 </div>
                                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -124,19 +124,19 @@ const OrderDetail: React.FC = (props) => {
                 <Col span={8}>
                         <div className='card-user'>
                         <div className="info-container">
-                            <UserOutlined className='name-icon'/>
+                            <UserOutlined className='email-icon'/>
                             <div className="info">
                                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                    <div className="name-title">Name</div>
+                                    <div className="name-title">Customer name:</div>
                                     <div className="name-content">{details?.userName}</div>
                                 </div>
                                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                    <div className="email-title">Email</div>
+                                    <div className="email-title">Email:</div>
                                     <div style={{color: '#664D03'}} className="email-content">{details?.email}</div>
                                 </div>
                                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                    <div className="contact-title">Contact No</div>
-                                    <div className="contact-content">{details?.phoneNumber}</div>
+                                    <div className="contact-title-deli">Contact No:</div>
+                                    <div className="contact-content-deli">{details?.phoneNumber}</div>
                                 </div>
                             </div>
                         </div>
