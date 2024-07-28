@@ -13,6 +13,9 @@ export const CartPage = () => {
 
     useEffect(() => {
         fetchProducts();
+        if (!localStorage.getItem('cart')) {
+            localStorage.setItem('cart', JSON.stringify([]));
+        }
         window.scrollTo(0, 0);
     }, [updateFlag]);
 

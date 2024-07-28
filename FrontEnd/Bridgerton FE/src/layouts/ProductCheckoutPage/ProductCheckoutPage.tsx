@@ -157,6 +157,9 @@ export const ProductCheckoutPage = () => {
     })
 
     const checkIfInCart = () => {
+        if (!localStorage.getItem('cart')) {
+            localStorage.setItem('cart', JSON.stringify([]));
+        }
         const cart = JSON.parse(localStorage.getItem("cart")!);
         return cart.some((item: any) => item.productId === productId);
     };
@@ -347,8 +350,8 @@ export const ProductCheckoutPage = () => {
                                         backgroundColor: 'red',
                                         textAlign: 'center',
                                         color: 'white',
-                                        padding: '10px',
-                                        marginTop: '10px',
+                                        padding: '5px',
+                                        marginTop: '15px',
                                     }}
                                 >
                                     OUT OF STOCK
