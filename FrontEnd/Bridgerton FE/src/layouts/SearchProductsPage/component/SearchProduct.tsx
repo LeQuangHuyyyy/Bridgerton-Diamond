@@ -28,7 +28,7 @@ export const SearchProduct: React.FC<{ product: ProductModel }> = (props) => {
                             style={{fontWeight: '600'}}>{props.product.productName.length > 50 ?
                             <h2 className='product-name'>{props.product.productName.substring(0, 50)}...</h2>
                             : <h2 className='product-name'>{props.product.productName}</h2>}</h2>
-                        <p className='price'>${props.product.price}</p>
+                        <p className='price'>${props.product.price.toLocaleString()}</p>
                     </div>
                 </div>
             </Link>

@@ -100,7 +100,7 @@ const Dashboard = () => {
                         <Col span={8}>
                             <Card>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <MoneyCollectOutlined style={{ fontSize: '48px', color: '#30BF78' }} />
+                                    <LineChartOutlined style={{ fontSize: '48px', color: '#30BF78' }} />
                                     <div style={{ marginLeft: '16px' }}>
                                         <div style={{ fontSize: '16px', color: '#8c8c8c' }}>Total Sale</div>
                                         <div style={{ fontSize: '24px'}}>${revenuel.toLocaleString()}</div>

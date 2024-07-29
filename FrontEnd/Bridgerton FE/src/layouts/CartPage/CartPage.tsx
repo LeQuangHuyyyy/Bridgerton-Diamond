@@ -134,7 +134,7 @@ export const CartPage = () => {
                         <tr>
                             <td colSpan={5} style={{color: 'green'}} className="text-right"><strong>Total
                                 Price:</strong></td>
-                            <td style={{color: 'red'}}><strong>${calculateTotalPrice()}</strong></td>
+                            <td style={{color: 'red'}}><strong>${calculateTotalPrice().toLocaleString()}</strong></td>
                         </tr>
                         </tbody>
                     </table>

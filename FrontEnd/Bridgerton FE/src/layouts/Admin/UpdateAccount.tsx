@@ -141,7 +141,7 @@ const UpdateAccount: React.FC<UpdateAccountProps> = ({
                 />
             </Form.Item>
             <Form.Item>
-                <Button type="primary" htmlType="submit">Create</Button>
+                <Button type="primary" htmlType="submit">Save</Button>
                 <Button type="default" onClick={onClose} style={{marginLeft: '10px'}}>Close</Button>
             </Form.Item>
         </Form>

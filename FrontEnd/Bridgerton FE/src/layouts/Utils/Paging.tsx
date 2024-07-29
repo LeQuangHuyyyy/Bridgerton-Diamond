@@ -53,7 +53,6 @@ export const Paging: React.FC<{ currentPage: number, totalPages: number, paginat
                     </button>
                 </li>
             </ul>
-
         </nav>
     );
 }

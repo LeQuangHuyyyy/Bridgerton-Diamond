@@ -201,6 +201,7 @@ const OrderDetail: React.FC = (props) => {
                             </Form.Item>
                             <Form.Item>
                                 <Link to={"/deliverystaff"} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#3AA6B9'}} className="text-white">Back to list</Link>
+                                <Link to={''} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#006989', marginLeft: 20}} className="text-white">View Invoice</Link>
                             </Form.Item>
                         </Form>
                     </Card>

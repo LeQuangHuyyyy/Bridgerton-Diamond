@@ -3,7 +3,7 @@ import './App.css';
 import {Navbar} from "./layouts/NavbarAndFooter/Navbar";
 import {Footer} from "./layouts/NavbarAndFooter/Footer";
 import {HomePage} from "./layouts/HomePage/HomePage";
-import {Redirect, Route, BrowserRouter as Router, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import {ProductCheckoutPage} from "./layouts/ProductCheckoutPage/ProductCheckoutPage";
 import {CartPage} from "./layouts/CartPage/CartPage";
 import {ForgotPassword} from "./Auth/ForgotPassword";
@@ -56,72 +56,50 @@ export const App = () => {
                     {token === undefined && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
-                            <Route path='/deliverystaff'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/deliverydetailorder/:orderId'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/salestaff'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/orderdetail/:orderId'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/promotion'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/dashboard'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/product'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/diamond'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/diamond-education'>
-                                <DiamondEducation/>
-                            </Route>
-                            <Route path='/' exact>
-                                <HomePage/>
-                            </Route>
-                            <Route path='/home'>
-                                <HomePage/>
-                            </Route>
-                            <Route path='/shop'>
-                                <SearchProductsPage/>
-                            </Route>
-                            <Route path='/detail/:productId'>
-                                <ProductCheckoutPage/>
-                            </Route>
-                            <Route path='/price'>
-                                <DiamondPricePage/>
-                            </Route>
-                            <Route path='/cart'>
-                                <CartPage/>
-                            </Route>
-                            <Route path='/contactus'>
-                                <ContactUs/>
-                            </Route>
-                            <Route path='/login'>
-                                <Login/>
-                            </Route>
-                            <Route path='/verify-register'>
-                                <VerifyCode/>
-                            </Route>
-                            <Route path='/forgot-password'>
-                                <ForgotPassword/>
-                            </Route>
-                            <Route path='/reset-password'>
-                                <ResetPassword/>
-                            </Route>
-                            <Route path='/ordersuccess'>
-                                <OrderSuccessPage/>
-                            </Route>
-                            <Route path='/admin'>
-                                <NotFoundPage/>
-                            </Route>
+                            <Switch>
+                                <Route path='/diamond-education'>
+                                    <DiamondEducation/>
+                                </Route>
+                                <Route path='/' exact>
+                                    <HomePage/>
+                                </Route>
+                                <Route path='/home'>
+                                    <HomePage/>
+                                </Route>
+                                <Route path='/shop'>
+                                    <SearchProductsPage/>
+                                </Route>
+                                <Route path='/detail/:productId'>
+                                    <ProductCheckoutPage/>
+                                </Route>
+                                <Route path='/price'>
+                                    <DiamondPricePage/>
+                                </Route>
+                                <Route path='/cart'>
+                                    <CartPage/>
+                                </Route>
+                                <Route path='/contactus'>
+                                    <ContactUs/>
+                                </Route>
+                                <Route path='/login'>
+                                    <Login/>
+                                </Route>
+                                <Route path='/verify-register'>
+                                    <VerifyCode/>
+                                </Route>
+                                <Route path='/forgot-password'>
+                                    <ForgotPassword/>
+                                </Route>
+                                <Route path='/reset-password'>
+                                    <ResetPassword/>
+                                </Route>
+                                <Route path='/ordersuccess'>
+                                    <OrderSuccessPage/>
+                                </Route>
+                                <Route>
+                                    <NotFoundPage/>
+                                </Route>
+                            </Switch>
                             <Footer/>
                         </div>
                     )
@@ -129,73 +107,19 @@ export const App = () => {
                     {token === 'CUSTOMER' && (
                         <div className='flex-grow-1 w-100'>
                             <Navbar/>
-                            <Route path='/deliverystaff'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/deliverydetailorder/:orderId'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/salestaff'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/orderdetail/:orderId'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/promotion'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/dashboard'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/product'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/diamond'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/admin'>
-                                <NotFoundPage/>
-                            </Route>
-                            <Route path='/diamond-education'>
-                                <DiamondEducation/>
-                            </Route>
-                            <Route path='/' exact>
-                                <HomePage/>
-                            </Route>
-                            <Route path='/home'>
-                                <HomePage/>
-                            </Route>
-                            <Route path='/warranty'>
-                                <SearchWarranty/>
-                            </Route>
-                            <Route path='/cart'>
-                                <CartPage/>
-                            </Route>
-                            <Route path='/checkout'>
-                                <Checkout/>
-                            </Route>
-                            <Route path='/shop'>
-                                <SearchProductsPage/>
-                            </Route>
-                            <Route path='/detail/:productId'>
-                                <ProductCheckoutPage/>
-                            </Route>
-                            <Route path='/price'>
-                                <DiamondPricePage/>
-                            </Route>
-                            <Route path='/contactus'>
-                                <ContactUs/>
-                            </Route>
-                            <Route path='/login'>
-                                <Login/>
-                            </Route>
-                            <Route path='/reset-password'>
-                                <ResetPassword/>
-                            </Route>
-                            <Route path='/ordersuccess'>
-                                <OrderSuccessPage/>
-                            </Route>
                             <Switch>
+                                <Route path='/diamond-education' component={DiamondEducation}/>
+                                <Route path='/home' component={HomePage}/>
+                                <Route path='/warranty' component={SearchWarranty}/>
+                                <Route path='/cart' component={CartPage}/>
+                                <Route path='/checkout' component={Checkout}/>
+                                <Route path='/shop' component={SearchProductsPage}/>
+                                <Route path='/detail/:productId' component={ProductCheckoutPage}/>
+                                <Route path='/price' component={DiamondPricePage}/>
+                                <Route path='/contactus' component={ContactUs}/>
+                                <Route path='/login' component={Login}/>
+                                <Route path='/reset-password' component={ResetPassword}/>
+                                <Route path='/ordersuccess' component={OrderSuccessPage}/>
                                 <Route path='/myaccount'>
                                     <Account>
                                         <InformationAccount/>
@@ -216,57 +140,42 @@ export const App = () => {
                                         <ChangePassword/>
                                     </Account>
                                 </Route>
+                                <Route component={NotFoundPage}/>
                             </Switch>
                             <Footer/>
                         </div>
                     )
                     }
                     {token === 'ADMIN' && (
-                        <>
-                            <Route path='/admin'>
-                                <AccountTable/>
-                            </Route>
-                        </>
+                        <Switch>
+                            <Route path='/admin' component={AccountTable}/>
+                            <Route component={NotFoundPage}/>
+                        </Switch>
                     )}
                     {token === 'MANAGER' && (
-                        <>
-                            <SideBar>
-                                <Route path='/promotion'>
-                                    <Promotion/>
-                                </Route>
-                                <Route path='/dashboard'>
-                                    <Dashboard/>
-                                </Route>
-                                <Route path='/product'>
-                                    <Product/>
-                                </Route>
-                                <Route path='/diamond'>
-                                    <Diamond/>
-                                </Route>
-                            </SideBar>
-                        </>
+                        <SideBar>
+                            <Switch>
+                                <Route path='/promotion' component={Promotion}/>
+                                <Route path='/dashboard' component={Dashboard}/>
+                                <Route path='/product' component={Product}/>
+                                <Route path='/diamond' component={Diamond}/>
+                                <Route component={NotFoundPage}/>
+                            </Switch>
+                        </SideBar>
                     )}
                     {token === 'SALE_STAFF' && (
-                        <>
-                            <Redirect from='/' to='/salestaff' exact/>
-                            <Route path='/salestaff'>
-                                <SaleStaffPage/>
-                            </Route>
-                            <Route path='/orderdetail/:orderId'>
-                                <OrderDetail/>
-                            </Route>
-                        </>
+                        <Switch>
+                            <Route path='/salestaff' component={SaleStaffPage}/>
+                            <Route path='/orderdetail/:orderId' component={OrderDetail}/>
+                            <Route component={NotFoundPage}/>
+                        </Switch>
                     )}
                     {token === 'DELIVERY_STAFF' && (
-                        <>
-                            <Redirect from='/' to='/deliverystaff' exact/>
-                            <Route path='/deliverystaff'>
-                                <DeliveryStaff/>
-                            </Route>
-                            <Route path='/deliverydetailorder/:orderId'>
-                                <OrderDeliveryDetail/>
-                            </Route>
-                        </>
+                        <Switch>
+                            <Route path='/deliverystaff' component={DeliveryStaff}/>
+                            <Route path='/deliverydetailorder/:orderId' component={OrderDeliveryDetail}/>
+                            <Route component={NotFoundPage}/>
+                        </Switch>
                     )}
                 </Switch>
             </Router>

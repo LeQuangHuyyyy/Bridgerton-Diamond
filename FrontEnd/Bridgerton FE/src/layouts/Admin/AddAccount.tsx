@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, Form, Input, Select, Radio, Button} from 'antd';
+import {Form, Input, Select, Radio, Button} from 'antd';
 
 const {Option} = Select;
 
@@ -36,12 +36,12 @@ const AddAccount: React.FC<AddAccountProps> = ({isOpen, onClose, onSubmit, formD
     };
 
     const validatePassword = (_: any, value: any) => {
-        if (!value || /^[0-9]{6,}$/.test(value)) {
+        const regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z]).{6,}$/;
+        if (!value || regex.test(value)) {
             return Promise.resolve();
         }
-        return Promise.reject('Password must be at least 6 numeric characters.');
+        return Promise.reject('Password must be at least 6 characters long, and include a number, a special character, and a lowercase letter.');
     };
-
     return (
         <Form
             layout="vertical"
@@ -50,7 +50,6 @@ const AddAccount: React.FC<AddAccountProps> = ({isOpen, onClose, onSubmit, formD
         >
             <Form.Item
                 label="Name"
-                name="name"
                 rules={[
                     {required: true, message: 'Please input name!'},
                     {min: 1, max: 50, message: 'Name length limit must be in range 1 – 50 characters.'},
@@ -62,11 +61,11 @@ const AddAccount: React.FC<AddAccountProps> = ({isOpen, onClose, onSubmit, formD
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Name"
+                    name="name"
                 />
             </Form.Item>
             <Form.Item
                 label="Password"
-                name="password"
                 rules={[
                     {required: true, message: 'Please input user password!'},
                     {validator: validatePassword}
@@ -76,11 +75,11 @@ const AddAccount: React.FC<AddAccountProps> = ({isOpen, onClose, onSubmit, formD
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="Password"
+                    name="password"
                 />
             </Form.Item>
             <Form.Item
                 label="Phone Number"
-                name="phoneNumber"
                 rules={[
                     {required: true, message: 'Please input user phone number!'},
                     {len: 10, message: 'Phone number length limit must be 10 characters.'},
@@ -92,11 +91,11 @@ const AddAccount: React.FC<AddAccountProps> = ({isOpen, onClose, onSubmit, formD
                     value={formData.phoneNumber}
                     onChange={handleChange}
                     placeholder="Phone Number"
+                    name="phoneNumber"
                 />
             </Form.Item>
             <Form.Item
                 label="Email"
-                name="email"
                 rules={[
                     {required: true, message: 'Please input user email!'},
                     {validator: validateEmail}
@@ -107,11 +106,11 @@ const AddAccount: React.FC<AddAccountProps> = ({isOpen, onClose, onSubmit, formD
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="Email"
+                    name="email"
                 />
             </Form.Item>
             <Form.Item
                 label="Address"
-                name="address"
                 rules={[
                     {required: true, message: 'Please input user address!'},
                     {validator: validateNoWhitespace}
@@ -121,11 +120,11 @@ const AddAccount: React.FC<AddAccountProps> = ({isOpen, onClose, onSubmit, formD
                     value={formData.address}
                     onChange={handleChange}
                     placeholder="Address"
+                    name="address"
                 />
             </Form.Item>
             <Form.Item
-                label="Function"
-                name="role"
+                label="Role"
                 rules={[{required: true, message: 'Please select a role!'}]}
             >
                 <Select

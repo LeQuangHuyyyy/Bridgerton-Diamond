@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {jwtDecode} from "jwt-decode";
-import {Badge, Button, Dropdown, Form, Input, Menu, message, Modal, Table} from "antd";
+import {Badge, Button, Dropdown, Form, Input, Menu, message, Modal, Space, Table} from "antd";
 import AddAccount from "./AddAccount";
 import UpdateAccount from "./UpdateAccount";
-import {UserAddOutlined, UserOutlined} from "@ant-design/icons";
+import {EditOutlined, LockOutlined, UserAddOutlined, TeamOutlined} from "@ant-design/icons";
 
 const headers = localStorage.getItem('token');
 
@@ -85,6 +85,7 @@ export const AccountTable: React.FC = () => {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
         try {
             const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts', {
                 method: "GET",
@@ -123,8 +124,10 @@ export const AccountTable: React.FC = () => {
             if (postResponse.ok) {
                 fetchRole();
                 setIsAddingNew(false);
+                message.success("New account added successfully");
             } else {
                 throw new Error('Failed to add new account');
+                message.error("Failed to add new account");
             }
         } catch (error) {
             console.error('Error handling submit: ', error);
@@ -259,6 +262,7 @@ export const AccountTable: React.FC = () => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            className: 'text-center',
             render: (text: string, record: any) => (
                 <>
                     <div className="fw-bold text-dark">{text}</div>
@@ -270,24 +274,28 @@ export const AccountTable: React.FC = () => {
             title: 'Role',
             dataIndex: 'role',
             key: 'role',
+            className: 'text-center',
             render: (text: string) => <div className="text-dark small">{text}</div>
         },
         {
             title: 'Phone',
             dataIndex: 'phoneNumber',
             key: 'phoneNumber',
+            className: 'text-center',
             render: (text: string) => <div className="fw-bold text-dark">{text}</div>
         },
         {
             title: 'Address',
             dataIndex: 'address',
             key: 'address',
+            className: 'text-center',
             render: (text: string) => <div className="fw-bold text-dark">{text}</div>
         },
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
+            className: 'text-center',
             render: (text: string) => (
                 <Badge status={text ? "success" : "error"} text={text ? "ACTIVE" : "SUSPENDED"}/>
             )
@@ -295,11 +303,15 @@ export const AccountTable: React.FC = () => {
         {
             title: 'Action',
             key: 'action',
-            render: (text: string, record: any) => (
-                <>
-                    <Button type="link" onClick={(e) => handleEdit(record.userid, e)}>Edit</Button>
-                    <Button type="link" danger onClick={(e) => handleDelete(record.userid, e)}>Suspended</Button>
-                </>
+            className: 'text-center',
+            render: (record: any) => (
+                record.status ? (
+                    <Space size="middle">
+                        <Button type="link" onClick={(e) => handleEdit(record.userid, e)}><EditOutlined/></Button>
+                        <Button type="link" danger onClick={(e) => handleDelete(record.userid, e)}><LockOutlined/></Button>
+                    </Space>
+                ) :
+                    <Button type="link" onClick={(e) => handleEdit(record.userid, e)}><EditOutlined/></Button>
             )
         }
     ];
@@ -345,7 +357,7 @@ export const AccountTable: React.FC = () => {
                 </Form>
 
                 <h6 className="custom-heading"
-                    style={{fontSize: '45px', display: 'flex', justifyContent: 'center'}}>Account Table<UserOutlined/>
+                    style={{fontSize: '45px', display: 'flex', justifyContent: 'center'}}>Account Table<TeamOutlined />
                 </h6>
                 <div className="d-flex justify-content-end mb-3">
                     <Button style={{

@@ -71,21 +71,21 @@ const MyOrderDetail: React.FC = (props) => {
     }
     const getStatusColor = (status: any) => {
         switch (status) {
-            case 'PENDING':
+            case 'INTRANSIT':
                 return {
                     backgroundColor: '#FFF3CD',
                     color: '#FFC107',
                     fontWeight: 'bold',
                     border: '1px solid #FFC107',
                 };
-            case 'PAYMENT':
+            case 'PENDING':
                 return {
                     backgroundColor: '#CFF4FC',
                     color: '#13C2C2',
                     fontWeight: 'bold',
                     border: '1px solid #13C2C2',
                 };
-            case 'DELIVERED':
+            case 'CONFIRMED':
                 return {
                     backgroundColor: '#D1E7DD',
                     color: '#198754',
@@ -99,7 +99,7 @@ const MyOrderDetail: React.FC = (props) => {
                     fontWeight: 'bold',
                     border: '1px solid #58151C',
                 };
-            case 'RECEIVED':
+            case 'DELIVERED':
                 return {
                     backgroundColor: '#D1E7DD',
                     color: '#198754',
@@ -180,7 +180,6 @@ const MyOrderDetail: React.FC = (props) => {
                                             <div>
                                                 <span style={{fontSize: '15px'}}>Size: {item.size}</span>
                                                 <div>
-                                                    <Image style={{width: '80px', height: '90px'}} src={item.warrantiesImage} />
                                                     <Image style={{width: '80px', height: '90px'}} src={item.certificateImage} />
                                                 </div>
                                             </div>
@@ -189,6 +188,8 @@ const MyOrderDetail: React.FC = (props) => {
                                     <div className="product-details">
                                         <span className="product-quantity">{item.quantity}x</span>
                                         <span className="product-price">Price: ${item.price.toLocaleString()}</span>
+                                        <Link to={''} style={{padding: '7px', textDecoration: 'none', fontSize: '14px', borderRadius: "5px", backgroundColor: '#E2DAD6', marginLeft: 20, color: 'black'}}>Warranty</Link>
+
                                     </div>
                                 </List.Item>
                             )}
@@ -213,13 +214,14 @@ const MyOrderDetail: React.FC = (props) => {
                                 {details?.orderId}
                             </Form.Item>
                             <Form.Item label="Order Status:">
-                                <Input value={details?.status} disabled style={{ width: '23%', textAlign: 'center', ...getStatusColor(details?.status) }} />
+                                <Input value={details?.status} disabled style={{ width: '25%', textAlign: 'center', ...getStatusColor(details?.status) }} />
                             </Form.Item>
                             <Form.Item label="Quantity:">
                                 {details?.totalProductInOrder}
                             </Form.Item>
                             <Form.Item>
                                 <Link to={"/myorders"} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#3AA6B9'}} className="text-white">Back to list</Link>
+                                <Link to={''} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#006989', marginLeft: 20}} className="text-white">View Invoice</Link>
                             </Form.Item>
                         </Form>
                     </Card>

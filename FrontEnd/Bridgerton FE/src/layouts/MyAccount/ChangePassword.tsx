@@ -39,6 +39,7 @@ const ChangePassword = () => {
                 form.resetFields();
             } else {
                 message.success('Change password successful!');
+                window.location.href = '/myAccount';
             }
         } catch (error) {
             console.error('Error:', error);
@@ -47,10 +48,11 @@ const ChangePassword = () => {
     };
 
     const validatePassword = (_: any, value: any) => {
-        if (!value || /^[0-9]{6,}$/.test(value)) {
+        const regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z]).{6,}$/;
+        if (!value || regex.test(value)) {
             return Promise.resolve();
         }
-        return Promise.reject('Password must be at least 6 numeric characters.');
+        return Promise.reject('Password must be at least 6 characters long, and include a number, a special character, and a lowercase letter.');
     };
 
     const validateConfirmPassword = async (_: any, value: any) => {

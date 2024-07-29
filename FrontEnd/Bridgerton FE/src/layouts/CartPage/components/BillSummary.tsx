@@ -88,7 +88,7 @@ const BillSummary: React.FC<{ cart: number }> = (props) => {
                             <Text>Total after discount: </Text>
                         </Col>
                         <Col span={12} style={{textAlign: 'right'}}>
-                            <Text><strong>${totalAmount}</strong></Text>
+                            <Text><strong>${totalAmount.toLocaleString()}</strong></Text>
                         </Col>
                     </Row>
                     <Button type="primary" size="large" style={{backgroundColor: 'black', width: '100%'}}>

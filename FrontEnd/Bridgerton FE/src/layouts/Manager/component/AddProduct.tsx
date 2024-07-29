@@ -104,13 +104,6 @@ export const AddProduct: React.FC<AddProductProps> = ({isOpen, onClose, onSubmit
         })
     }, []);
 
-    const validateNoWhitespace = (_: any, value: any) => {
-        if (!value || value.trim() !== "") {
-            return Promise.resolve();
-        }
-        return Promise.reject('Input cannot be only whitespace');
-    };
-
     return (
         <div
             className={`modal ${isOpen ? 'show' : ''}`}

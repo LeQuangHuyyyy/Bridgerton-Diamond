@@ -8,7 +8,6 @@ const token = localStorage.getItem('token')
 const headers = {
     'Authorization': `Bearer ${token}`
 }
-
 const OrderTable: React.FC = () => {
     const [orders, setOrders] = useState<OrderModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -72,6 +71,7 @@ const OrderTable: React.FC = () => {
         const updatedOrders = [...orders];
         updatedOrders[orderIndex].status = newStatus;
         setOrders(updatedOrders);
+        console.log(updatedOrders)
     };
 
     const handleConfirm = async (e: React.FormEvent, orderId: number) => {
@@ -82,15 +82,15 @@ const OrderTable: React.FC = () => {
         }
         e.preventDefault();
         try {
-            const baseUrl = "https://deploy-be-b176a8ceb318.herokuapp.com/sale";
-            const url = `${baseUrl}/setOrderToDelivery/${orderId}`;
-            const response = await fetch(url, {method: 'POST', headers: headersForPayment});
-
+            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/sale/setOrderToConfirm?orderId=${orderId}`, {
+                method: 'POST',
+                headers: headersForPayment
+            });
             if (!response.ok) {
-                message.error('Something when wrong');
+                message.error('Fail to confirm order!');
                 throw new Error('Something went wrong!');
             }
-            updateOrderStatus(orderId, 'DELIVERED');
+            updateOrderStatus(orderId, 'CONFIRMED');
         } catch (error) {
             console.log(error);
         }
@@ -115,15 +115,15 @@ const OrderTable: React.FC = () => {
     const getStatusColor = (status: any) => {
         switch (status) {
             case 'PENDING':
-                return 'volcano';
-            case 'PAYMENT':
                 return 'blue';
-            case 'DELIVERED':
+            case 'CONFIRMED':
                 return 'green';
+            case 'INTRANSIT':
+                return 'lime';
             case 'CANCELED':
                 return 'red';
-            case 'RECEIVED':
-                return 'gold';
+            case 'DELIVERED':
+                return 'green';
             default:
                 return 'gold';
         }
@@ -146,33 +146,33 @@ const OrderTable: React.FC = () => {
             title: 'ORDER ID',
             dataIndex: 'orderId',
             key: 'orderId',
-            className:'text-center'
+            className: 'text-center'
         },
         {
             title: 'ORDER DATE',
             dataIndex: 'orderDate',
             key: 'orderDate',
-            className:'text-center',
+            className: 'text-center',
             render: (text: any) => new Date(text).toLocaleDateString(),
         },
         {
             title: 'ORDER TOTAL AMOUNT',
             dataIndex: 'orderTotalAmount',
             key: 'orderTotalAmount',
-            className:'text-center',
-            render: (text: any) =><span style={{fontWeight: 'bold'}}>${text.toLocaleString()}</span> ,
+            className: 'text-center',
+            render: (text: any) => <span style={{fontWeight: 'bold'}}>${text.toLocaleString()}</span>,
         },
         {
             title: 'ORDER DELIVERY ADDRESS',
             dataIndex: 'orderDeliveryAddress',
             key: 'orderDeliveryAddress',
-            className:'text-center'
+            className: 'text-center'
         },
         {
             title: 'STATUS',
             dataIndex: 'status',
             key: 'status',
-            className:'text-center',
+            className: 'text-center',
             render: (status: any) => (
                 <Tag color={getStatusColor(status)} style={{fontWeight: 'bolder'}} key={status}>
                     {status}
@@ -182,11 +182,12 @@ const OrderTable: React.FC = () => {
         {
             title: 'ACTION',
             key: 'action',
-            className:'text-center',
+            className: 'text-center',
             render: (record: any) => (
-                record.status === 'PAID' ? (
+                record.status === 'PENDING' ? (
                     <Space size="middle">
-                        <Button className='btn-outline-success' onClick={(event) => handleConfirm(event, record.orderId)}>
+                        <Button className='btn-outline-success'
+                                onClick={(event) => handleConfirm(event, record.orderId)}>
                             CONFIRM
                         </Button>
                         <Button className='btn-outline-danger' onClick={(event) => handleCancel(event, record.orderId)}>
@@ -198,7 +199,7 @@ const OrderTable: React.FC = () => {
         },
     ];
 
-    const handleCancel= async (e:React.FormEvent, orderId: number) => {
+    const handleCancel = async (e: React.FormEvent, orderId: number) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
         const headersForPayment = {
@@ -208,10 +209,10 @@ const OrderTable: React.FC = () => {
         try {
             const baseUrl = `https://deploy-be-b176a8ceb318.herokuapp.com`;
             const url = `${baseUrl}/order/cancel?orderId=${orderId}`;
-            const response = await fetch(url, { method: 'PUT', headers: headersForPayment });
+            const response = await fetch(url, {method: 'PUT', headers: headersForPayment});
 
             if (!response.ok) {
-                message.error('Something when wrong' );
+                message.error('Something when wrong');
                 throw new Error('Something went wrong!');
             }
             updateOrderStatus(orderId, 'CANCELED');

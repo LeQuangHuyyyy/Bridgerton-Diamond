@@ -8,7 +8,7 @@ export const Footer = () => {
     return (
         <div className='footer main-color'>
             <Row className='footer-container justify-content-center'>
-                <Col span={6} className='footer-section'>
+                <Col span={6 } className='footer-section'>
                     <h2 className='custom-heading text-white mb-4'>Bridgerton</h2>
                     <p><PhoneOutlined /> 091 827 0903</p>
                     <p><MailOutlined />  bridgertondiamond@gmail.com</p>

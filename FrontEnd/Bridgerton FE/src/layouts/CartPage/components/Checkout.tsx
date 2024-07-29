@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {Button, Card, Col, Form, Input, Layout, List, Row} from "antd";
+import {Button, Card, Col, Form, Input, Layout, List, message, Row} from "antd";
 import {jwtDecode} from "jwt-decode";
 import CartModel from "../../../models/CartModel";
 import {SpinnerLoading} from "../../Utils/SpinnerLoading";
-import {Simulate} from "react-dom/test-utils";
 
 const {Content} = Layout;
 
@@ -20,25 +19,29 @@ const Checkout = () => {
     const [finalAmount, setFinalAmount] = useState<number>(0);
 
     const token = localStorage.getItem("token")
-
     useEffect(() => {
-        fetchProducts();
         const data = localStorage.getItem('token');
         if (!data || localStorage.getItem('token') === null) {
             window.location.href = '/login';
         }
+        fetchProducts();
         if (data) {
             const decodedToken = jwtDecode(data) as { id: number, email: string, name: string, phone: string };
             setEmail(decodedToken.email);
             setPhone(decodedToken.phone);
             setName(decodedToken.name)
             setUserId(decodedToken.id);
-            console.log(decodedToken.email, decodedToken.name, decodedToken.phone);
         }
         window.scrollTo(0, 0);
     }, [updateFlag]);
 
     const fetchProducts = async () => {
+        const cart = localStorage.getItem("cart");
+
+        if (!cart) {
+            window.location.href = '/';
+            return;
+        }
         try {
             const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/cart/cart";
 
@@ -121,6 +124,12 @@ const Checkout = () => {
     };
 
     const handleSubmit = async () => {
+        const invalidQuantityProduct = products.find(product => product.quantity > 1);
+
+        if (invalidQuantityProduct) {
+            message.error('Invalid quantity of product!');
+            return;
+        }
         const orderData = {
             userId,
             addressOrder: address,
@@ -144,29 +153,8 @@ const Checkout = () => {
             });
 
             if (orderResponse.ok) {
-                const orderResult = await orderResponse.json();
-                const orderId = orderResult.orderId;
-
-                const paymentData = {
-                    orderId,
-                    bankCode: "NCB",
-                };
-                const paymentResponse = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/payment', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(paymentData),
-                });
-
-                if (paymentResponse.ok) {
-                    const paymentResult = await paymentResponse.json();
-                    window.location.href = paymentResult.paymentUrl;
-                    localStorage.removeItem('cart')
-                } else {
-                    console.error("Failed to create payment");
-                }
+                window.location.href = '/ordersuccess';
+                localStorage.removeItem('cart')
             } else {
                 console.error("Failed to create order");
             }
@@ -289,7 +277,7 @@ const Checkout = () => {
                                                     fontSize: '12px',
                                                     color: '#888'
                                                 }}>
-                                                    {item.quantity} x ${item.totalPrice}
+                                                    {item.quantity} x ${item.totalPrice.toLocaleString()}
                                                 </div>
                                             </div>
                                         </div>
@@ -305,7 +293,7 @@ const Checkout = () => {
                                 color: 'green'
                             }}>
                                 <div>Final Amount:</div>
-                                <div>${finalAmount}</div>
+                                <div>${finalAmount.toLocaleString()}</div>
                             </div>
                         </Card>
                     </Col>

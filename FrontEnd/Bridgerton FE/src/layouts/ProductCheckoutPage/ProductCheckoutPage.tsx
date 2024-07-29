@@ -289,7 +289,7 @@ export const ProductCheckoutPage = () => {
                                 {product?.productName}
                             </h2>
                             <p style={{fontWeight: 'bolder', fontSize: '20px', color: 'red'}}>
-                                Price: ${product?.price}
+                                Price: ${product?.price.toLocaleString()}
                             </p>
                             <p>{product?.description}</p>
                             <div style={{display: 'flex'}}>
@@ -314,13 +314,12 @@ export const ProductCheckoutPage = () => {
                                     Size Guide
                                 </Button>
                             </div>
-                            <ExpandInformation title='More Information' content= {
+                            <ExpandInformation title='More Information' content={
                                 <>
-                                <DiamondTable product={product}/>
-                                <ShellTable product={product}/>
+                                    <DiamondTable product={product}/>
+                                    <ShellTable product={product}/>
                                 </>
                             }/>
-
                             <select
                                 style={{
                                     width: '200px',
@@ -330,6 +329,7 @@ export const ProductCheckoutPage = () => {
                                     borderRadius: '4px',
                                     padding: '8px',
                                 }}
+
                                 className="form-select"
                                 aria-label="Default select example"
                                 onChange={handleSizeSelect}
@@ -380,7 +380,7 @@ export const ProductCheckoutPage = () => {
                                 onCancel={handleCancel}
                                 width={800}
                             >
-                                <img src={imageUrl} alt="Example" style={{ width: '100%' }} />
+                                <img src={imageUrl} alt="Example" style={{width: '100%'}}/>
                             </Modal>
                         </div>
                     </div>
@@ -388,8 +388,8 @@ export const ProductCheckoutPage = () => {
             </div>
             <div className="container mt-5" style={{ height: 550 }}>
                 <div className="homepage-carousel-title">
-                    <h1 style={{ fontSize: '45px', marginBottom: '0' }} className="custom-heading">
-                        Similar Items
+                    <h1 style={{ fontSize: '45px', marginBottom: '0', marginTop: 50 }} className="custom-heading">
+                        Others Items
                     </h1>
                 </div>
                 <Carousel responsive={responsive} className="mt-5">

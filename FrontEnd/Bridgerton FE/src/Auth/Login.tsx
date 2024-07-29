@@ -53,7 +53,7 @@ export const Login = () => {
                         window.location.href = '/dashboard';
                         break;
                     case 'SALE_STAFF':
-                        window.location.href = '/sale';
+                        window.location.href = '/salestaff';
                         break;
                     case 'DELIVERY_STAFF':
                         window.location.href = '/delivery';
@@ -137,10 +137,11 @@ export const Login = () => {
     };
 
     const validatePassword = (_: any, value: any) => {
-        if (!value || /^[0-9]{6,}$/.test(value)) {
+        const regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z]).{6,}$/;
+        if (!value || regex.test(value)) {
             return Promise.resolve();
         }
-        return Promise.reject('Password must be at least 6 numeric characters.');
+        return Promise.reject('Password must be at least 6 characters long, and include a number, a special character, and a lowercase letter.');
     };
 
     return (

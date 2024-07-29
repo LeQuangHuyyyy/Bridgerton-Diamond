@@ -21,7 +21,7 @@ export const ReturnProducts: React.FC<{ product: ProductModel }> = (props) => {
                         style={{fontWeight: '600'}}>{props.product.productName.length > 51 ?
                         <h2 className='product-name-homepage'>{props.product.productName.substring(0, 51)}...</h2>
                         : <h2 className='product-name-homepage'>{props.product.productName}</h2>}</h2>
-                    <p className='price-homepage'>${props.product.price}</p>
+                    <p className='price-homepage'>${props.product.price.toLocaleString()}</p>
                 </div>
             </div>
         </NavLink>

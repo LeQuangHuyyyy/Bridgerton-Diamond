@@ -93,9 +93,11 @@ export const Diamond: React.FC = () => {
             console.log(formData)
             if (response.ok) {
                 setIsAddingNew(false);
+                message.success('Diamond created successfully');
                 fetchPromotions()
             } else {
                 console.error('Failed to create diamond');
+                message.error('Failed to create diamond');
             }
         } catch (error) {
             console.error('Error creating diamond: ', error);

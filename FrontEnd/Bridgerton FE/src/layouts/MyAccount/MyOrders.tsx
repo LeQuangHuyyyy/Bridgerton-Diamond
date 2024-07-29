@@ -30,7 +30,7 @@ const MyOrders: React.FC = () => {
 
     useEffect(() => {
         const fetchOrders = async () => {
-            window.scrollTo(0,0)
+            window.scrollTo(0, 0)
             if (userId) {
                 const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/order/userOrder?userId=${userId}`;
                 const url: string = `${baseUrl}`;
@@ -92,15 +92,17 @@ const MyOrders: React.FC = () => {
     const getStatusColor = (status: any) => {
         switch (status) {
             case 'PENDING':
-                return 'volcano';
-            case 'PAYMENT':
                 return 'blue';
-            case 'DELIVERED':
+            case 'INTRANSIT':
+                return 'lime';
+            case 'CONFIRMED':
                 return 'green';
             case 'CANCELED':
                 return 'red';
             case 'RECEIVED':
                 return 'gold';
+            case 'DELIVERED':
+                return 'green';
             default:
                 return 'gold';
         }
@@ -118,7 +120,7 @@ const MyOrders: React.FC = () => {
         history.push(`/myorderdetail/${orderId}`);
     };
 
-    const handlePayment = async (e:React.FormEvent, orderId: number) => {
+    const handlePayment = async (e: React.FormEvent, orderId: number) => {
         const token = localStorage.getItem("token");
         const headersForPayment = {
             'Content-Type': 'application/json',
@@ -164,7 +166,7 @@ const MyOrders: React.FC = () => {
         setOrders(updatedOrders);
     };
 
-    const handleCancel= async (e:React.FormEvent, orderId: number) => {
+    const handleCancel = async (e: React.FormEvent, orderId: number) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
         const headersForPayment = {
@@ -174,66 +176,85 @@ const MyOrders: React.FC = () => {
         try {
             const baseUrl = `https://deploy-be-b176a8ceb318.herokuapp.com`;
             const url = `${baseUrl}/order/cancel?orderId=${orderId}`;
-            const response = await fetch(url, { method: 'PUT', headers: headersForPayment });
+            const response = await fetch(url, {method: 'PUT', headers: headersForPayment});
 
             if (!response.ok) {
-                message.error('Something when wrong' );
                 throw new Error('Something went wrong!');
+                message.error('Failed to cancel order');
             }
             updateOrderStatus(orderId, 'CANCELED');
+            message.success('Order canceled successfully');
         } catch (error) {
             console.log(error);
         }
     };
     const columns = [
-        {
-            title: 'ORDER ID',
-            dataIndex: 'orderId',
-            key: 'orderId',
-        },
-        {
-            title: 'ORDER DATE',
-            dataIndex: 'orderDate',
-            key: 'orderDate',
-            render: (text: any) => new Date(text).toLocaleDateString(),
-        },
-        {
-            title: 'ORDER TOTAL AMOUNT',
-            dataIndex: 'orderTotalAmount',
-            key: 'orderTotalAmount',
-        },
-        {
-            title: 'ORDER DELIVERY ADDRESS',
-            dataIndex: 'orderDeliveryAddress',
-            key: 'orderDeliveryAddress',
-        },
-        {
-            title: 'STATUS',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status: any) => (
-                <Tag color={getStatusColor(status)} style={{fontWeight: 'bolder'}} key={status}>
-                    {status}
-                </Tag>
-            ),
-        },
-        {
-            title: 'ACTION',
-            key: 'action',
-            render: (record: any) => (
-                record.status === 'PENDING' ? (
-                    <Space size="middle">
-                        <Button onClick={(event) => handlePayment(event, record.orderId)}>
-                            Payment
-                        </Button>
-                        <Button onClick={(event) => handleCancel(event, record.orderId)}>
-                            Cancel
-                        </Button>
-                    </Space>
-                ) : null
-            ),
-        },
-    ];
+            {
+                title: 'ORDER ID',
+                dataIndex: 'orderId',
+                key: 'orderId',
+                className: 'text-center',
+            },
+            {
+                title: 'ORDER DATE',
+                dataIndex: 'orderDate',
+                key: 'orderDate',
+                className: 'text-center',
+                render: (text: any) => new Date(text).toLocaleDateString(),
+            },
+            {
+                title: 'ORDER TOTAL AMOUNT',
+                dataIndex: 'orderTotalAmount',
+                key: 'orderTotalAmount',
+                className: 'text-center',
+            },
+            {
+                title: 'ORDER DELIVERY ADDRESS',
+                dataIndex: 'orderDeliveryAddress',
+                key: 'orderDeliveryAddress',
+                className: 'text-center',
+            },
+            {
+                title: 'STATUS',
+                dataIndex: 'status',
+                key: 'status',
+                className: 'text-center',
+                render: (status: any) => (
+                    <Tag color={getStatusColor(status)} style={{fontWeight: 'bolder'}} key={status}>
+                        {status}
+                    </Tag>
+                ),
+            },
+            {
+                title: 'ACTION',
+                key: 'action',
+                className: 'text-center',
+                render: (record: any) => {
+                    if (record.status === 'CONFIRMED') {
+                        return (
+                            <Space size="middle">
+                                <Button className='btn-outline-info' onClick={(event) => handlePayment(event, record.orderId)}>
+                                    Payment
+                                </Button>
+                                <Button className='btn-outline-danger' onClick={(event) => handleCancel(event, record.orderId)}>
+                                    Cancel
+                                </Button>
+                            </Space>
+                        )
+                    } else if (record.status === 'PENDING') {
+                        return (
+                            <Space size="middle">
+                                <Button className='btn-outline-danger' onClick={(event) => handleCancel(event, record.orderId)}>
+                                    Cancel
+                                </Button>
+                            </Space>
+                        )
+                    } else {
+                        return null;
+                    }
+                }
+            },
+        ];
 
     return (
         <div className="container">
