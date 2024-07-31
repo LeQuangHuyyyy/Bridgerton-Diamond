@@ -44,6 +44,7 @@ const MyOrderDetail: React.FC = (props) => {
                 phoneNumber: responseJson.data.phoneNumber,
                 saleStaff: responseJson.data.saleStaff,
                 saleId: responseJson.data.saleId,
+                invoice: responseJson.data.invoice
             };
             setDetails(loadedDetail);
             console.log(loadedDetail);
@@ -188,8 +189,7 @@ const MyOrderDetail: React.FC = (props) => {
                                     <div className="product-details">
                                         <span className="product-quantity">{item.quantity}x</span>
                                         <span className="product-price">Price: ${item.price.toLocaleString()}</span>
-                                        <Link to={''} style={{padding: '7px', textDecoration: 'none', fontSize: '14px', borderRadius: "5px", backgroundColor: '#E2DAD6', marginLeft: 20, color: 'black'}}>Warranty</Link>
-
+                                        <a href={item.warrantiesImage} style={{padding: '7px', textDecoration: 'none', fontSize: '14px', borderRadius: "5px", backgroundColor: '#E2DAD6', marginLeft: 20, color: 'black'}}>Warranty</a>
                                     </div>
                                 </List.Item>
                             )}
@@ -221,7 +221,7 @@ const MyOrderDetail: React.FC = (props) => {
                             </Form.Item>
                             <Form.Item>
                                 <Link to={"/myorders"} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#3AA6B9'}} className="text-white">Back to list</Link>
-                                <Link to={''} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#006989', marginLeft: 20}} className="text-white">View Invoice</Link>
+                                <a href={details?.invoice} style={{padding: '10px', textDecoration: 'none', fontSize: '16px', borderRadius: "5px", backgroundColor: '#006989', marginLeft: 20}} className="text-white">View Invoice</a>
                             </Form.Item>
                         </Form>
                     </Card>

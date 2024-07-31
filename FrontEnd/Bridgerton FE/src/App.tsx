@@ -33,7 +33,6 @@ import MyOrderDetail from "./layouts/MyAccount/MyOrderDetail";
 import OrderDeliveryDetail from "./layouts/DeliveryStaff/OrderDeliveryDetail";
 import {DiamondEducation} from "./layouts/DiamondKnowledge/DiamondEducation";
 import NotFoundPage from "./layouts/NotFoundPage/NotFoundPage";
-import {SearchWarranty} from "./layouts/SearchWarranty/SearchWarranty";
 
 export const App = () => {
     const [token, setToken] = React.useState<string | undefined>();
@@ -110,7 +109,6 @@ export const App = () => {
                             <Switch>
                                 <Route path='/diamond-education' component={DiamondEducation}/>
                                 <Route path='/home' component={HomePage}/>
-                                <Route path='/warranty' component={SearchWarranty}/>
                                 <Route path='/cart' component={CartPage}/>
                                 <Route path='/checkout' component={Checkout}/>
                                 <Route path='/shop' component={SearchProductsPage}/>

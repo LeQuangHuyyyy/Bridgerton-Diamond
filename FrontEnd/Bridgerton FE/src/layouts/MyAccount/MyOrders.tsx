@@ -15,6 +15,7 @@ const MyOrders: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
     const [userId, setUserId] = useState<number>();
+    const [point, setPoint] = useState<number>(0);
 
     const history = useHistory();
 
@@ -73,6 +74,27 @@ const MyOrders: React.FC = () => {
         })
     }, [userId]);
 
+    useEffect(() => {
+        const fetchPoint = async () => {
+            window.scrollTo(0, 0)
+            if (userId) {
+                const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/myAccount/userPoint?userId=${userId}`;
+                const url: string = `${baseUrl}`;
+                const response = await fetch(url, {headers: headers});
+                if (!response.ok) {
+                    throw new Error('Something went wrong!');
+                }
+                const responseJson = await response.json();
+                setPoint(responseJson);
+                console.log(responseJson)
+            }
+        };
+        fetchPoint().catch((error: any) => {
+            setIsLoading(false);
+            setHttpError(error.message);
+            console.log(error);
+        })
+    }, [userId]);
     if (isLoading) {
         return (
             <div className="spinner container m-5 d-flex justify-content-center align-items-center vh-100">
@@ -207,6 +229,7 @@ const MyOrders: React.FC = () => {
                 dataIndex: 'orderTotalAmount',
                 key: 'orderTotalAmount',
                 className: 'text-center',
+                render: (text: any) => `$${text.toLocaleString()}`,
             },
             {
                 title: 'ORDER DELIVERY ADDRESS',

@@ -56,7 +56,7 @@ export const Login = () => {
                         window.location.href = '/salestaff';
                         break;
                     case 'DELIVERY_STAFF':
-                        window.location.href = '/delivery';
+                        window.location.href = '/deliverystaff';
                         break;
                     default:
                         break;

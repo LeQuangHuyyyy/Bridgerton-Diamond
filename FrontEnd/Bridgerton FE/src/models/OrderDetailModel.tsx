@@ -16,8 +16,9 @@ class OrderDetailModel {
     phoneNumber: string;
     saleStaff: string;
     saleId: number;
+    invoice: string
 
-    constructor(userName: string, orderId: number, productId: number, quantity: number, price: number, size: number, email: string, orderDate: string, totalAmount: number, products: OrderItemModel[], status: string, totalProductInOrder: number, phoneNumber: string, saleStaff: string, saleId: number) {
+    constructor(userName: string, orderId: number, productId: number, quantity: number, price: number, size: number, email: string, orderDate: string, totalAmount: number, products: OrderItemModel[], status: string, totalProductInOrder: number, phoneNumber: string, saleStaff: string, saleId: number, invoice: string) {
         this.userName = userName;
         this.orderId = orderId;
         this.productId = productId;
@@ -33,6 +34,7 @@ class OrderDetailModel {
         this.phoneNumber = phoneNumber;
         this.saleStaff = saleStaff;
         this.saleId = saleId;
+        this.invoice = invoice;
     }
 }
 export default OrderDetailModel;

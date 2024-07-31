@@ -17,6 +17,9 @@ const Checkout = () => {
     const [address, setAddress] = useState<string | undefined>();
     const [userId, setUserId] = useState<number | undefined>();
     const [finalAmount, setFinalAmount] = useState<number>(0);
+    const [discountPercent, setDiscountPercent] = useState<number>(0);
+    const [originalPrice, setOriginalPrice] = useState<number>(0);
+    const [point, setPoint] = useState<number>(0);
 
     const token = localStorage.getItem("token")
     useEffect(() => {
@@ -97,11 +100,12 @@ const Checkout = () => {
 
     const handleApplyPromoCode = async (totalPrice: number) => {
         try {
-            const promoCode = localStorage.getItem('promoCode');
-            if (!promoCode) {
-                throw new Error('Promo code not found');
+            const discountCode = localStorage.getItem('discountCode');
+            const point = localStorage.getItem('point');
+            if (!discountCode) {
+                throw new Error('Discount code not found');
             }
-            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/cart/apply-code?discountCode=${promoCode}&totalAmount=${totalPrice}`, {
+            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/cart/useDiscountAndPoint?originalPrice=${totalPrice}&discountCode=${discountCode}&point=${point}&userId=${userId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -110,7 +114,10 @@ const Checkout = () => {
             if (response.ok) {
                 const data = await response.json();
                 if (data.data !== totalPrice) {
-                    setFinalAmount(data.data);
+                    setPoint(data.data.userPoint);
+                    setOriginalPrice(totalPrice);
+                    setFinalAmount(data.data.finalPrice);
+                    setDiscountPercent(data.data.discountPercent);
                 } else {
                     setFinalAmount(totalPrice);
                 }
@@ -285,6 +292,30 @@ const Checkout = () => {
 
                                 )}
                             />
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                marginTop: '10px',
+                            }}>
+                                <div>Total:</div>
+                                <div>${originalPrice.toLocaleString()}</div>
+                            </div>
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                marginTop: '10px',
+                            }}>
+                                <div>Point: </div>
+                                <div>{point} ≈ ${(point*100).toLocaleString()}</div>
+                            </div>
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                marginTop: '10px',
+                            }}>
+                                <div>Discount:</div>
+                                <div>{discountPercent}%</div>
+                            </div>
                             <div style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',

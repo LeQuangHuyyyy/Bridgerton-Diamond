@@ -12,9 +12,6 @@ const menu = (handleLogout: any) => (
         <Menu.Item key="0">
             <NavLink style={{textDecoration: 'none'}} to="/myaccount">Account</NavLink>
         </Menu.Item>
-        <Menu.Item key="0">
-            <NavLink style={{textDecoration: 'none'}} to="/warranty">Search Warranty</NavLink>
-        </Menu.Item>
         <Menu.Item key="1" onClick={handleLogout}>
             Log out
         </Menu.Item>

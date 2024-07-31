@@ -44,7 +44,8 @@ const OrderDetail: React.FC = (props) => {
                 totalProductInOrder: responseJson.data.totalProductInOrder,
                 phoneNumber: responseJson.data.phoneNumber,
                 saleStaff: responseJson.data.saleStaff,
-                saleId: responseJson.data.saleId
+                saleId: responseJson.data.saleId,
+                invoice: responseJson.data.invoice
             };
             setDetails(loadedDetail);
             console.log(loadedDetail);

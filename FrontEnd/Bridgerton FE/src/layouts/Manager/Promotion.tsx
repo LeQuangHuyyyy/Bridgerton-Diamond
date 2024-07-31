@@ -1,49 +1,26 @@
 import React, {useEffect, useState} from 'react';
-import {jwtDecode} from 'jwt-decode';
 import {AddPromotion} from './component/AddPromotion';
 import {UpdatePromotion} from './component/UpdatePromotion';
-import {Table, Button, message} from 'antd';
+import {Button, message, Spin, Table} from 'antd';
+import PromotionModel from "../../models/PromotionModel";
+import moment from 'moment';
 
 
-const headers = localStorage.getItem('token');
-
-interface PromotionData {
-    id: string;
-    name: string;
-    startDate: string;
-    endDate: string;
-    discountPercent: number;
-    quantity: number;
-    code: string;
-    managerId: string;
+const token = localStorage.getItem('token');
+const headers = {
+    'Authorization': `Bearer ${token}`
 }
 
 export const Promotion: React.FC = () => {
-    const [dataSource, setDataSource] = useState<PromotionData[]>([]);
+    const [dataSource, setDataSource] = useState<PromotionModel[]>([]);
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
-    const [formData, setFormData] = useState<PromotionData>({
-        id: '',
-        name: '',
-        startDate: '',
-        endDate: '',
-        discountPercent: 0,
-        quantity: 0,
-        code: '',
-        managerId: ''
-    });
+    const [isLoading, setIsLoading] = useState(true);
+    const [httpError, setHttpError] = useState(null);
+    const [formData, setFormData] = useState<PromotionModel>(new PromotionModel(0, '', '', '', '', 0, 0));
 
     const toggleAddModal = () => {
-        setFormData({
-            id: '',
-            name: '',
-            startDate: '',
-            endDate: '',
-            discountPercent: 0,
-            quantity: 0,
-            code: '',
-            managerId: ''
-        });
+        setFormData(new PromotionModel(0, '', '', '', '', 0, 0));
         setIsAddingNew(!isAddingNew);
     };
 
@@ -52,34 +29,52 @@ export const Promotion: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchPromotions();
-    }, []);
-
-    const fetchPromotions = async () => {
-        try {
-            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/promotion/get-all', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${headers}`
-                },
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setDataSource(data || []);
-            } else {
-                console.error('Failed to fetch promotions');
+        const fetchPromotions = async () => {
+            const baseUrl: string = "https://deploy-be-b176a8ceb318.herokuapp.com/manage/discountcode/get-all";
+            const url: string = `${baseUrl}`;
+            const response = await fetch(url, {headers: headers});
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
             }
-
-            if (headers != null) {
-                const data = jwtDecode(headers) as {
-                    id: string;
-                };
-                setFormData({...formData, managerId: data.id});
+            const responseJson = await response.json();
+            const responseData = responseJson;
+            console.log(responseData);
+            const loadedPromotions: PromotionModel[] = [];
+            for (const key in responseData) {
+                loadedPromotions.push({
+                    codeId: responseData[key].codeId,
+                    code: responseData[key].code,
+                    name: responseData[key].name,
+                    startDate: responseData[key].startDate,
+                    endDate: responseData[key].endDate,
+                    discountPercentTage: responseData[key].discountPercentTage,
+                    codeQuantity: responseData[key].codeQuantity,
+                });
             }
-        } catch (error) {
-            console.error('Error fetching promotions: ', error);
-        }
-    };
+            setDataSource(loadedPromotions);
+            setIsLoading(false);
+        };
+        fetchPromotions().catch((error: any) => {
+            setIsLoading(false);
+            setHttpError(error.message);
+            console.log(error);
+        })
+    }, [isUpdating]);
+
+
+    if (isLoading) {
+        return (
+            <Spin/>
+        )
+    }
+
+    if (httpError) {
+        return (
+            <div className='container m-5'>
+                <p>{httpError}</p>
+            </div>
+        )
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
         const {name, value} = e.target;
@@ -89,21 +84,21 @@ export const Promotion: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/promotion/create', {
+            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/discountcode/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${headers}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
-                setIsAddingNew(false);
+                setIsUpdating(!isUpdating);
                 message.success("Create New Promotion successfully")
-                fetchPromotions();
+                toggleAddModal();
             } else {
                 console.error('Failed to create promotion');
-                message.success('Promotion created fail');
+                message.error('Promotion created fail');
             }
         } catch (error) {
             console.error('Error creating promotion: ', error);
@@ -114,17 +109,17 @@ export const Promotion: React.FC = () => {
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/promotion/update', {
+            const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/discountcode/update', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${headers}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(formData)
             });
+
             if (response.ok) {
-                setIsUpdating(false);
-                fetchPromotions();
+                setIsUpdating(!isUpdating);
                 message.success('Promotion updated successfully');
             } else {
                 console.error('Failed to update promotion');
@@ -136,27 +131,29 @@ export const Promotion: React.FC = () => {
         }
     };
 
-    const handleEdit = (promotionId: string) => {
-        const promotionToEdit = dataSource.find(promotion => promotion.id === promotionId);
+    const handleEdit = (promotionId: number) => {
+        const promotionToEdit = dataSource.filter(promotion => promotion.codeId === promotionId);
         if (promotionToEdit) {
-            setFormData(promotionToEdit);
+            setFormData(promotionToEdit[0]);
             setIsUpdating(true);
-            console.log(promotionToEdit)
+            console.log(formData)
         }
     };
 
-    const handleDelete = async (promotionId: string) => {
+    const handleDelete = async (promotionId: number) => {
         try {
-            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/promotion/delete/${promotionId}`, {
+            const response = await fetch(`https://deploy-be-b176a8ceb318.herokuapp.com/manage/discountcode/delete/${promotionId}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${headers}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
             if (response.ok) {
-                fetchPromotions();
+                setIsUpdating(!isUpdating);
+                message.success('Promotion deleted successfully');
             } else {
                 console.error('Failed to delete promotion');
+                message.error('Failed to delete promotion');
             }
         } catch (error) {
             console.error('Error deleting promotion: ', error);
@@ -165,57 +162,61 @@ export const Promotion: React.FC = () => {
 
     const columns = [
         {
-            title: 'Promotion Id',
-            dataIndex: 'id',
-            key: 'id',
+            title: 'Code ID',
+            dataIndex: 'codeId',
+            key: 'codeId',
+            className: 'text-center'
         },
         {
-            title: 'Promotion Name',
+            title: 'Code Name',
             dataIndex: 'name',
             key: 'name',
+            className: 'text-center'
         },
         {
             title: 'Discount Code',
             dataIndex: 'code',
             key: 'code',
+            className: 'text-center'
+
         },
         {
             title: 'Start Date',
             dataIndex: 'startDate',
             key: 'startDate',
-            render: (text: string) => text.substring(0, 10),
+            className: 'text-center',
+            render: (text: string) => moment(text).format('DD/MM/YYYY'),
         },
         {
             title: 'End Date',
             dataIndex: 'endDate',
             key: 'endDate',
-            render: (text: string) => text.substring(0, 10),
+            className: 'text-center',
+            render: (text: string) => moment(text).format('DD/MM/YYYY'),
         },
         {
-            title: 'Discount',
-            dataIndex: 'discountPercent',
-            key: 'discountPercent',
+            title: 'Percent',
+            dataIndex: 'discountPercentTage',
+            key: 'discountPercentTage',
+            className: 'text-center',
             render: (text: number) => `${text}%`,
         },
         {
             title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
-        },
-        {
-            title: 'ManagerId',
-            dataIndex: 'managerId',
-            key: 'managerId',
+            dataIndex: 'codeQuantity',
+            key: 'codeQuantity',
+            className: 'text-center',
         },
         {
             title: 'Actions',
             key: 'actions',
-            render: (record: PromotionData) => (
+            className: 'text-center',
+            render: (record: PromotionModel) => (
                 <>
-                    <Button onClick={() => handleEdit(record.id)} type="primary" className="me-2">
+                    <Button onClick={() => handleEdit(record.codeId)} type="primary" className="me-2">
                         Edit
                     </Button>
-                    <Button onClick={() => handleDelete(record.id)}>
+                    <Button onClick={() => handleDelete(record.codeId)}>
                         Delete
                     </Button>
                 </>

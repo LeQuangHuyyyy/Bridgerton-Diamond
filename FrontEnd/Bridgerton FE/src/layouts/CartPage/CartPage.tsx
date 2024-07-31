@@ -3,14 +3,53 @@ import {SpinnerLoading} from "../Utils/SpinnerLoading";
 import CartModel from "../../models/CartModel";
 import {CartProduct} from "./components/CartProduct";
 import BillSummary from "./components/BillSummary";
+import {jwtDecode} from "jwt-decode";
 
+const token = localStorage.getItem('token');
 export const CartPage = () => {
-
     const [products, setProducts] = useState<CartModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
     const [updateFlag, setUpdateFlag] = useState(false);
+    const [userId, setUserId] = useState(0);
+    const [point, setPoint] = useState<number>(0);
 
+    useEffect(() => {
+        const data = localStorage.getItem('token');
+
+        if (data) {
+            const decodedToken = jwtDecode(data) as { id: number };
+            setUserId(decodedToken.id)
+        } else {
+            console.log("No token found");
+        }
+    }, []);
+
+    useEffect(() => {
+        const fetchPoint = async () => {
+            const token = localStorage.getItem('token');
+            const headers = {
+                'Authorization': `Bearer ${token}`
+            }
+            window.scrollTo(0, 0)
+            if (userId) {
+                const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/myAccount/userPoint?userId=${userId}`;
+                const url: string = `${baseUrl}`;
+                const response = await fetch(url, {headers: headers});
+                if (!response.ok) {
+                    throw new Error('Something went wrong!');
+                }
+                const responseJson = await response.json();
+                setPoint(responseJson);
+                console.log(responseJson)
+            }
+        };
+        fetchPoint().catch((error: any) => {
+            setIsLoading(false);
+            setHttpError(error.message);
+            console.log(error);
+        })
+    }, [userId]);
     useEffect(() => {
         fetchProducts();
         if (!localStorage.getItem('cart')) {
@@ -28,7 +67,7 @@ export const CartPage = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXlscXNlMTcxMjkzQGZwdC5lZHUudm4ifQ.FzAs3FrNbICbW9dUGZivmqNtMvUs7dh-fCgJy0EvluQ'
+                    'Authorization': `Bearer ${token}`
                 },
                 body: addProductRequests,
             });
@@ -107,15 +146,16 @@ export const CartPage = () => {
         <div className="container mt-5">
             <div className="row">
                 <div className="col-md-8 mt-5">
-                    <h1 className="mb-4 custom-heading text-center">Shopping Cart</h1>
+                        <h1 className="mb-4 custom-heading text-center">Shopping Cart</h1>
                     <table className="table table-hover">
                         <thead>
                         <tr>
                             <td colSpan={6}>
-                                <button style={{backgroundColor: '#001529'}} className="text-white"
-                                        onClick={handleGoBack}>Continue Shopping
+                                <button style={{backgroundColor: '#001529'}} className="text-white" onClick={handleGoBack}>
+                                    Continue Shopping
                                 </button>
                             </td>
+
                         </tr>
                         <tr className='text-center'>
                             <th scope="col">IMAGE</th>
@@ -140,7 +180,7 @@ export const CartPage = () => {
                     </table>
                 </div>
                 <div className="col-md-4">
-                    <BillSummary cart={calculateTotalPrice()}/>
+                    <BillSummary cart={calculateTotalPrice()} point={point}/>
                 </div>
             </div>
         </div>

@@ -13,6 +13,7 @@ export const InformationAccount = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
     const [userId, setUserId] = useState<number>();
+    const [point, setPoint] = useState<number>(0);
 
     useEffect(() => {
         const data = localStorage.getItem('token');
@@ -57,6 +58,28 @@ export const InformationAccount = () => {
             setHttpError(error.message);
             console.log(error);
         });
+    }, [userId]);
+
+    useEffect(() => {
+        const fetchPoint = async () => {
+            window.scrollTo(0, 0)
+            if (userId) {
+                const baseUrl: string = `https://deploy-be-b176a8ceb318.herokuapp.com/myAccount/userPoint?userId=${userId}`;
+                const url: string = `${baseUrl}`;
+                const response = await fetch(url, {headers: headers});
+                if (!response.ok) {
+                    throw new Error('Something went wrong!');
+                }
+                const responseJson = await response.json();
+                setPoint(responseJson);
+                console.log(responseJson)
+            }
+        };
+        fetchPoint().catch((error: any) => {
+            setIsLoading(false);
+            setHttpError(error.message);
+            console.log(error);
+        })
     }, [userId]);
 
     const onFinish = async (values: any) => {
@@ -166,6 +189,13 @@ export const InformationAccount = () => {
                         className="form-item"
                     >
                         <Input value={data?.phoneNumber}/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Accumulated Points"
+                        className="form-item"
+                    >
+                        {point}
                     </Form.Item>
 
                     <Form.Item className="center-button">

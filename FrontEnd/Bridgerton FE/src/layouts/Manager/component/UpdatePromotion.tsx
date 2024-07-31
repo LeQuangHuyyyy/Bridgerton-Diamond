@@ -1,20 +1,12 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import PromotionModel from "../../../models/PromotionModel";
 
 interface UpdatePromotionProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-    formData: {
-        id: string;
-        name: string;
-        startDate: string;
-        endDate: string;
-        discountPercent: number;
-        quantity: number;
-        code: string;
-        managerId: string;
-    };
+    formData: PromotionModel;
     handleChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
@@ -78,9 +70,9 @@ export const UpdatePromotion: React.FC<UpdatePromotionProps> = ({isOpen, onClose
                                     <label htmlFor="email" className="form-label">Discount Percent</label>
                                     <input
                                         type="number"
-                                        id="discountPercent"
-                                        name="discountPercent"
-                                        value={formData.discountPercent}
+                                        id="discountPercentTage"
+                                        name="discountPercentTage"
+                                        value={formData.discountPercentTage}
                                         onChange={handleChange}
                                         className="form-control"
                                         placeholder="Discount Percent"
@@ -92,8 +84,8 @@ export const UpdatePromotion: React.FC<UpdatePromotionProps> = ({isOpen, onClose
                                     <input
                                         type="number"
                                         id="number"
-                                        name="quantity"
-                                        value={formData.quantity}
+                                        name="codeQuantity"
+                                        value={formData.codeQuantity}
                                         onChange={handleChange}
                                         className="form-control"
                                         placeholder="quantity"

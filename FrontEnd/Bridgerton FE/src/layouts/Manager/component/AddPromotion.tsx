@@ -1,19 +1,11 @@
 import React from "react";
+import PromotionModel from "../../../models/PromotionModel";
 
 interface AddPromotionProp {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-    formData: {
-        id: string;
-        name: string;
-        startDate: string;
-        endDate: string;
-        discountPercent: number;
-        quantity: number;
-        code: string;
-        managerId: string;
-    };
+    formData: PromotionModel;
     handleChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
@@ -36,7 +28,7 @@ export const AddPromotion: React.FC<AddPromotionProp> = ({isOpen, onClose, onSub
                         <form onSubmit={onSubmit}>
                             <div className="modal-body">
                                 <div className="mb-3">
-                                    <label htmlFor="email" className="form-label">Promotion Name</label>
+                                    <label className="form-label">Promotion Name</label>
                                     <input
                                         type="text"
                                         id="text"
@@ -49,7 +41,7 @@ export const AddPromotion: React.FC<AddPromotionProp> = ({isOpen, onClose, onSub
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="email" className="form-label">Code</label>
+                                    <label className="form-label">Code</label>
                                     <input
                                         type="text"
                                         id="text"
@@ -77,9 +69,9 @@ export const AddPromotion: React.FC<AddPromotionProp> = ({isOpen, onClose, onSub
                                     <label htmlFor="email" className="form-label">Discount Percent</label>
                                     <input
                                         type="number"
-                                        id="discountPercent"
-                                        name="discountPercent"
-                                        value={formData.discountPercent}
+                                        id="discountPercentTage"
+                                        name="discountPercentTage"
+                                        value={formData.discountPercentTage}
                                         onChange={handleChange}
                                         className="form-control"
                                         placeholder="Discount Percent"
@@ -90,9 +82,9 @@ export const AddPromotion: React.FC<AddPromotionProp> = ({isOpen, onClose, onSub
                                     <label htmlFor="email" className="form-label">Quantity</label>
                                     <input
                                         type="number"
-                                        id="number"
-                                        name="quantity"
-                                        value={formData.quantity}
+                                        id="codeQuantity"
+                                        name="codeQuantity"
+                                        value={formData.codeQuantity}
                                         onChange={handleChange}
                                         className="form-control"
                                         placeholder="quantity"

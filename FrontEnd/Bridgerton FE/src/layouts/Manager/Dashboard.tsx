@@ -1,21 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import { Layout, Breadcrumb, Card, Row, Col } from 'antd';
-import {MoneyCollectOutlined, ShoppingCartOutlined, LineChartOutlined, ShoppingOutlined} from '@ant-design/icons';
+import {ShoppingCartOutlined, LineChartOutlined, ShoppingOutlined} from '@ant-design/icons';
 import Chart from "./component/Chart";
 import PieChartComponent from "./component/PieChartComponent";
 import {SpinnerLoading} from "../Utils/SpinnerLoading";
 import {DetailTable} from "./component/DetailTable";
 
-const headers = {
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjdXN0b21lckBnbWFpbC5jb20iLCJpZCI6MSwibmFtZSI6IkNVUyIsInJvbGUiOiJDVVNUT01FUiIsInBob25lIjoiMTIzMTIzMTIzMTIiLCJhZGRyZXNzIjoiMjM0LzIzNCAifQ.9R2lECgKGx5pI1euKSGUnBl9ufhGs2YsaG5uhipN6cg'
-}
 
+const token = localStorage.getItem('token');
+const headers = {
+    'Authorization': `Bearer ${token}`
+}
 const {Content} = Layout;
 const Dashboard = () => {
     const [totalOrders, setTotalOrders] = useState();
     const [revenuel, setRevenuel] = useState<number>(0);
     const [totalProducts, setTotalProducts] = useState();
-    const [profit, setProfit] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
 

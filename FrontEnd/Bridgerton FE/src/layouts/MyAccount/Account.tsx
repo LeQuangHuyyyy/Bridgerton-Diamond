@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { Layout, Menu, Card, Form, Input, Button } from 'antd';
-import { UserOutlined, MailOutlined, BookOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
+import { Layout, Menu} from 'antd';
+import { UserOutlined, BookOutlined, SettingOutlined} from '@ant-design/icons';
 import {NavLink} from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 
@@ -21,8 +21,9 @@ const Account : React.FC<{children: any}> = (props) => {
     }, []);
     return (
         <Layout>
-            <Header style={{ background: '#fff', padding: 0 }}>
-                <h2 className='custom-heading' style={{ marginTop: 20,marginLeft: 180, textAlign: 'center' }}>Hello {userName}!!</h2>
+            <Header style={{background: '#fff', padding: 0}}>
+                <h2 className='custom-heading'
+                    style={{marginTop: 20, marginLeft: 180, textAlign: 'center'}}>Hello {userName}!!</h2>
             </Header>
             <Layout>
                 <Sider width={200} className="site-layout-background">
