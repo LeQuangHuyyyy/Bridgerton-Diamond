@@ -3,6 +3,7 @@ import {Button, Card, Col, Form, Input, Layout, List, message, Row} from "antd";
 import {jwtDecode} from "jwt-decode";
 import CartModel from "../../../models/CartModel";
 import {SpinnerLoading} from "../../Utils/SpinnerLoading";
+import {ThemeProvider} from "react-bootstrap";
 
 const {Content} = Layout;
 
@@ -58,12 +59,12 @@ const Checkout = () => {
                 },
                 body: addProductRequests,
             });
-
             if (!response.ok) {
                 throw new Error('Something went wrong!');
             }
 
             const responseJson = await response.json();
+            console.log(responseJson)
             const responseData = responseJson.data.content;
 
             const loadedProducts: CartModel[] = [];
@@ -89,6 +90,10 @@ const Checkout = () => {
         }
     };
 
+    const calculateTotalPrice = () => {
+        return products.reduce((total, product) => total + product.totalPrice, 0);
+    };
+
     useEffect(() => {
         const data = localStorage.getItem('token');
         if (!data || localStorage.getItem('token') === null) {
@@ -101,7 +106,14 @@ const Checkout = () => {
     const handleApplyPromoCode = async (totalPrice: number) => {
         try {
             const discountCode = localStorage.getItem('discountCode');
-            const point = localStorage.getItem('point');
+            const pointGet = localStorage.getItem('point');
+
+            if(pointGet===null){
+                setPoint(0);
+            } else{
+                setPoint(parseInt(pointGet));
+            }
+            console.log(discountCode + " cc " +  point);
             if (!discountCode) {
                 throw new Error('Discount code not found');
             }
@@ -112,8 +124,9 @@ const Checkout = () => {
                 },
             });
             if (response.ok) {
+                console.log("ahihi" + response)
                 const data = await response.json();
-                if (data.data !== totalPrice) {
+                if (data.data.finalPrice !== totalPrice) {
                     setPoint(data.data.userPoint);
                     setOriginalPrice(totalPrice);
                     setFinalAmount(data.data.finalPrice);
@@ -122,10 +135,10 @@ const Checkout = () => {
                     setFinalAmount(totalPrice);
                 }
             } else {
-                throw new Error('Failed to apply promo code');
+                throw new Error('Failed to apply discount code');
             }
         } catch (error) {
-            console.error('Error applying promo code:', error);
+            console.error('Error applying  code:', error);
             setFinalAmount(totalPrice);
         }
     };
@@ -140,6 +153,7 @@ const Checkout = () => {
         const orderData = {
             userId,
             addressOrder: address,
+            accumulatedPoint: point,
             addProductRequestList: products.map(product => ({
                 productId: product.productId,
                 sizeId: product.sizeId,
@@ -147,6 +161,8 @@ const Checkout = () => {
             })),
             amount: finalAmount,
         };
+
+        console.log(orderData)
 
         try {
             const token = localStorage.getItem("token");
@@ -298,15 +314,15 @@ const Checkout = () => {
                                 marginTop: '10px',
                             }}>
                                 <div>Total:</div>
-                                <div>${originalPrice.toLocaleString()}</div>
+                                <div>${calculateTotalPrice().toLocaleString()}</div>
                             </div>
                             <div style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
-                                marginTop: '10px',
+                                marginTop: '10px'
                             }}>
                                 <div>Point: </div>
-                                <div>{point} ≈ ${(point*100).toLocaleString()}</div>
+                                <div>{point} ≈ ${(point*1).toLocaleString()}</div>
                             </div>
                             <div style={{
                                 display: 'flex',

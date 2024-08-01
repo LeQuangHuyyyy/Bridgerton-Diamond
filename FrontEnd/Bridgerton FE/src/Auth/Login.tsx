@@ -31,7 +31,7 @@ export const Login = () => {
                 body: formData
             });
             const data = await response.json();
-            if (data !== false) {
+            if (data.data !== false) {
                 localStorage.setItem('token', data.data);
                 const token = data.data;
                 const decodedToken = jwtDecode(token) as {

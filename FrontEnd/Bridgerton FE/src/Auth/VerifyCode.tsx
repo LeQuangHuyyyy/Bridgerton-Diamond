@@ -35,9 +35,12 @@ export const VerifyCode = () => {
                         });
 
                         const data = await response.json();
-                        if (data !== false) {
+                        if (data.data !== false) {
                             localStorage.setItem('token', data.data);
                             window.location.href = "/"
+                        }else{
+                            message.error('Invalid Verify Code');
+
                         }
                     }
                 } catch (err) {

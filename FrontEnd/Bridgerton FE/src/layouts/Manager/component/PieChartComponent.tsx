@@ -4,8 +4,9 @@ import {SpinnerLoading} from "../../Utils/SpinnerLoading";
 import PieChartData from "../../../models/PieChartData";
 
 const COLORS = ['#FF8C94', '#FFE29B', '#8AFFB5', '#8AC5FF', '#D18AD6', '#FF8BDA', '#78A1A6'];
+const token = localStorage.getItem('token');
 const headers = {
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjdXN0b21lckBnbWFpbC5jb20iLCJpZCI6MSwibmFtZSI6IkNVUyIsInJvbGUiOiJDVVNUT01FUiIsInBob25lIjoiMTIzMTIzMTIzMTIiLCJhZGRyZXNzIjoiMjM0LzIzNCAifQ.9R2lECgKGx5pI1euKSGUnBl9ufhGs2YsaG5uhipN6cg'
+    'Authorization': `Bearer ${token}`
 }
 const PieChartComponent = () => {
     const [data, setData] = useState<PieChartData[]>([]);

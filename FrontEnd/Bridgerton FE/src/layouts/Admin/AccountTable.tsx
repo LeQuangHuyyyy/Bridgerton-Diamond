@@ -85,7 +85,6 @@ export const AccountTable: React.FC = () => {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
         try {
             const response = await fetch('https://deploy-be-b176a8ceb318.herokuapp.com/manage/accounts', {
                 method: "GET",

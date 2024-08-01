@@ -3,8 +3,9 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import ChartData from "../../../models/ChartData";
 import {SpinnerLoading} from "../../Utils/SpinnerLoading";
 
+const token = localStorage.getItem('token');
 const headers = {
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJodXlscXNlMTcxMjkzQGZwdC5lZHUudm4ifQ.FzAs3FrNbICbW9dUGZivmqNtMvUs7dh-fCgJy0EvluQ'
+    'Authorization': `Bearer ${token}`
 }
 const Chart = () => {
     const [data, setData] = useState<ChartData[]>([]);
